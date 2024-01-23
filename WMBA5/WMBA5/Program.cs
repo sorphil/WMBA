@@ -40,4 +40,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+//checking to see if it gets upload in to the main repository.
+
 app.Run();
