@@ -1,0 +1,9 @@
+﻿
+Migrations:
+
+Add-Migration -Context WMBAContext -o Data\WMBAMigrations Initial
+
+Update Database
+
+Update-Database -Context WMBAContext
+

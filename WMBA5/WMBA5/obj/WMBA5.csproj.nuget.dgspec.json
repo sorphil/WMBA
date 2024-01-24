@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\subit\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj": {}
+    "C:\\Users\\subit\\source\\repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj": {}
   },
   "projects": {
-    "C:\\Users\\subit\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj": {
+    "C:\\Users\\subit\\source\\repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\subit\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
+        "projectUniqueName": "C:\\Users\\subit\\source\\repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
         "projectName": "WMBA5",
-        "projectPath": "C:\\Users\\subit\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
+        "projectPath": "C:\\Users\\subit\\source\\repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
         "packagesPath": "C:\\Users\\subit\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\subit\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\obj\\",
+        "outputPath": "C:\\Users\\subit\\source\\repos\\WMBA\\WMBA5\\WMBA5\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -57,6 +57,10 @@
               "version": "[7.0.13, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.13, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[7.0.13, )"
             },
