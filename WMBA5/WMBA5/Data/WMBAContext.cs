@@ -15,6 +15,11 @@ namespace WMBA5.Data
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Team> Teams { get; set; }
+        public DbSet<PlayerStat> PlayerStats { get; set; }
+        public DbSet<PlayerAtBat> PlayerAtBats { get; set; }
+        public DbSet<Inning> Innings { get; set; }
+        public DbSet<Roster> Rosters { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,6 +58,63 @@ namespace WMBA5.Data
                 .WithOne(c => c.Division)
                 .HasForeignKey(c => c.DivisionID)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            //Player to PlayerStats
+            modelBuilder.Entity<Player>()
+                .HasMany<PlayerStat>(c => c.PlayerStats)
+                .WithOne(c => c.Player)
+                .HasForeignKey(c => c.PlayerID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Player to PlayerAtBat
+            modelBuilder.Entity<Player>()
+                .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
+                .WithOne(c => c.Player)
+                .HasForeignKey(c => c.PlayerID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Game to Innings
+            modelBuilder.Entity<Game>()
+                .HasMany<Inning>(c => c.Innings)
+                .WithOne(c => c.Game)
+                .HasForeignKey(c => c.GameID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Game to PlayerAtBat
+            modelBuilder.Entity<Game>()
+                .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
+                .WithOne(c => c.Game)
+                .HasForeignKey(c => c.GameID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Inning to PlayerAtBat
+            modelBuilder.Entity<Inning>()
+                .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
+                .WithOne(c => c.Inning)
+                .HasForeignKey(c => c.InningID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            //Game to Roster
+            modelBuilder.Entity<Game>()
+                .HasOne(c => c.Roster)
+                .WithOne( c => c.Game)
+                .HasForeignKey<Roster>(c => c.GameID)
+                .IsRequired();
+
+            //Player to Roster
+            modelBuilder.Entity<Player>()
+                .HasOne(c => c.Roster)
+                .WithOne(c => c.Player)
+                .HasForeignKey<Roster>(c => c.PlayerID)
+                .IsRequired();
+
+            //Team to Roster
+            modelBuilder.Entity<Team>()
+                .HasOne(c => c.Roster)
+                .WithOne(c => c.Team)
+                .HasForeignKey<Roster>(c => c.TeamID)
+                .IsRequired();
 
 
             //To Ensure Players has Unique MemberID
