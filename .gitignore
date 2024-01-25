@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/WMBA5/.vs/WMBA5/FileContentIndex/ada0d694-c3e7-4805-91f2-b62e453bc304.vsidx
+/WMBA5/.vs/WMBA5/FileContentIndex/276f76be-193f-499f-a293-d668e4bc0147.vsidx
+/WMBA5/.vs/WMBA5/FileContentIndex/c8d93cb8-3e26-48c3-affe-5a62c0c40f86.vsidx
+*.vsidx
+/.gitignore
