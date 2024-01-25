@@ -28,5 +28,12 @@ namespace WMBA5.Models
         [Required(ErrorMessage = "You must select a Division")]
         public int DivisionID { get; set; }
         public Division Division { get; set; }
+
+        public int RosterID { get; set; }
+        public Roster Roster { get; set; }
+
+
+        public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
+        public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
     }
 }
