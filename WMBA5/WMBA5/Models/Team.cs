@@ -22,10 +22,7 @@ namespace WMBA5.Models
         public int DivisionID { get; set; }
         public Division Division { get; set; }
 
-        public int LineupID { get; set; }
-        public Lineup Lineup { get; set; }
-
-
+        public ICollection<Player> Lineups { get; set; } = new HashSet<Player>();
 
         public ICollection<Player> Players { get; set; } = new HashSet<Player>();
         
