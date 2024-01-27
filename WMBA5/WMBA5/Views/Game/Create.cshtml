@@ -1,0 +1,59 @@
+﻿@model WMBA5.Models.Game
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Game</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StartTime" class="control-label"></label>
+                <input asp-for="StartTime" class="form-control" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Oponent" class="control-label"></label>
+                <input asp-for="Oponent" class="form-control" />
+                <span asp-validation-for="Oponent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlayingAt" class="control-label"></label>
+                <input asp-for="PlayingAt" class="form-control" />
+                <span asp-validation-for="PlayingAt" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Outcome" /> @Html.DisplayNameFor(model => model.Outcome)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="DivisionID" class="control-label"></label>
+                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="RosterID" class="control-label"></label>
+                <input asp-for="RosterID" class="form-control" />
+                <span asp-validation-for="RosterID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
