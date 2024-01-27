@@ -1,6 +1,6 @@
 ﻿namespace WMBA5.Models
 {
-    public class Roster
+    public class Lineup
     {
         public int ID { get; set; }
 

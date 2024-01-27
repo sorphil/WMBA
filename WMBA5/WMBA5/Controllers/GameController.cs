@@ -94,7 +94,7 @@ namespace WMBA5.Controllers
         // POST: Game/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,RosterID")] Game game)
+        public async Task<IActionResult> Create([Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,LineupID")] Game game)
         {
             if (ModelState.IsValid)
             {
@@ -126,7 +126,7 @@ namespace WMBA5.Controllers
         // POST: Game/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,RosterID")] Game game)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,LineupID")] Game game)
         {
             if (id != game.ID)
             {

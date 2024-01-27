@@ -57,7 +57,7 @@
                     @Html.DisplayNameFor(model => model.Division)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.RosterID)
+                    @Html.DisplayNameFor(model => model.LineupID)
                 </th>
                 <th></th>
             </tr>
@@ -85,7 +85,7 @@
                         @Html.DisplayFor(modelItem => item.Division.DivisionName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.RosterID)
+                        @Html.DisplayFor(modelItem => item.LineupID)
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

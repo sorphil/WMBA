@@ -11,21 +11,21 @@ namespace WMBA5.Data.WMBAMigrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "RosterID",
+                name: "LineupID",
                 table: "Teams",
                 type: "INTEGER",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
-                name: "RosterID",
+                name: "LineupID",
                 table: "Players",
                 type: "INTEGER",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
-                name: "RosterID",
+                name: "LineupID",
                 table: "Games",
                 type: "INTEGER",
                 nullable: false,
@@ -80,7 +80,7 @@ namespace WMBA5.Data.WMBAMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Rosters",
+                name: "Lineups",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
@@ -94,21 +94,21 @@ namespace WMBA5.Data.WMBAMigrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rosters", x => x.ID);
+                    table.PrimaryKey("PK_Lineups", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Rosters_Games_GameID",
+                        name: "FK_Lineups_Games_GameID",
                         column: x => x.GameID,
                         principalTable: "Games",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Rosters_Players_PlayerID",
+                        name: "FK_Lineups_Players_PlayerID",
                         column: x => x.PlayerID,
                         principalTable: "Players",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Rosters_Teams_TeamID",
+                        name: "FK_Lineups_Teams_TeamID",
                         column: x => x.TeamID,
                         principalTable: "Teams",
                         principalColumn: "ID",
@@ -175,20 +175,20 @@ namespace WMBA5.Data.WMBAMigrations
                 column: "PlayerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rosters_GameID",
-                table: "Rosters",
+                name: "IX_Lineups_GameID",
+                table: "Lineups",
                 column: "GameID",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rosters_PlayerID",
-                table: "Rosters",
+                name: "IX_Lineups_PlayerID",
+                table: "Lineups",
                 column: "PlayerID",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rosters_TeamID",
-                table: "Rosters",
+                name: "IX_Lineups_TeamID",
+                table: "Lineups",
                 column: "TeamID",
                 unique: true);
         }
@@ -203,21 +203,21 @@ namespace WMBA5.Data.WMBAMigrations
                 name: "PlayerStats");
 
             migrationBuilder.DropTable(
-                name: "Rosters");
+                name: "Lineups");
 
             migrationBuilder.DropTable(
                 name: "Innings");
 
             migrationBuilder.DropColumn(
-                name: "RosterID",
+                name: "LineupID",
                 table: "Teams");
 
             migrationBuilder.DropColumn(
-                name: "RosterID",
+                name: "LineupID",
                 table: "Players");
 
             migrationBuilder.DropColumn(
-                name: "RosterID",
+                name: "LineupID",
                 table: "Games");
         }
     }

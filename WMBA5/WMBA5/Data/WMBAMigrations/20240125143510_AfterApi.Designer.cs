@@ -95,7 +95,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RosterID")
+                    b.Property<int>("LineupID")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("StartTime")
@@ -168,7 +168,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RosterID")
+                    b.Property<int>("LineupID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TeamID")
@@ -250,7 +250,7 @@ namespace WMBA5.Data.WMBAMigrations
                     b.ToTable("PlayerStats");
                 });
 
-            modelBuilder.Entity("WMBA5.Models.Roster", b =>
+            modelBuilder.Entity("WMBA5.Models.Lineup", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -285,7 +285,7 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasIndex("TeamID")
                         .IsUnique();
 
-                    b.ToTable("Rosters");
+                    b.ToTable("Lineups");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Team", b =>
@@ -300,7 +300,7 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Property<int>("DivisionID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("RosterID")
+                    b.Property<int>("LineupID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TeamName")
@@ -398,23 +398,23 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("WMBA5.Models.Roster", b =>
+            modelBuilder.Entity("WMBA5.Models.Lineup", b =>
                 {
                     b.HasOne("WMBA5.Models.Game", "Game")
-                        .WithOne("Roster")
-                        .HasForeignKey("WMBA5.Models.Roster", "GameID")
+                        .WithOne("Lineup")
+                        .HasForeignKey("WMBA5.Models.Lineup", "GameID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WMBA5.Models.Player", "Player")
-                        .WithOne("Roster")
-                        .HasForeignKey("WMBA5.Models.Roster", "PlayerID")
+                        .WithOne("Lineup")
+                        .HasForeignKey("WMBA5.Models.Lineup", "PlayerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WMBA5.Models.Team", "Team")
-                        .WithOne("Roster")
-                        .HasForeignKey("WMBA5.Models.Roster", "TeamID")
+                        .WithOne("Lineup")
+                        .HasForeignKey("WMBA5.Models.Lineup", "TeamID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -467,7 +467,7 @@ namespace WMBA5.Data.WMBAMigrations
 
                     b.Navigation("PlayerAtBats");
 
-                    b.Navigation("Roster");
+                    b.Navigation("Lineup");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Inning", b =>
@@ -481,14 +481,14 @@ namespace WMBA5.Data.WMBAMigrations
 
                     b.Navigation("PlayerStats");
 
-                    b.Navigation("Roster");
+                    b.Navigation("Lineup");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Team", b =>
                 {
                     b.Navigation("Players");
 
-                    b.Navigation("Roster");
+                    b.Navigation("Lineup");
                 });
 #pragma warning restore 612, 618
         }

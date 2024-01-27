@@ -18,7 +18,7 @@ namespace WMBA5.Data
         public DbSet<PlayerStat> PlayerStats { get; set; }
         public DbSet<PlayerAtBat> PlayerAtBats { get; set; }
         public DbSet<Inning> Innings { get; set; }
-        public DbSet<Roster> Rosters { get; set; }
+        public DbSet<Lineup> Lineups { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -95,25 +95,25 @@ namespace WMBA5.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            //Game to Roster
+            //Game to Lineup
             modelBuilder.Entity<Game>()
-                .HasOne(c => c.Roster)
+                .HasOne(c => c.Lineup)
                 .WithOne( c => c.Game)
-                .HasForeignKey<Roster>(c => c.GameID)
+                .HasForeignKey<Lineup>(c => c.GameID)
                 .IsRequired();
 
-            //Player to Roster
+            //Player to Lineup
             modelBuilder.Entity<Player>()
-                .HasOne(c => c.Roster)
+                .HasOne(c => c.Lineup)
                 .WithOne(c => c.Player)
-                .HasForeignKey<Roster>(c => c.PlayerID)
+                .HasForeignKey<Lineup>(c => c.PlayerID)
                 .IsRequired();
 
-            //Team to Roster
+            //Team to Lineup
             modelBuilder.Entity<Team>()
-                .HasOne(c => c.Roster)
+                .HasOne(c => c.Lineup)
                 .WithOne(c => c.Team)
-                .HasForeignKey<Roster>(c => c.TeamID)
+                .HasForeignKey<Lineup>(c => c.TeamID)
                 .IsRequired();
 
 
