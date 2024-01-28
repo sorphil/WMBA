@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WMBA5.Data;
 using WMBA5.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Net.Mail;
+using WMBA5.ViewModels;
 
 namespace WMBA5.Controllers
 {
@@ -142,8 +145,28 @@ namespace WMBA5.Controllers
         }
 
         // GET: Team/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string[] selectedOptions)
         {
+            PopulateTeamPlayerLists();
+            try
+            {
+                List<Player> players = new List<Player>();
+                if (selectedOptions != null)
+                {
+                    foreach (var option in selectedOptions)
+                    {
+                        Player customer = await _context.Players
+                                          .Where(c=>c.ID == int.Parse(option))
+                                          .FirstOrDefaultAsync();
+                    }
+                }
+                  
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.GetBaseException().Message;
+                ViewData["Message"] = "Error: Could not send update team";
+            }
             if (id == null || _context.Teams == null)
             {
                 return NotFound();
@@ -247,6 +270,30 @@ namespace WMBA5.Controllers
         private void PopulateDropDownLists(Team team = null)
         {
             ViewData["DivisionID"] = DivisionList(team?.DivisionID);
+        }
+
+
+        private void PopulateTeamPlayerLists()
+        {
+            //For this to work, you must have Included the child collection in the parent object
+            var allOptions = _context.Players;
+
+            //Instead of one list with a boolean, we will make two lists
+            var available = new List<ListOptionVM>();
+            var selected = new List<ListOptionVM>();
+            foreach (var r in allOptions)
+            {
+
+                available.Add(new ListOptionVM
+                {
+                    ID = r.ID,
+                    DisplayText = r.FullName
+                });
+
+            }
+
+            ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+            ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
         }
     }
 }
