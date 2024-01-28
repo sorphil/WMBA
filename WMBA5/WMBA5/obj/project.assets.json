@@ -11979,23 +11979,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jf697\\.nuget\\packages\\": {},
+    "C:\\Users\\psori\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jf697\\OneDrive\\Escritorio\\WMBA Test\\WMBA5\\WMBA5\\WMBA5.csproj",
+      "projectUniqueName": "C:\\Users\\psori\\source\\repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
       "projectName": "WMBA5",
-      "projectPath": "C:\\Users\\jf697\\OneDrive\\Escritorio\\WMBA Test\\WMBA5\\WMBA5\\WMBA5.csproj",
-      "packagesPath": "C:\\Users\\jf697\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jf697\\OneDrive\\Escritorio\\WMBA Test\\WMBA5\\WMBA5\\obj\\",
+      "projectPath": "C:\\Users\\psori\\source\\repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
+      "packagesPath": "C:\\Users\\psori\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\psori\\source\\repos\\WMBA\\WMBA5\\WMBA5\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\jf697\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\psori\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -12073,7 +12073,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }
