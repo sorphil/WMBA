@@ -10,6 +10,7 @@ using WMBA5.Models;
 using WMBA5.CustomControllers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using WMBA5.Utilities;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace WMBA5.Controllers
 {
@@ -24,7 +25,7 @@ namespace WMBA5.Controllers
 
         // GET: Player
         public async Task<IActionResult> Index(string SearchString, int? TeamID,
-             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "FullName")
+             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "Players")
         {
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
@@ -33,7 +34,7 @@ namespace WMBA5.Controllers
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "FullName", "Age" };
+            string[] sortOptions = new[] { "Player", "Age" };
 
             PopulateDropDownLists();
 
@@ -82,7 +83,7 @@ namespace WMBA5.Controllers
                 }
             }
             //Now we know which field and direction to sort by
-            if (sortField == "FullName")
+            if (sortField == "Player")
             {
                 if (sortDirection == "asc")
                 {
@@ -97,7 +98,7 @@ namespace WMBA5.Controllers
                         .ThenBy(p => p.FirstName);
                 }
             }
-            /*else if (sortField == "Age")
+            else if (sortField == "Age")
             {
                 if (sortDirection == "asc")
                 {
@@ -111,7 +112,7 @@ namespace WMBA5.Controllers
                            .OrderByDescending(p => p.Birthday)
                            .ThenBy(p => p.Birthday);
                 }
-            }*/
+            }
             //Set sort for next time
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
@@ -134,6 +135,8 @@ namespace WMBA5.Controllers
 
             var player = await _context.Players
                 .Include(p => p.Team)
+                .Include(p => p.PlayerAtBats)
+                .Include(p => p.PlayerStats)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
             {
@@ -146,8 +149,10 @@ namespace WMBA5.Controllers
         // GET: Player/Create
         public IActionResult Create()
         {
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName");
-            return View();
+            Player player = new Player();
+            PopulateDropDownLists();
+            return View(player);
+
         }
 
         // POST: Player/Create
@@ -157,13 +162,24 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,MiddleName,LastName,JerseyNumber,Birthday,Position,TeamID,LineupID")] Player player)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(player);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(player);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { player.ID });
+                }
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+            catch (RetryLimitExceededException /* dex */)
+            {
+                ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            PopulateDropDownLists();
             return View(player);
         }
 

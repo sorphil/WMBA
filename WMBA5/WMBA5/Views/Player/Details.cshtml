@@ -14,6 +14,35 @@
             <dl class="row">
 
                 <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.MiddleName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.MiddleName)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.Birthday)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Birthday)
+                </dd>
+
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-4">
                     @Html.DisplayNameFor(model => model.MemberID)
                 </dt>
                 <dd class="col-sm-8">
@@ -26,11 +55,18 @@
                     @Html.DisplayFor(model => model.JerseyNumber)
                 </dd>
                 <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Birthday)
+                    @Html.DisplayNameFor(model => model.Position)
                 </dt>
                 <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Birthday)
+                    @Html.DisplayFor(model => model.Position)
                 </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.Team.TeamName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Team.TeamName)
+                </dd>
+           
 
                 <dt class="col-sm-4">
                     @Html.DisplayNameFor(model => model.LineupID)
@@ -40,47 +76,8 @@
                 </dd>
             </dl>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <dl class="row">
-
-                    <dt class="col-sm-4">
-                        @Html.DisplayNameFor(model => model.FirstName)
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.FirstName)
-                    </dd>
-                    <dt class="col-sm-4">
-                        @Html.DisplayNameFor(model => model.MiddleName)
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.MiddleName)
-                    </dd>
-                    <dt class="col-sm-4">
-                        @Html.DisplayNameFor(model => model.LastName)
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.LastName)
-                    </dd>
-
-
-                    <dt class="col-sm-4">
-                        @Html.DisplayNameFor(model => model.Position)
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.Position)
-                    </dd>
-                    <dt class="col-sm-4">
-                        @Html.DisplayNameFor(model => model.Team)
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.Team.TeamName)
-                    </dd>
-                </dl>
-            </div>
-    
+</div>
     <div>
         <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
         <partial name="_BackToList" />
     </div>
-</div>
