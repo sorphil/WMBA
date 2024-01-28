@@ -13,6 +13,14 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\psori\\source\\repos\\WMBA\\WMBA5\\WMBA5\\wwwroot\\js\\multiselect.js",
+      "PackagePath": "staticwebassets\\js\\multiselect.js"
+    },
+    {
+      "Id": "C:\\Users\\psori\\source\\repos\\WMBA\\WMBA5\\WMBA5\\wwwroot\\js\\refreshDDL.js",
+      "PackagePath": "staticwebassets\\js\\refreshDDL.js"
+    },
+    {
       "Id": "C:\\Users\\psori\\source\\repos\\WMBA\\WMBA5\\WMBA5\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
