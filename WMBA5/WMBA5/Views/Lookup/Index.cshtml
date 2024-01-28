@@ -1,1 +1,74 @@
-﻿@* Index View for Lookups in Teams *@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+
+@* <h2>Lookup Values</h2> *@
+
+<div class="text-danger">@Html.Raw(TempData["Feedback"])</div>
+<div>
+    <!-- Nav tabs -->
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="Information-Tab" data-bs-toggle="tab" data-bs-target="#InformationPanel" type="button" role="tab" aria-controls="InformationPanel" aria-selected="true">Information</button>
+            <button class="nav-link" id="Player-Tab" data-bs-toggle="tab" data-bs-target="#PlayerPanel" type="button" role="tab" aria-controls="PlayerPanel" aria-selected="false">Player</button>
+            <button class="nav-link" id="Stat-Tab" data-bs-toggle="tab" data-bs-target="#StatPanel" type="button" role="tab" aria-controls="StatPanel" aria-selected="false">Stats</button>
+            <button class="nav-link" id="Schedule-Tab" data-bs-toggle="tab" data-bs-target="#SchedulePanel" type="button" role="tab" aria-controls="SchedulePanel" aria-selected="false">Schedule</button>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="InformationPanel" role="tabpanel" aria-labelledby="InformationTab">
+            <br />
+            <p>This page will allow you to manage access all of the information from a team </p><p>
+                Players, their Stats, an average of Team Stats and Team Schedule
+            </p>
+        </div>
+        <div class="tab-pane fade" id="PlayerPanel" role="tabpanel" aria-labelledby="Player-Tab"><br /></div>
+        <div class="tab-pane fade" id="StatPanel" role="tabpanel" aria-labelledby="Stat-Tab"><br /></div>
+        <div class="tab-pane fade" id="SchedulePanel" role="tabpanel" aria-labelledby="Schedule-Tab"><br /></div>
+    </div>
+</div>
+<hr />
+<br />
+
+@section Scripts {
+    <script type="text/javascript">
+        function refreshTab(activeTab) {
+            switch (activeTab) {
+                case 'Player-Tab': $('#PlayerPanel').load('/Lookup/Player');
+                    break;
+                case 'Stat-Tab': $('#StatPanel').load('/Lookup/Stat');
+                    break;
+                case 'Schedule-Tab': $('#SchedulePanel').load('/Lookup/Schedule');
+                    break;
+                default: break;
+            };
+            return;
+        };
+        $('.nav-link').click(function () {
+            var activeTab = $(this).attr("id");
+            refreshTab(activeTab);
+        });
+        $(".tab-content").on("click", ".linkClick", function (event) {
+            event.preventDefault();
+            var address = $(this).attr("href");
+            var lookup = address.split("/")[1];
+            var id = $("#" + lookup + "ID").val();
+            var caption = $("#" + lookup).html();
+            if (id == null) {
+                alert("Error: no value selected from the " + caption + " list!");
+            } else {
+                window.location.href = address + "/" + id;
+            }
+        });
+        $(function () {
+            setTimeout(function () {
+                $("#@ViewData["Tab"]").trigger('click');
+            }, 10);
+        });
+    </script>
+}
+
+
+
+
