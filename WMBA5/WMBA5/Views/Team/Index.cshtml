@@ -69,7 +69,10 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |
-                        <a asp-action="Index" asp-controller="Lookup">Lookup</a>
+                        <a asp-controller="TeamPlayer" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary"
+                           role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Players">
+                            &#x1F50E;
+                        </a>
                     </td>
                 </tr>
             }
