@@ -97,7 +97,7 @@ namespace WMBA5.Controllers
                         .ThenBy(p => p.FirstName);
                 }
             }
-            else if (sortField == "Age")
+            /*else if (sortField == "Age")
             {
                 if (sortDirection == "asc")
                 {
@@ -111,7 +111,7 @@ namespace WMBA5.Controllers
                            .OrderByDescending(p => p.Birthday)
                            .ThenBy(p => p.Birthday);
                 }
-            }
+            }*/
             //Set sort for next time
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;

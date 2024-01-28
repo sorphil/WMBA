@@ -11979,23 +11979,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\psori\\.nuget\\packages\\": {},
+    "C:\\Users\\jacob\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\psori\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
+      "projectUniqueName": "C:\\Users\\jacob\\OneDrive\\Escritorio\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
       "projectName": "WMBA5",
-      "projectPath": "C:\\Users\\psori\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
-      "packagesPath": "C:\\Users\\psori\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\psori\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\obj\\",
+      "projectPath": "C:\\Users\\jacob\\OneDrive\\Escritorio\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
+      "packagesPath": "C:\\Users\\jacob\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jacob\\OneDrive\\Escritorio\\WMBA\\WMBA5\\WMBA5\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\psori\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\jacob\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

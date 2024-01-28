@@ -21,6 +21,8 @@ namespace WMBA5.Models
         [Required(ErrorMessage = "You must select a Division")]
         public int DivisionID { get; set; }
         public Division Division { get; set; }
+        public int LineupID { get; set; }
+        public Lineup Lineup { get; set; }
 
         public ICollection<Lineup> Lineups { get; set; } = new HashSet<Lineup>();
 
