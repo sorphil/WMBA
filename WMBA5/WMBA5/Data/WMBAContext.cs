@@ -111,9 +111,9 @@ namespace WMBA5.Data
 
             //Team to Lineup
             modelBuilder.Entity<Team>()
-                .HasOne(c => c.Lineup)
+                .HasMany<Lineup>(c => c.Lineups)
                 .WithOne(c => c.Team)
-                .HasForeignKey<Lineup>(c => c.TeamID)
+                .HasForeignKey(c => c.TeamID)
                 .IsRequired();
 
 

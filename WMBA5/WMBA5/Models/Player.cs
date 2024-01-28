@@ -4,6 +4,38 @@ namespace WMBA5.Models
 {
     public class Player
     {
+        #region Summary Properties
+
+        [Display(Name = "Player")]
+        public string FullName
+        {
+            get
+            {
+                return LastName + ", " + FirstName
+                    + (string.IsNullOrEmpty(MiddleName) ? "" :
+                        (" " + (char?)MiddleName[0] + ". ").ToUpper());
+            }
+        }
+        [Display(Name = "Player")]
+        public string Summary
+        {
+            get
+            {
+
+                return MemberID + " - "+ LastName + ", " + FirstName 
+                    + (string.IsNullOrEmpty(MiddleName) ? "" :
+                        (" " + (char?)MiddleName[0] + ". ").ToUpper());
+            }
+        }
+        [Display(Name = "Age")]
+        public int Age
+        {
+            get
+            {
+                return DateTime.Now.Year - Birthday.Year;
+            }
+        }
+        #endregion
         public int ID { get; set; }
 
         //Unique ID to identify the player by their Member ID

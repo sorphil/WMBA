@@ -24,7 +24,7 @@ namespace WMBA5.Controllers
 
         // GET: Player
         public async Task<IActionResult> Index(string SearchString, int? TeamID,
-             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "Player")
+             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "FullName")
         {
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
@@ -33,11 +33,12 @@ namespace WMBA5.Controllers
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Player", "Age" };
+            string[] sortOptions = new[] { "FullName", "Age" };
 
             PopulateDropDownLists();
 
             var players = _context.Players 
+                .Include(p=>p.Team)
                 .Include(p => p.PlayerAtBats)
                 .Include(p => p.PlayerStats)
                 .AsNoTracking();
@@ -50,8 +51,8 @@ namespace WMBA5.Controllers
             }
             if (!string.IsNullOrEmpty(SearchString))
             {
-                players = players.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
+                players = players.Where(p => p.LastName.ToUpper().Contains(SearchString.Trim().ToUpper())
+                                  || p.FirstName.ToUpper().Contains(SearchString.Trim().ToUpper()));
                 numberFilters++;
             }
             //Give feedback about the state of the filters
@@ -81,7 +82,7 @@ namespace WMBA5.Controllers
                 }
             }
             //Now we know which field and direction to sort by
-            if (sortField == "Player")
+            if (sortField == "FullName")
             {
                 if (sortDirection == "asc")
                 {
@@ -101,14 +102,14 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     players = players
-                        .OrderBy(p => p.Age)
-                        .ThenBy(p => p.Age);
+                        .OrderBy(p => p.Birthday)
+                        .ThenBy(p => p.Birthday);
                 }
                 else
                 {
                     players = players
-                           .OrderByDescending(p => p.Age)
-                           .ThenBy(p => p.Age);
+                           .OrderByDescending(p => p.Birthday)
+                           .ThenBy(p => p.Birthday);
                 }
             }
             //Set sort for next time

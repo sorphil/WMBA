@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ETuiRJiJcseV/JPHB+T6KsYElL5KkZ3X7NLAB5b0udNBjl5xqrpP3u+IiYPkbuGcaKQzsTIDqPw9quiCs1nt/g==",
+  "dgSpecHash": "q6Qs7hmlvwiS1p0qxEJN2LA3PnxO7pfJAMXrEIAKrMlJecgP0UIappDOs2hfuc1NQKJiYLnayZb16YqX3d6vKA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\psori\\Source\\Repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
+  "projectFilePath": "C:\\Users\\psori\\source\\repos\\WMBA\\WMBA5\\WMBA5\\WMBA5.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\psori\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\psori\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
