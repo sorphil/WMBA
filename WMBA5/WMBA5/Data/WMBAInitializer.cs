@@ -218,6 +218,27 @@ namespace WMBA5.Data
                         });
                     context.SaveChanges();
                 }
+                if (!context.Games.Any())
+                {
+                    context.Games.AddRange(
+                        new Game
+                        {
+                            StartTime = DateTime.Parse("2024-03-05"),
+                            Location = "Field 1",
+                            Oponent = "Iron Birds",
+                            PlayingAt = "Home",
+                            DivisionID = context.Divisions.FirstOrDefault(d => d.DivisionName == "13U").ID
+                        },
+                        new Game
+                        {
+                            StartTime = DateTime.Parse("2024-03-10"),
+                            Location = "Field 2",
+                            Oponent = "Whitecaps",
+                            PlayingAt = "Away",
+                            DivisionID = context.Divisions.FirstOrDefault(d => d.DivisionName == "13U").ID
+                        });
+                    context.SaveChanges();
+                }
             }
             catch (Exception ex) 
             {
