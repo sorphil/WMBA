@@ -218,6 +218,108 @@ namespace WMBA5.Data
                         });
                     context.SaveChanges();
                 }
+                //Adding PlayerStats
+                if (!context.PlayerStats.Any())
+                {
+                    context.PlayerStats.AddRange(
+                        new PlayerStat
+                        {
+                            ID = 1,
+                            GamesPlayed = 50,
+                            PlayerApperance = 45,
+                            Hits = 25,
+                            RunsScored = 10,
+                            StrikeOuts = 15,
+                            Walks = 5,
+                            RBI = 8,
+                            PlayerID = 1 // Assuming PlayerID corresponds to an existing Player's ID
+                        },
+                       new PlayerStat
+                       {
+                           ID = 2,
+                           GamesPlayed = 45,
+                           PlayerApperance = 40,
+                           Hits = 20,
+                           RunsScored = 12,
+                           StrikeOuts = 10,
+                           Walks = 8,
+                           RBI = 10,
+                           PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
+                       },
+                       new PlayerStat
+                       {
+                           ID = 3,
+                           GamesPlayed = 55,
+                           PlayerApperance = 50,
+                           Hits = 30,
+                           RunsScored = 15,
+                           StrikeOuts = 12,
+                           Walks = 7,
+                           RBI = 12,
+                           PlayerID = 3 // Assuming PlayerID corresponds to an existing Player's ID
+                       },
+                        new PlayerStat
+                        {
+                            ID = 4,
+                            GamesPlayed = 48,
+                            PlayerApperance = 42,
+                            Hits = 22,
+                            RunsScored = 11,
+                            StrikeOuts = 14,
+                            Walks = 6,
+                            RBI = 9,
+                            PlayerID = 4 // Assuming PlayerID corresponds to an existing Player's ID
+                        },
+                        new PlayerStat
+                        {
+                            ID = 5,
+                            GamesPlayed = 60,
+                            PlayerApperance = 55,
+                            Hits = 28,
+                            RunsScored = 13,
+                            StrikeOuts = 18,
+                            Walks = 8,
+                            RBI = 11,
+                            PlayerID = 5 // Assuming PlayerID corresponds to an existing Player's ID
+                        },
+                       new PlayerStat
+                       {
+                           ID = 6,
+                           GamesPlayed = 42,
+                           PlayerApperance = 38,
+                           Hits = 18,
+                           RunsScored = 9,
+                           StrikeOuts = 11,
+                           Walks = 5,
+                           RBI = 7,
+                           PlayerID = 6 // Assuming PlayerID corresponds to an existing Player's ID
+                       },
+                        new PlayerStat
+                        {
+                            ID = 7,
+                            GamesPlayed = 47,
+                            PlayerApperance = 43,
+                            Hits = 23,
+                            RunsScored = 12,
+                            StrikeOuts = 13,
+                            Walks = 7,
+                            RBI = 10,
+                            PlayerID = 7 // Assuming PlayerID corresponds to an existing Player's ID
+                        },
+                        new PlayerStat
+                        {
+                            ID = 8,
+                            GamesPlayed = 52,
+                            PlayerApperance = 48,
+                            Hits = 27,
+                            RunsScored = 14,
+                            StrikeOuts = 16,
+                            Walks = 6,
+                            RBI = 13,
+                            PlayerID = 0 // Assuming PlayerID corresponds to an existing Player's ID
+                        });
+                    context.SaveChanges();
+                }
                 if (!context.Games.Any())
                 {
                     context.Games.AddRange(
