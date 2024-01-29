@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WMBA5")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a2790cb15dce0011de3d41df7594e1876c8bddc2")]
 [assembly: System.Reflection.AssemblyProductAttribute("WMBA5")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WMBA5")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
