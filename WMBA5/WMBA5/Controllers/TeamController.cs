@@ -6,10 +6,12 @@ using WMBA5.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Mail;
 using WMBA5.ViewModels;
+using WMBA5.CustomControllers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WMBA5.Controllers
 {
-    public class TeamController : Controller
+    public class TeamController : ElephantController
     {
         private readonly WMBAContext _context;
 
@@ -147,7 +149,7 @@ namespace WMBA5.Controllers
         // GET: Team/Edit/5
         public async Task<IActionResult> Edit(int? id, string[] selectedOptions)
         {
-            PopulateTeamPlayerLists();
+       
             try
             {
                 List<Player> players = new List<Player>();
@@ -172,13 +174,16 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
 
-            var team = await _context.Teams.FindAsync(id);
+            var team = await _context.Teams
+                .Include(f => f.Players)
+                .FirstOrDefaultAsync(f => f.ID == id);
             if (team == null)
             {
                 return NotFound();
             }
             ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
+            PopulateTeamPlayerLists(team);
             return View(team);
         }
 
@@ -273,27 +278,88 @@ namespace WMBA5.Controllers
         }
 
 
-        private void PopulateTeamPlayerLists()
+        //private void PopulateTeamPlayerLists(Team team)
+        //{
+        //    //For this to work, you must have Included the child collection in the parent object
+        //    var allOptions = _context.Players;
+        //    var currentOptionsHS = new HashSet<int>(function.FunctionRooms.Select(b => b.RoomID));
+        //    //Instead of one list with a boolean, we will make two lists
+        //    var available = new List<ListOptionVM>();
+        //    var selected = new List<ListOptionVM>();
+        //    foreach (var r in allOptions)
+        //    {
+
+        //        available.Add(new ListOptionVM
+        //        {
+        //            ID = r.ID,
+        //            DisplayText = r.FullName
+        //        });
+
+        //    }
+
+        //    ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+        //    ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+        //}
+
+        private void PopulateTeamPlayerLists(Team team)
         {
             //For this to work, you must have Included the child collection in the parent object
             var allOptions = _context.Players;
-
+            var currentOptionsHS = new HashSet<int>(team.Players.Select(b => b.ID));
             //Instead of one list with a boolean, we will make two lists
-            var available = new List<ListOptionVM>();
             var selected = new List<ListOptionVM>();
+            var available = new List<ListOptionVM>();
             foreach (var r in allOptions)
             {
-
-                available.Add(new ListOptionVM
+                if (currentOptionsHS.Contains(r.ID))
                 {
-                    ID = r.ID,
-                    DisplayText = r.FullName
-                });
-
+                    selected.Add(new ListOptionVM
+                    {
+                        ID = r.ID,
+                        DisplayText = r.Summary
+                    });
+                }
+                else
+                {
+                    available.Add(new ListOptionVM
+                    {
+                        ID = r.ID,
+                        DisplayText = r.Summary
+                    });
+                }
             }
 
             ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
             ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
         }
+        //private void UpdateFunctionRoomsListboxes(string[] selectedOptions, Team teamToUpdate)
+        //{
+        //    if (selectedOptions == null)
+        //    {
+        //        teamToUpdate.Players = new List<Player>();
+        //        return;
+        //    }
+
+        //    var selectedOptionsHS = new HashSet<string>(selectedOptions);
+        //    var currentOptionsHS = new HashSet<int>(teamToUpdate.Players.Select(b => b.ID));
+        //    foreach (var r in _context.Players)
+        //    {
+        //        if (selectedOptionsHS.Contains(r.ID.ToString()))//it is selected
+        //        {
+        //            if (!currentOptionsHS.Contains(r.ID))//but not currently in the Function's collection - Add it!
+        //            {
+        //                teamToUpdate.Players.Add(_context.Players.FindAsync(r.ID) );
+        //            }
+        //        }
+        //        else //not selected
+        //        {
+        //            if (currentOptionsHS.Contains(r.ID))//but is currently in the Function's collection - Remove it!
+        //            {
+        //                FunctionRoom roomToRemove = functionToUpdate.FunctionRooms.FirstOrDefault(d => d.RoomID == r.ID);
+        //                _context.Remove(roomToRemove);
+        //            }
+        //        }
+        //    }
+        //}
     }
 }
