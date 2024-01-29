@@ -2,6 +2,7 @@
 
 
 <partial name="_ViewHeading" /> 
+<hr />
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
@@ -33,7 +34,7 @@
         <tr>
             <th>
                 <input type="submit" name="actionButton" value="Player" class="btn btn-link" />
-            </th>
+            </th>   
             <th>
                 <input type="submit" value="JerseyNumber" class="btn btn-toolbar" />
             </th>
@@ -78,7 +79,7 @@
                            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             &#x270E;
                         </a>
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                        <a asp-controller="PlayerStat" asp-action="Index" asp-route-PlayerID="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             &#x1F50E;
                         </a>
@@ -86,6 +87,7 @@
                            role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                             &#x274C;
                         </a>
+                
                     </td>
         </tr>
 }
