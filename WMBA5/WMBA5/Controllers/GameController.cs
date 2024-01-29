@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
 
 namespace WMBA5.Controllers
 {
-    public class GameController : Controller
+    public class GameController : ElephantController
     {
         private readonly WMBAContext _context;
 
@@ -20,19 +21,43 @@ namespace WMBA5.Controllers
         // GET: Game with filtering, searching, and sorting
         public async Task<IActionResult> Index(int? DivisionID, string SearchString, string actionButton, string sortDirection = "asc", string sortField = "Location")
         {
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", DivisionID);
+            PopulateDropDownLists();
+           
             ViewData["CurrentFilter"] = SearchString;
 
             var gamesQuery = _context.Games.Include(g => g.Division).AsQueryable();
+
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+            //Then in each "test" for filtering, add to the count of Filters applied
+
+            //List of sort options.
+            //NOTE: make sure this array has matching values to the column headings
+            string[] sortOptions = new[] { "Player", "Age" };
+
 
             // Filtering
             if (DivisionID.HasValue)
             {
                 gamesQuery = gamesQuery.Where(g => g.DivisionID == DivisionID);
+                numberFilters++;
             }
             if (!string.IsNullOrEmpty(SearchString))
             {
                 gamesQuery = gamesQuery.Where(g => g.Oponent.Contains(SearchString));
+                numberFilters++;
+            }
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                //Keep the Bootstrap collapse open
+                //@ViewData["ShowFilter"] = " show";
             }
 
             // Sorting
@@ -189,7 +214,14 @@ namespace WMBA5.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
+        private SelectList DivisionSelectionList(int? selectedId)
+        {
+            return new SelectList(_context.Divisions, "ID", "DivisionName", selectedId);
+        }
+        private void PopulateDropDownLists(Game game = null)
+        {
+            ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
+        }
         private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
     }
 }
