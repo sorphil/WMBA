@@ -9,187 +9,187 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = WMBA5
 build_property.RootNamespace = WMBA5
-build_property.ProjectDir = C:\Users\psori\source\repos\WMBA\WMBA5\WMBA5\
+build_property.ProjectDir = C:\Users\jacob\OneDrive\Escritorio\WMBA\WMBA5\WMBA5\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\psori\source\repos\WMBA\WMBA5\WMBA5
+build_property.MSBuildProjectDirectory = C:\Users\jacob\OneDrive\Escritorio\WMBA\WMBA5\WMBA5
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Areas/Identity/Pages/_ViewStart.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Areas/Identity/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Game/Create.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Game/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZVxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Game/Delete.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Game/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZVxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Game/Details.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Game/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZVxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Game/Edit.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Game/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZVxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Game/Index.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Game/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Home/Index.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Home/Privacy.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Lookup/Index.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Lookup/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9va3VwXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Lookup/_Game.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Lookup/_Game.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9va3VwXF9HYW1lLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Lookup/_Player.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Lookup/_Player.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9va3VwXF9QbGF5ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Lookup/_PlayerStat.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Lookup/_PlayerStat.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9va3VwXF9QbGF5ZXJTdGF0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Create.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/PlayerStat/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Delete.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/PlayerStat/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Details.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/PlayerStat/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Edit.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/PlayerStat/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Index.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/PlayerStat/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/_PlayerStat.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/PlayerStat/_PlayerStat.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxfUGxheWVyU3RhdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Player/Create.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Player/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Player/Delete.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Player/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Player/Details.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Player/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Player/Edit.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Player/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Player/Index.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Player/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Shared/Error.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Shared/_BackToList.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Shared/_BackToList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9CYWNrVG9MaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Shared/_LoginPartial.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Shared/_PageSizeModal.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Shared/_PageSizeModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYWdlU2l6ZU1vZGFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Shared/_PagingNavBar.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Shared/_PagingNavBar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYWdpbmdOYXZCYXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Shared/_ViewHeading.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Shared/_ViewHeading.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WaWV3SGVhZGluZy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Add.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Add.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVBsYXllclxBZGQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Details.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVBsYXllclxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Index.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVBsYXllclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Remove.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Remove.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVBsYXllclxSZW1vdmUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Update.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/TeamPlayer/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVBsYXllclxVcGRhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/TeamPlayer/_TeamPlayer.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/TeamPlayer/_TeamPlayer.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVBsYXllclxfVGVhbVBsYXllci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Team/Create.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Team/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Team/Delete.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Team/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Team/Details.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Team/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Team/Edit.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Team/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Team/Index.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Team/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/_ViewImports.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/_ViewStart.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Shared/_Layout.cshtml]
+[C:/Users/jacob/OneDrive/Escritorio/WMBA/WMBA5/WMBA5/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-s3md0x80pp
