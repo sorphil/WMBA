@@ -23,7 +23,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: TeamPlayer
-        public async Task<IActionResult> Index(string SearchString, int? TeamID,
+        public async Task<IActionResult> Index(  string SearchString, int? TeamID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "Players")
         {
             //Count the number of filters applied - start by assuming no filters
@@ -34,7 +34,8 @@ namespace WMBA5.Controllers
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Player", "Age" };
-
+            
+      
             PopulateDropDownLists();
 
             var players = _context.Players
@@ -43,6 +44,11 @@ namespace WMBA5.Controllers
                 .Include(t => t.PlayerStats)
                 .Where(t => t.TeamID == TeamID)
                 .AsNoTracking();
+            if (!TeamID.HasValue)
+            {
+                //Go back to the proper return URL for the Player controller
+                return Redirect(ViewData["returnURL"].ToString());
+            }
 
             //Add as many filters as needed
             if (!string.IsNullOrEmpty(SearchString))
