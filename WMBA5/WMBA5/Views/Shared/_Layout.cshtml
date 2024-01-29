@@ -6,11 +6,11 @@
     <title>@ViewData["Title"] - WMBA5</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WMBA5.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm nav-layout border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WMBA5</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -19,17 +19,17 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <li class="nav-item item-nav">
+                            <a class="nav-link" style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Player" asp-action="Index">Players</a>
+                        <li class="nav-item item-nav">
+                            <a class="nav-link" style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Player" asp-action="Index">Players</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Team" asp-action="Index">Teams</a>
+                        <li class="nav-item item-nav">
+                            <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Team" asp-action="Index">Teams</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Index">Games</a>
+                        <li class="nav-item item-nav">
+                            <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Game" asp-action="Index">Games</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -37,7 +37,7 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container background-body">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
