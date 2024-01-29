@@ -5,10 +5,11 @@
     <partial name="_TeamPlayer" model="team" />
     ViewData["Title"] = ViewData["ControllerFriendlyName"];
 }
-
+<hr />
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />\
+    <input type="hidden" name="Team" value="@team.ID" />
     <div class="form-horizontal">
         <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
             Filter/Search @ViewData["numberFilters"]
