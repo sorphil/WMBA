@@ -1,0 +1,26 @@
+﻿.nav-layout {
+    background-color: rgba(0, 22, 203, 0.7)
+}
+.item-nav {
+    font-size:22px;
+    font-weight:bold;
+}
+.item-nav:hover {
+    background-color: rgba(0, 9, 85, 1);
+    text-decoration: underline;
+    text-decoration-color: white;
+    border-radius:10px;
+}
+.background-body {
+    border-radius: 30px;
+    padding: 80px 120px;
+    background-color: #EAEAEA;
+    margin-top:50px;
+}
+footer {
+    position: absolute;
+    bottom: 0;
+    background-color: #E7E7E7;
+    height: 30px;
+    width:100%;
+}

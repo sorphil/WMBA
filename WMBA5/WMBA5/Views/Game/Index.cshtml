@@ -95,10 +95,10 @@
                            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             &#x270E;
                         </a>
-                        <a asp-controller="PlayerStat" asp-action="Index" asp-route-PlayerID="@item.ID" class="btn btn-sm btn-outline-primary"
+@*                         <a asp-controller="PlayerStat" asp-action="Index" asp-route-PlayerID="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             &#x1F50E;
-                        </a>
+                        </a> *@
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                             &#x274C;
