@@ -66,6 +66,30 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9va3VwXF9QbGF5ZXJTdGF0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/PlayerStat/_PlayerStat.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyU3RhdFxfUGxheWVyU3RhdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/psori/source/repos/WMBA/WMBA5/WMBA5/Views/Player/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

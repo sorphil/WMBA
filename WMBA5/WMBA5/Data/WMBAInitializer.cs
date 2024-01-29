@@ -244,7 +244,7 @@ namespace WMBA5.Data
                            StrikeOuts = 10,
                            Walks = 8,
                            RBI = 10,
-                           PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
+                           PlayerID = 1 // Assuming PlayerID corresponds to an existing Player's ID
                        },
                        new PlayerStat
                        {
@@ -256,7 +256,7 @@ namespace WMBA5.Data
                            StrikeOuts = 12,
                            Walks = 7,
                            RBI = 12,
-                           PlayerID = 3 // Assuming PlayerID corresponds to an existing Player's ID
+                           PlayerID = 1 // Assuming PlayerID corresponds to an existing Player's ID
                        },
                         new PlayerStat
                         {
@@ -268,7 +268,7 @@ namespace WMBA5.Data
                             StrikeOuts = 14,
                             Walks = 6,
                             RBI = 9,
-                            PlayerID = 4 // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
                         },
                         new PlayerStat
                         {
@@ -280,7 +280,7 @@ namespace WMBA5.Data
                             StrikeOuts = 18,
                             Walks = 8,
                             RBI = 11,
-                            PlayerID = 5 // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
                         },
                        new PlayerStat
                        {
@@ -292,7 +292,7 @@ namespace WMBA5.Data
                            StrikeOuts = 11,
                            Walks = 5,
                            RBI = 7,
-                           PlayerID = 6 // Assuming PlayerID corresponds to an existing Player's ID
+                           PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
                        },
                         new PlayerStat
                         {
@@ -304,7 +304,7 @@ namespace WMBA5.Data
                             StrikeOuts = 13,
                             Walks = 7,
                             RBI = 10,
-                            PlayerID = 7 // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
                         },
                         new PlayerStat
                         {
@@ -316,7 +316,7 @@ namespace WMBA5.Data
                             StrikeOuts = 16,
                             Walks = 6,
                             RBI = 13,
-                            PlayerID = 0 // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
                         });
                     context.SaveChanges();
                 }
