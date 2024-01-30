@@ -22,7 +22,7 @@ namespace WMBA5.Models
         [Display(Name ="Playing At")]
         [Required(ErrorMessage = "You must specify if your team is playing Home or Away.")]
         public string PlayingAt { get; set; }
-        public bool Outcome { get; set; } //Win or lose
+        public string Outcome { get; set; } //Win or lose
 
         [Display(Name ="Division Name")]
         [Required(ErrorMessage = "You must select a Division")]

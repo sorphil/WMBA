@@ -33,10 +33,9 @@
                 <input asp-for="PlayingAt" class="form-control" />
                 <span asp-validation-for="PlayingAt" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Outcome" /> @Html.DisplayNameFor(model => model.Outcome)
-                </label>
+            <div class="form-group">
+                <label asp-for="Outcome" class="control-label"></label>
+                <select asp-for="Outcome" class="form-control"><option value="Yet to be decided">Yet to be decided</option><option value="Win">Win</option><option value="Lose">Lose</option></select>
             </div>
             <div class="form-group">
                 <label asp-for="DivisionID" class="control-label"></label>

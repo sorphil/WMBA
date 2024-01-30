@@ -329,6 +329,7 @@ namespace WMBA5.Data
                             Location = "Field 1",
                             Oponent = "Iron Birds",
                             PlayingAt = "Home",
+                            Outcome = "Yet to be Decided",
                             DivisionID = context.Divisions.FirstOrDefault(d => d.DivisionName == "13U").ID
                         },
                         new Game
@@ -337,6 +338,7 @@ namespace WMBA5.Data
                             Location = "Field 2",
                             Oponent = "Whitecaps",
                             PlayingAt = "Away",
+                            Outcome = "Yet to be Decided",
                             DivisionID = context.Divisions.FirstOrDefault(d => d.DivisionName == "13U").ID
                         });
                     context.SaveChanges();
