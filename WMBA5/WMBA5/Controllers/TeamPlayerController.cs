@@ -99,21 +99,21 @@ namespace WMBA5.Controllers
                         .ThenBy(p => p.FirstName);
                 }
             }
-            else if (sortField == "Age")
-            {
-                if (sortDirection == "asc")
-                {
-                    players = players
-                        .OrderBy(p => p.Birthday)
-                        .ThenBy(p => p.Birthday);
-                }
-                else
-                {
-                    players = players
-                           .OrderByDescending(p => p.Birthday)
-                           .ThenBy(p => p.Birthday);
-                }
-            }
+            //else if (sortField == "Age")
+            //{
+            //    if (sortDirection == "asc")
+            //    {
+            //        players = players
+            //            .OrderBy(p => p.Birthday)
+            //            .ThenBy(p => p.Birthday);
+            //    }
+            //    else
+            //    {
+            //        players = players
+            //               .OrderByDescending(p => p.Birthday)
+            //               .ThenBy(p => p.Birthday);
+            //    }
+            //}
             //Set sort for next time
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
