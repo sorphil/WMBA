@@ -11,9 +11,8 @@ namespace WMBA5.Models
         {
             get
             {
-                return LastName + ", " + FirstName
-                    + (string.IsNullOrEmpty(MiddleName) ? "" :
-                        (" " + (char?)MiddleName[0] + ". ").ToUpper());
+                return FirstName + " " + LastName +(string.IsNullOrEmpty(Nickname) ? "" :
+                        (" (" + (string)Nickname) + ") ");
             }
         }
         [Display(Name = "Player")]
@@ -22,19 +21,12 @@ namespace WMBA5.Models
             get
             {
 
-                return MemberID + " - "+ LastName + ", " + FirstName 
-                    + (string.IsNullOrEmpty(MiddleName) ? "" :
-                        (" " + (char?)MiddleName[0] + ". ").ToUpper());
+                return MemberID + " - " + FirstName + " " + LastName
+                    + (string.IsNullOrEmpty(Nickname) ? "" :
+                        (" (" + (string)Nickname) + ") ")  ;
             }
         }
         [Display(Name = "Age")]
-        public int Age
-        {
-            get
-            {
-                return DateTime.Now.Year - Birthday.Year;
-            }
-        }
         #endregion
         public int ID { get; set; }
 
@@ -48,9 +40,9 @@ namespace WMBA5.Models
         [StringLength(50, ErrorMessage = "First name cannot be more than 50 characters long.")]
         public string FirstName { get; set; }
 
-        [Display(Name = "Middle Name")]
-        [StringLength(30, ErrorMessage = "Middle name cannot be more than 30 characters long.")]
-        public string MiddleName { get; set; }
+        
+        [StringLength(30, ErrorMessage = "Nickname cannot be more than 30 characters long.")]
+        public string Nickname { get; set; }
 
         [Display(Name = "Last Name")]
         [Required(ErrorMessage = "You cannot leave the last name blank.")]
@@ -60,19 +52,20 @@ namespace WMBA5.Models
         [Display(Name = "Jersey Number")]
         public int JerseyNumber { get; set; }
         
-       
-        [Required(ErrorMessage = "You must enter a Birthday date and time for the Player.")]
-        [DataType(DataType.DateTime)]
-        public DateTime Birthday { get; set; }
-
         
-        [Required(ErrorMessage = "You cannot leave the Position blank.")]
-        [StringLength(30, ErrorMessage = "Position cannot be more than 30 characters long.")]
-        public string Position { get; set; }
+        //[Required(ErrorMessage = "You cannot leave the Position blank.")]
+        //[StringLength(30, ErrorMessage = "Position cannot be more than 30 characters long.")]
+        //public string Position { get; set; }
 
+        public string Status { get; set; }
         //Foreign key
+
+        [Display(Name = "Division")]
+        [Required(ErrorMessage = "You must select a Divison")]
+        public int DivisionID { get; set; }
+        public Division Division { get; set; }
+
         [Display(Name = "Team Name")]
-        //[Required(ErrorMessage = "You must select a Team")]
         public int TeamID { get; set; }
         public Team Team { get; set; }
 

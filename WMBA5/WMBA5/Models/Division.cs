@@ -16,6 +16,7 @@ namespace WMBA5.Models
         public int ClubID { get; set; }
         public Club Club { get; set; }
 
+        public ICollection<Player> Players { get; set; } = new HashSet<Player>();
         public ICollection<Team> Teams { get; set; } = new HashSet<Team>();
         public ICollection<Game> Games { get; set; } = new HashSet<Game>();
     }
