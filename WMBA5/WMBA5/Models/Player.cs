@@ -77,16 +77,24 @@ namespace WMBA5.Models
 
         public ICollection<PlayerStat> PlayerStats { get; set; } = new HashSet<PlayerStat>();
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
+
+
         //Adding validation for the jersey number
+        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        //{
+        //    //Team jerseys = WMBAContext.Players.Where(x => x.Players)
+        //    //A team cant habe 2 players with the same jersey number
+
+        //    if (JerseyNumber)
+        //    {
+        //        yield return new ValidationResult("The jersey number you choose is already used by someone else, try adding a new jersey number", new[] { "JerseyNumber" });
+        //    }
+
+        //}
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            //Team jerseys = WMBAContext.Players.Where(x => x.Players)
-            //A team cant habe 2 players with the same jersey number
-            if (JerseyNumber)
-            {
-                yield return new ValidationResult("The jersey number you choose is already used by someone else, try adding a new jersey number", new[] { "JerseyNumber" });
-            }
-
+            throw new NotImplementedException();
         }
     }
 }
