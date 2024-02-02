@@ -4,6 +4,15 @@
 
 /.gitignore
 /WMBA5/.vs/
-/WMBA5/WMBA5/bin/
-/WMBA5/WMBA5/obj/
+/WMBA5/WMBA5/bin
+/WMBA5/WMBA5/obj
 /.vs/.vs/v17
+/WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.AssemblyInfo.cs
+/WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.AssemblyInfoInputs.cache
+/WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.assets.cache
+/WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.csproj.AssemblyReference.cache
+/WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.GeneratedMSBuildEditorConfig.editorconfig
+/WMBA5/WMBA5/obj/project.assets.json
+/WMBA5/WMBA5/obj/project.nuget.cache
+/WMBA5/WMBA5/obj/WMBA5.csproj.nuget.dgspec.json
+/WMBA5/WMBA5/obj/WMBA5.csproj.nuget.g.props
