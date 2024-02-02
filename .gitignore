@@ -2,16 +2,12 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/WMBA5/.vs/WMBA5/FileContentIndex/ada0d694-c3e7-4805-91f2-b62e453bc304.vsidx
-/WMBA5/.vs/WMBA5/FileContentIndex/276f76be-193f-499f-a293-d668e4bc0147.vsidx
-/WMBA5/.vs/WMBA5/FileContentIndex/c8d93cb8-3e26-48c3-affe-5a62c0c40f86.vsidx
-*.vsidx
 /.gitignore
 /.vs/.vs/v17/.wsuo
+/WMBA5/.vs/WMBA5/v17/.futdcache.v2
+/WMBA5/.vs/WMBA5/v17/.suo
 /WMBA5/.vs/WMBA5/v17/HierarchyCache.v1.txt
 /WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.AssemblyInfoInputs.cache
 /WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.assets.cache
-/WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.csproj.AssemblyReference.cache
 /WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.GeneratedMSBuildEditorConfig.editorconfig
 /WMBA5/WMBA5/obj/Debug/net7.0/WMBA5.RazorAssemblyInfo.cache
-/WMBA5/.vs/WMBA5/v17/.suo
