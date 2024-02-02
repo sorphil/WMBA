@@ -26,7 +26,6 @@ namespace WMBA5.Models
                         (" (" + (string)Nickname) + ") ")  ;
             }
         }
-        [Display(Name = "Age")]
         #endregion
         public int ID { get; set; }
 
@@ -53,9 +52,7 @@ namespace WMBA5.Models
         public int JerseyNumber { get; set; }
         
         
-        //[Required(ErrorMessage = "You cannot leave the Position blank.")]
-        //[StringLength(30, ErrorMessage = "Position cannot be more than 30 characters long.")]
-        //public string Position { get; set; }
+
 
         public string Status { get; set; }
         //Foreign key
