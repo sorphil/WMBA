@@ -1,0 +1,67 @@
+﻿@model IEnumerable<WMBA5.Models.PlayerStat>
+
+@{
+    WMBA5.Models.Player player = (WMBA5.Models.Player)ViewBag.Player;
+    <partial name="_PlayerStat" model="player" />
+    ViewData["Title"] = ViewData["ControllerFriendlyName"];
+}
+<hr />
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <input type="hidden" name="PlayerID" value="@player.ID" />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                    <input type="submit" name="actionButton" value="Player Appearances" class="btn btn-link" />
+            </th>
+            <th>
+                    <input type="submit" name="actionButton" value="Hits" class="btn btn-link" />
+            </th>
+            <th>
+                    <input type="submit" name="actionButton" value="Runs Scored" class="btn btn-link" />
+            </th>
+            <th>
+                    <input type="submit" name="actionButton" value="Strike Outs" class="btn btn-link" />
+            </th>
+            <th>
+                    <input type="submit" name="actionButton" value="Walks" class="btn btn-link" />
+            </th>
+            <th>
+                    <input type="submit" name="actionButton" value="RBI" class="btn btn-link" />
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.PlayerApperance)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Hits)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.RunsScored)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.StrikeOuts)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Walks)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.RBI)
+            </td>
+            <td>
+                @* Disabled for the moment (we haven't linked stats to game yet') *@
+                <a >Go to Game</a> |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+    <partial name="_PagingNavBar" />
+</form>
