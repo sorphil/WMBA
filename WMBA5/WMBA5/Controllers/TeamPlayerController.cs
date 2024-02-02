@@ -99,21 +99,6 @@ namespace WMBA5.Controllers
                         .ThenBy(p => p.FirstName);
                 }
             }
-            else if (sortField == "Age")
-            {
-                if (sortDirection == "asc")
-                {
-                    players = players
-                        .OrderBy(p => p.Birthday)
-                        .ThenBy(p => p.Birthday);
-                }
-                else
-                {
-                    players = players
-                           .OrderByDescending(p => p.Birthday)
-                           .ThenBy(p => p.Birthday);
-                }
-            }
             //Set sort for next time
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
@@ -171,7 +156,7 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([Bind("ID,MemberID,FirstName,MiddleName,LastName,JerseyNumber,Birthday,Position,TeamID,LineupID")] Player player, string TeamName)
+        public async Task<IActionResult> Add([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,TeamID,LineupID")] Player player, string TeamName)
         {
             try
             {
@@ -217,7 +202,7 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, [Bind("ID,MemberID,FirstName,MiddleName,LastName,JerseyNumber,Birthday,Position,TeamID,LineupID")] Player player)
+        public async Task<IActionResult> Update(int id, [Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,TeamID,LineupID")] Player player)
         {
             if (id != player.ID)
             {

@@ -196,7 +196,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("MiddleName")
+                    b.Property<string>("Nickname")
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");
 

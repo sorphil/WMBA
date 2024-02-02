@@ -170,7 +170,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .Annotation("Sqlite:Autoincrement", true),
                     MemberID = table.Column<string>(type: "TEXT", nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    MiddleName = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true),
+                    Nickname = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     JerseyNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     Birthday = table.Column<DateTime>(type: "TEXT", nullable: false),

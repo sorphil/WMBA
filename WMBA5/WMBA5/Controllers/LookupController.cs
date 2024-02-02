@@ -23,7 +23,7 @@ namespace WMBA5.Controllers
         {
             ViewData["PlayerID"] = new
                 SelectList(_context.Players
-                .OrderBy(p => p.LastName).ThenBy(p => p.FirstName), "ID", "FirstName","MiddleName" ,"LastName");
+                .OrderBy(p => p.LastName).ThenBy(p => p.FirstName), "ID", "FirstName","Nickname" ,"LastName");
             return PartialView("_Player");
         }
         public PartialViewResult PlayerStats()
