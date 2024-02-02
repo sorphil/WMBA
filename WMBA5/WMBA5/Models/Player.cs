@@ -66,7 +66,6 @@ namespace WMBA5.Models
         public Division Division { get; set; }
 
         [Display(Name = "Team Name")]
-        //[Required(ErrorMessage = "You must select a Team")]
         public int TeamID { get; set; }
         public Team Team { get; set; }
 
