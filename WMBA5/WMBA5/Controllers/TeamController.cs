@@ -9,6 +9,7 @@ using WMBA5.ViewModels;
 using WMBA5.CustomControllers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.EntityFrameworkCore.Storage;
+using WMBA5.Utilities;
 
 namespace WMBA5.Controllers
 {
@@ -95,10 +96,10 @@ namespace WMBA5.Controllers
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
             //Handle Paging
-            //int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-            //ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-            //var pagedData = await PaginatedList<Team>.CreateAsync(teams.AsNoTracking(), page ?? 1, pageSize);
-            return View(await teams.ToListAsync());
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Team>.CreateAsync(teams.AsNoTracking(), page ?? 1, pageSize);
+            return View(pagedData);
         }
 
         // GET: Team/Details/5
