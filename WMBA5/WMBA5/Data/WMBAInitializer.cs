@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿    using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WMBA5.Models;
 
@@ -149,7 +149,51 @@ namespace WMBA5.Data
                         });
                     context.SaveChanges();
                 }
-
+                if(!context.Games.Any())
+                {
+                    context.Games.AddRange(
+                         new Game
+                         {
+                             ID = 1,
+                             StartTime = DateTime.Parse("2024-02-01 14:00:00"),
+                             Location = "Stadium A",
+                             Outcome = "Win",
+                             DivisionID = 1
+                         },
+                        new Game
+                        {
+                            ID = 2,
+                            StartTime = DateTime.Parse("2024-02-05 15:30:00"),
+                            Location = "Field B",
+                            Outcome = "Lose",
+                            DivisionID = 2
+                        },
+                        new Game
+                        {
+                            ID = 3,
+                            StartTime = DateTime.Parse("2024-02-10 13:45:00"),
+                            Location = "Stadium C",
+                            Outcome = "Win",
+                            DivisionID = 1
+                        },
+                        new Game
+                        {
+                            ID = 4,
+                            StartTime = DateTime.Parse("2024-02-15 16:00:00"),
+                            Location = "Field D",
+                            Outcome = "Lose",
+                            DivisionID = 2
+                        },
+                        new Game
+                        {
+                            ID = 5,
+                            StartTime = DateTime.Parse("2024-02-20 14:15:00"),
+                            Location = "Stadium E",
+                            Outcome = "Win",
+                            DivisionID = 1
+                        }
+                        );
+                }
                 //Adding Players
                 if (!context.Players.Any())
                 {
@@ -250,7 +294,8 @@ namespace WMBA5.Data
                             StrikeOuts = 15,
                             Walks = 5,
                             RBI = 8,
-                            PlayerID = 1 // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 1, // Assuming PlayerID corresponds to an existing Player's ID
+                          GameID = 3
                         },
                        new PlayerStat
                        {
@@ -262,7 +307,8 @@ namespace WMBA5.Data
                            StrikeOuts = 10,
                            Walks = 8,
                            RBI = 10,
-                           PlayerID = 1 // Assuming PlayerID corresponds to an existing Player's ID
+                           PlayerID = 1, // Assuming PlayerID corresponds to an existing Player's ID
+                          GameID = 2
                        },
                        new PlayerStat
                        {
@@ -274,7 +320,8 @@ namespace WMBA5.Data
                            StrikeOuts = 12,
                            Walks = 7,
                            RBI = 12,
-                           PlayerID = 1 // Assuming PlayerID corresponds to an existing Player's ID
+                           PlayerID = 1, // Assuming PlayerID corresponds to an existing Player's ID
+                         GameID = 1
                        },
                         new PlayerStat
                         {
@@ -286,7 +333,8 @@ namespace WMBA5.Data
                             StrikeOuts = 14,
                             Walks = 6,
                             RBI = 9,
-                            PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 2, // Assuming PlayerID corresponds to an existing Player's ID
+                              GameID = 1
                         },
                         new PlayerStat
                         {
@@ -298,7 +346,8 @@ namespace WMBA5.Data
                             StrikeOuts = 18,
                             Walks = 8,
                             RBI = 11,
-                            PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 2, // Assuming PlayerID corresponds to an existing Player's ID
+                              GameID =2
                         },
                        new PlayerStat
                        {
@@ -310,7 +359,8 @@ namespace WMBA5.Data
                            StrikeOuts = 11,
                            Walks = 5,
                            RBI = 7,
-                           PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
+                           PlayerID = 2, // Assuming PlayerID corresponds to an existing Player's ID
+                          GameID = 3
                        },
                         new PlayerStat
                         {
@@ -322,7 +372,8 @@ namespace WMBA5.Data
                             StrikeOuts = 13,
                             Walks = 7,
                             RBI = 10,
-                            PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 2, // Assuming PlayerID corresponds to an existing Player's ID
+                            GameID = 4
                         },
                         new PlayerStat
                         {
@@ -334,30 +385,8 @@ namespace WMBA5.Data
                             StrikeOuts = 16,
                             Walks = 6,
                             RBI = 13,
-                            PlayerID = 2 // Assuming PlayerID corresponds to an existing Player's ID
-                        });
-                    context.SaveChanges();
-                }
-                if (!context.Games.Any())
-                {
-                    context.Games.AddRange(
-                        new Game
-                        {
-                            StartTime = DateTime.Parse("2024-03-05"),
-                            Location = "Field 1",
-                            Oponent = "Iron Birds",
-                            PlayingAt = "Home",
-                            Outcome = "Yet to be Decided",
-                            DivisionID = context.Divisions.FirstOrDefault(d => d.DivisionName == "13U").ID
-                        },
-                        new Game
-                        {
-                            StartTime = DateTime.Parse("2024-03-10"),
-                            Location = "Field 2",
-                            Oponent = "Whitecaps",
-                            PlayingAt = "Away",
-                            Outcome = "Yet to be Decided",
-                            DivisionID = context.Divisions.FirstOrDefault(d => d.DivisionName == "13U").ID
+                            PlayerID = 3, // Assuming PlayerID corresponds to an existing Player's ID
+                            GameID = 1
                         });
                     context.SaveChanges();
                 }
