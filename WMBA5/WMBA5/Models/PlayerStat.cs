@@ -6,7 +6,7 @@
 
         public int GamesPlayed { get; set; }
 
-        public int PlayerApperance { get; set; }
+        public int PlayerAppearance { get; set; }
 
         public int Hits { get; set; }
 
