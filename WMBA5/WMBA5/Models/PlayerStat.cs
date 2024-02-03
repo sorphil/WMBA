@@ -21,5 +21,11 @@
         //Foreign Key
         public int PlayerID { get; set; }
         public Player Player { get; set; }
+
+        // Foreign Key for Game
+        public int GameID { get; set; }
+
+        // Navigation property for Game
+        public Game Game { get; set; }
     }
 }
