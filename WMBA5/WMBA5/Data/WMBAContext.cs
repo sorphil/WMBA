@@ -20,6 +20,8 @@ namespace WMBA5.Data
         public DbSet<Inning> Innings { get; set; }
         public DbSet<Lineup> Lineups { get; set; }
 
+        public DbSet<Status> Statuses { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -102,12 +104,12 @@ namespace WMBA5.Data
                 .HasForeignKey<Lineup>(c => c.GameID)
                 .IsRequired();
 
-            //Player to Lineup
-            modelBuilder.Entity<Player>()
-                .HasOne(c => c.Lineup)
-                .WithOne(c => c.Player)
-                .HasForeignKey<Lineup>(c => c.PlayerID)
-                .IsRequired();
+            ////Player to Lineup
+            //modelBuilder.Entity<Player>()
+            //    .HasOne(c => c.Lineup)
+            //    .WithOne(c => c.Player)
+            //    .HasForeignKey<Lineup>(c => c.PlayerID)
+            //    .IsRequired();
 
             //Team to Lineup
             modelBuilder.Entity<Team>()

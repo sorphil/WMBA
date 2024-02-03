@@ -57,9 +57,12 @@ namespace WMBA5.Models
         public int JerseyNumber { get; set; }
 
         //Status: Active or Inactive
+        [Display(Name = "Status")]
+        [Required(ErrorMessage = "You cannot leave the Status Blank")]
+        public int StatusID { get; set; }
         [Display(Name ="Status")]
         [Required(ErrorMessage="You cannot leave the Status Blank")]
-        public string Status { get; set; }
+        public Status Status { get; set; }
 
         //Foreign key
         [Display(Name ="Division")]
@@ -80,13 +83,20 @@ namespace WMBA5.Models
         //Adding validation for the jersey number
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            //Team jerseys = WMBAContext.Players.Where(x => x.Players)
-            //A team cant habe 2 players with the same jersey number
-            if (JerseyNumber)
-            {
-                yield return new ValidationResult("The jersey number you choose is already used by someone else, try adding a new jersey number", new[] { "JerseyNumber" });
-            }
+            // Access the database context to check if the jersey number is already used by another player in the same team
 
+            // Access the database context from dependency injection to check if the jersey number is already used by another player in the same team
+            var dbContext = (WMBAContext)validationContext.GetService(typeof(WMBAContext));
+            {
+                var teamPlayerWithSameJersey = dbContext.Players
+                    .Where(p => p.TeamID == TeamID && p.JerseyNumber == JerseyNumber && p.ID != ID)
+                    .FirstOrDefault();
+
+                if (teamPlayerWithSameJersey != null)
+                {
+                    yield return new ValidationResult("The jersey number you choose is already used by another player in the same team. Please choose a different jersey number.", new[] { "JerseyNumber" });
+                }
+            }
         }
     }
 }

@@ -38,6 +38,19 @@ namespace WMBA5.Data.WMBAMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Statuses",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StatusName = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Statuses", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Divisions",
                 columns: table => new
                 {
@@ -67,7 +80,7 @@ namespace WMBA5.Data.WMBAMigrations
                     Location = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
                     Oponent = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     PlayingAt = table.Column<string>(type: "TEXT", nullable: false),
-                    Outcome = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Outcome = table.Column<string>(type: "TEXT", nullable: true),
                     DivisionID = table.Column<int>(type: "INTEGER", nullable: false),
                     LineupID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -170,17 +183,28 @@ namespace WMBA5.Data.WMBAMigrations
                         .Annotation("Sqlite:Autoincrement", true),
                     MemberID = table.Column<string>(type: "TEXT", nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    MiddleName = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true),
+                    Nickname = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     JerseyNumber = table.Column<int>(type: "INTEGER", nullable: false),
-                    Birthday = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Position = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
-                    TeamID = table.Column<int>(type: "INTEGER", nullable: false),
-                    LineupID = table.Column<int>(type: "INTEGER", nullable: false)
+                    StatusID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DivisionID = table.Column<int>(type: "INTEGER", nullable: false),
+                    TeamID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Players", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Players_Divisions_DivisionID",
+                        column: x => x.DivisionID,
+                        principalTable: "Divisions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Players_Statuses_StatusID",
+                        column: x => x.StatusID,
+                        principalTable: "Statuses",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Players_Teams_TeamID",
                         column: x => x.TeamID,
@@ -273,8 +297,7 @@ namespace WMBA5.Data.WMBAMigrations
             migrationBuilder.CreateIndex(
                 name: "IX_Lineups_PlayerID",
                 table: "Lineups",
-                column: "PlayerID",
-                unique: true);
+                column: "PlayerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lineups_TeamID",
@@ -297,10 +320,20 @@ namespace WMBA5.Data.WMBAMigrations
                 column: "PlayerID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Players_DivisionID",
+                table: "Players",
+                column: "DivisionID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Players_MemberID",
                 table: "Players",
                 column: "MemberID",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_StatusID",
+                table: "Players",
+                column: "StatusID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Players_TeamID",
@@ -356,6 +389,10 @@ namespace WMBA5.Data.WMBAMigrations
                 table: "Games");
 
             migrationBuilder.DropForeignKey(
+                name: "FK_Players_Divisions_DivisionID",
+                table: "Players");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Teams_Divisions_DivisionID",
                 table: "Teams");
 
@@ -391,6 +428,9 @@ namespace WMBA5.Data.WMBAMigrations
 
             migrationBuilder.DropTable(
                 name: "Players");
+
+            migrationBuilder.DropTable(
+                name: "Statuses");
 
             migrationBuilder.DropTable(
                 name: "Teams");

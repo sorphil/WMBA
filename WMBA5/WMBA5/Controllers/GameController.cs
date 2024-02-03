@@ -34,7 +34,7 @@ namespace WMBA5.Controllers
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Player", "Age" };
+            string[] sortOptions = new[] { "Player" };
 
 
             // Filtering

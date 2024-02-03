@@ -29,6 +29,24 @@ namespace WMBA5.Data
                        });
                     context.SaveChanges();
                 }
+                //Adding Statuses Next
+                if (!context.Statuses.Any())
+                {
+                    context.Statuses.AddRange(
+                       new Status
+                       {
+                           StatusName = "Active"
+                       },
+                       new Status
+                       {
+                            StatusName = "Inactive"
+                       },
+                       new Status
+                       {
+                           StatusName = "Injured"
+                       });
+                    context.SaveChanges();
+                }
 
                 //Adding Coach Next
                 if (!context.Coaches.Any())
@@ -142,9 +160,9 @@ namespace WMBA5.Data
                             LastName = "Glaus",
                             MemberID = "FE9113FF",
                             JerseyNumber = 10,
-                            Birthday = DateTime.Parse("2010-01-01"),
-                            Position = "Bats",
-                            TeamID  = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID
+                            TeamID  = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
                         },
                         new Player
                         {
@@ -152,9 +170,9 @@ namespace WMBA5.Data
                             LastName = "Lyon",
                             MemberID = "2C5E0779",
                             JerseyNumber = 11,
-                            Birthday = DateTime.Parse("2010-02-01"),
-                            Position = "Bats",
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID
+                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         },
                         new Player
                         {
@@ -162,9 +180,9 @@ namespace WMBA5.Data
                             LastName = "Clark",
                             MemberID = "02fc3bfa",
                             JerseyNumber = 1,
-                            Birthday = DateTime.Parse("2010-03-01"),
-                            Position = "Bats",
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID
+                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Inactive").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         },
                         new Player
                         {
@@ -172,9 +190,9 @@ namespace WMBA5.Data
                             LastName = "Fil",
                             MemberID = "d60fd621",
                             JerseyNumber = 2,
-                            Birthday = DateTime.Parse("2010-01-01"),
-                            Position = "Bats",
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID
+                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Injured").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         },
                         new Player
                         {
@@ -182,9 +200,9 @@ namespace WMBA5.Data
                             LastName = "Glaus",
                             MemberID = "df2db445",
                             JerseyNumber = 9,
-                            Birthday = DateTime.Parse("2010-01-01"),
-                            Position = "Bats",
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID
+                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
+                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
                         },
                         new Player
                         {
@@ -192,9 +210,9 @@ namespace WMBA5.Data
                             LastName = "Counsell",
                             MemberID = "6148791e",
                             JerseyNumber = 8,
-                            Birthday = DateTime.Parse("2010-01-01"),
-                            Position = "Bats",
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID
+                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
+                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         },
                         new Player
                         {
@@ -202,9 +220,9 @@ namespace WMBA5.Data
                             LastName = "Estes",
                             MemberID = "67476a1e",
                             JerseyNumber = 7,
-                            Birthday = DateTime.Parse("2010-01-01"),
-                            Position = "Bats",
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID
+                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
+                                       StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
                         },
                         new Player
                         {
@@ -212,9 +230,9 @@ namespace WMBA5.Data
                             LastName = "Hill",
                             MemberID = "F2C6F254",
                             JerseyNumber = 5,
-                            Birthday = DateTime.Parse("2010-01-01"),
-                            Position = "Bats",
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID
+                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
+                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         });
                     context.SaveChanges();
                 }

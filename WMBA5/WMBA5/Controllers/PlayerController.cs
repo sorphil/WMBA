@@ -24,7 +24,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: Player
-        public async Task<IActionResult> Index(string SearchString, int? TeamID,
+        public async Task<IActionResult> Index(string SearchString, int? TeamID, int? DivisionID, int? StatusID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "Players")
         {
             //Count the number of filters applied - start by assuming no filters
@@ -34,7 +34,7 @@ namespace WMBA5.Controllers
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Player", "Age" };
+            string[] sortOptions = new[] { "Player" };
 
             PopulateDropDownLists();
 
@@ -42,12 +42,26 @@ namespace WMBA5.Controllers
                 .Include(p=>p.Team)
                 .Include(p => p.PlayerAtBats)
                 .Include(p => p.PlayerStats)
+                .Include(p=>p.Division)
+                .Include(p=>p.Division)
                 .AsNoTracking();
 
             //Add as many filters as needed
             if (TeamID.HasValue)
             {
                 players = players.Where(p => p.TeamID == TeamID);
+                numberFilters++;
+            }
+            //Add as many filters as needed
+            if (DivisionID.HasValue)
+            {
+                players = players.Where(p => p.DivisionID == DivisionID);
+                numberFilters++;
+            }
+            //Add as many filters as needed
+            if (StatusID.HasValue)
+            {
+                players = players.Where(p => p.StatusID == StatusID);
                 numberFilters++;
             }
             if (!string.IsNullOrEmpty(SearchString))
@@ -98,21 +112,6 @@ namespace WMBA5.Controllers
                         .ThenBy(p => p.FirstName);
                 }
             }
-            else if (sortField == "Age")
-            {
-                if (sortDirection == "asc")
-                {
-                    players = players
-                        .OrderBy(p => p.Birthday)
-                        .ThenBy(p => p.Birthday);
-                }
-                else
-                {
-                    players = players
-                           .OrderByDescending(p => p.Birthday)
-                           .ThenBy(p => p.Birthday);
-                }
-            }
             //Set sort for next time
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
@@ -160,7 +159,7 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,MiddleName,LastName,JerseyNumber,Birthday,Position,TeamID,LineupID")] Player player)
+        public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
         {
             try
             {
@@ -212,7 +211,7 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,MemberID,FirstName,MiddleName,LastName,JerseyNumber,Birthday,Position,TeamID,LineupID")] Player player)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,TeamID")] Player player)
         {
             if (id != player.ID)
             {
@@ -280,15 +279,29 @@ namespace WMBA5.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        private SelectList  TeamSelectionList(int? selectedId)
+        private SelectList TeamSelectionList(int? selectedId)
         {
             return new SelectList(_context
                 .Teams
                 .OrderBy(m => m.TeamName), "ID", "TeamName", selectedId);
         }
+        private SelectList DivisionSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Divisions
+                .OrderBy(m => m.DivisionName), "ID", "DivisionName", selectedId);
+        }
+        private SelectList StatusSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Statuses
+                .OrderBy(m => m.StatusName), "ID", "StatusName", selectedId);
+        }
         private void PopulateDropDownLists(Player player = null)
         {
             ViewData["TeamID"] = TeamSelectionList(player?.TeamID);
+            ViewData["DivisionID"] = DivisionSelectionList(player?.DivisionID);
+            ViewData["StatusID"] = StatusSelectionList(player?.StatusID);
         }
         private bool PlayerExists(int id)
         {
