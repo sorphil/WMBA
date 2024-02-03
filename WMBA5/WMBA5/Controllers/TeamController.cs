@@ -192,12 +192,13 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,TeamName,CoachID,DivisionID,LineupID")] Team team)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,TeamName,CoachID,DivisionID,LineupID")] Team team, string[] selectedOptions)
         {
             if (id != team.ID)
             {
                 return NotFound();
             }
+            UpdateTeamPlayerListboxes(selectedOptions, team);
 
             if (ModelState.IsValid)
             {
@@ -219,6 +220,7 @@ namespace WMBA5.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+        
             ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
             return View(team);
@@ -278,28 +280,7 @@ namespace WMBA5.Controllers
         }
 
 
-        //private void PopulateTeamPlayerLists(Team team)
-        //{
-        //    //For this to work, you must have Included the child collection in the parent object
-        //    var allOptions = _context.Players;
-        //    var currentOptionsHS = new HashSet<int>(function.FunctionRooms.Select(b => b.RoomID));
-        //    //Instead of one list with a boolean, we will make two lists
-        //    var available = new List<ListOptionVM>();
-        //    var selected = new List<ListOptionVM>();
-        //    foreach (var r in allOptions)
-        //    {
 
-        //        available.Add(new ListOptionVM
-        //        {
-        //            ID = r.ID,
-        //            DisplayText = r.FullName
-        //        });
-
-        //    }
-
-        //    ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-        //    ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-        //}
 
         private void PopulateTeamPlayerLists(Team team)
         {
@@ -319,7 +300,7 @@ namespace WMBA5.Controllers
                         DisplayText = r.Summary
                     });
                 }
-                else
+                else if (r.TeamID == null)
                 {
                     available.Add(new ListOptionVM
                     {
@@ -332,34 +313,42 @@ namespace WMBA5.Controllers
             ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
             ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
         }
-        //private void UpdateFunctionRoomsListboxes(string[] selectedOptions, Team teamToUpdate)
-        //{
-        //    if (selectedOptions == null)
-        //    {
-        //        teamToUpdate.Players = new List<Player>();
-        //        return;
-        //    }
 
-        //    var selectedOptionsHS = new HashSet<string>(selectedOptions);
-        //    var currentOptionsHS = new HashSet<int>(teamToUpdate.Players.Select(b => b.ID));
-        //    foreach (var r in _context.Players)
-        //    {
-        //        if (selectedOptionsHS.Contains(r.ID.ToString()))//it is selected
-        //        {
-        //            if (!currentOptionsHS.Contains(r.ID))//but not currently in the Function's collection - Add it!
-        //            {
-        //                teamToUpdate.Players.Add(_context.Players.FindAsync(r.ID) );
-        //            }
-        //        }
-        //        else //not selected
-        //        {
-        //            if (currentOptionsHS.Contains(r.ID))//but is currently in the Function's collection - Remove it!
-        //            {
-        //                FunctionRoom roomToRemove = functionToUpdate.FunctionRooms.FirstOrDefault(d => d.RoomID == r.ID);
-        //                _context.Remove(roomToRemove);
-        //            }
-        //        }
-        //    }
-        //}
+
+        private async void UpdateTeamPlayerListboxes(string[] selectedOptions, Team teamToUpdate)
+        {
+            if (selectedOptions == null)
+            {
+                teamToUpdate.Players = new List<Player>();
+                return;
+            }
+
+            var selectedOptionsHS = new HashSet<string>(selectedOptions);
+            var currentOptionsHS = new HashSet<int>(teamToUpdate.Players.Select(b => b.ID));
+            foreach (var r in _context.Players)
+            {
+                if (selectedOptionsHS.Contains(r.ID.ToString()))//it is selected
+                {
+                    if (!currentOptionsHS.Contains(r.ID))//but not currently in the Team - Add it!
+                    {
+                        teamToUpdate.Players.Add( await _context.Players.FindAsync(r.ID));
+                    }
+                }
+                else //not selected
+                {
+                   
+                    if (currentOptionsHS.Contains(r.ID))//but is currently in the Function's collection - Remove it!
+                    {
+                        teamToUpdate.Players.Remove(await _context.Players.FindAsync(r.ID));
+                        Player playerToUpdate = await _context.Players.FindAsync(r.ID);
+                        playerToUpdate.TeamID = null;
+                        _context.Update(playerToUpdate);
+                        await _context.SaveChangesAsync();
+                    }
+               
+
+                }
+            }
+        }
     }
 }
