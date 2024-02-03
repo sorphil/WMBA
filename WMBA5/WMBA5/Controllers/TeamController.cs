@@ -10,6 +10,7 @@ using WMBA5.CustomControllers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.EntityFrameworkCore.Storage;
 using WMBA5.Utilities;
+using OfficeOpenXml;
 
 namespace WMBA5.Controllers
 {
@@ -362,6 +363,7 @@ namespace WMBA5.Controllers
 
         private async void UpdateTeamPlayerListboxes(string[] selectedOptions, Team teamToUpdate)
         {
+            
             if (selectedOptions == null)
             {
                 teamToUpdate.Players = new List<Player>();
@@ -377,6 +379,8 @@ namespace WMBA5.Controllers
                     if (!currentOptionsHS.Contains(r.ID))//but not currently in the Team - Add it!
                     {
                         teamToUpdate.Players.Add( await _context.Players.FindAsync(r.ID));
+                        Player playerToUpdate = await _context.Players.FindAsync(r.ID);
+                        playerToUpdate.TeamID = teamToUpdate.ID;
                     }
                 }
                 else //not selected
@@ -394,6 +398,35 @@ namespace WMBA5.Controllers
 
                 }
             }
+        }
+
+        public async Task<IActionResult> InsertFromExcel(IFormFile theExcel)
+        {
+            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
+            ExcelPackage excel;
+            using (var memoryStream = new MemoryStream())
+            {
+                await theExcel.CopyToAsync(memoryStream);
+                excel = new ExcelPackage(memoryStream);
+            }
+            var workSheet = excel.Workbook.Worksheets[0];
+            var start = workSheet.Dimension.Start;
+            var end = workSheet.Dimension.End;
+
+            List<Team> teams = new List<Team>();
+            for(int row = start.Row; row <= end.Row; row++)
+            {
+                Team t = new Team
+                {
+                    TeamName = workSheet.Cells[row, 1].Text,
+                    CoachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 2].Text).ID,
+                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 3].Text).ID
+                };
+                teams.Add(t);
+            }
+            _context.Teams.AddRange(teams);
+            _context.SaveChanges();
+            return Redirect(ViewData["ReturnURL"].ToString());
         }
     }
 }
