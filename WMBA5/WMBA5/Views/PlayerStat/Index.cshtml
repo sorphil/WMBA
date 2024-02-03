@@ -5,12 +5,16 @@
     <partial name="_PlayerStat" model="player" />
     ViewData["Title"] = ViewData["ControllerFriendlyName"];
 }
-<hr />
+<br/>
+<hr/>
+<figure class="row">
+    <figcaption class="col mt-3"><h4><text class="d-none d-sm-inline">Player Stats</text></h4></figcaption>
+</figure>
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
     <input type="hidden" name="PlayerID" value="@player.ID" />
-<table class="table">
+<table class="table"> 
     <thead>
         <tr>
             <th>
@@ -38,7 +42,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                    @Html.DisplayFor(modelItem => item.PlayerApperance)
+                    @Html.DisplayFor(modelItem => item.PlayerAppearance)
             </td>
             <td>
                     @Html.DisplayFor(modelItem => item.Hits)
@@ -65,3 +69,7 @@
 </table>
     <partial name="_PagingNavBar" />
 </form>
+<div>
+    <a asp-action="Edit" asp-controller="Player" asp-route-id="@player.ID">Edit @player.FullName</a> |
+    <a href='@ViewData["returnURL"]'>Back to Player List</a>
+</div>
