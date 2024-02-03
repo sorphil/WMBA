@@ -22,13 +22,13 @@ namespace WMBA5.Controllers
         }
 
         // GET: PlayerStat
-        public async Task<IActionResult> Index(int? PlayerID, int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "PlayerApperance")
+        public async Task<IActionResult> Index(int? PlayerID, int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "PlayerAppearance")
         {
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
             int numberFilters = 0;
             //Then in each "test" for filtering, add to the count of Filters applied
-
+            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Player");
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Player Appearances", "Hits", "Runs Scored", "Strike Outs", "Walks", "RBI" };
@@ -76,14 +76,14 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     playerStats = playerStats
-                        .OrderBy(p => p.PlayerApperance)
-                        .ThenBy(p => p.PlayerApperance);
+                        .OrderBy(p => p.PlayerAppearance)
+                        .ThenBy(p => p.PlayerAppearance);
                 }
                 else
                 {
                     playerStats = playerStats
-                            .OrderByDescending(p => p.PlayerApperance)
-                            .ThenBy(p => p.PlayerApperance);
+                            .OrderByDescending(p => p.PlayerAppearance)
+                            .ThenBy(p => p.PlayerAppearance);
                 }
             }
             
