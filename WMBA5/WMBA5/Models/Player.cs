@@ -54,7 +54,7 @@ namespace WMBA5.Models
 
         [Range(1, 99, ErrorMessage = "Please enter a value between 1 and 99")]
         [Display(Name = "Jersey Number")]
-        public int JerseyNumber { get; set; }
+        public int? JerseyNumber { get; set; }
 
         //Status: Active or Inactive
         [Display(Name = "Status")]
@@ -66,7 +66,7 @@ namespace WMBA5.Models
 
         //Foreign key
         [Display(Name ="Division")]
-        [Required(ErrorMessage = "You cannot leave the Division  blank.")]
+        [Required(ErrorMessage = "You cannot leave the Division blank.")]
         public int DivisionID { get; set; }
         public Division Division { get; set; }
 
