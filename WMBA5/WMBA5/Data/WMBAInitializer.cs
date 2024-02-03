@@ -190,7 +190,7 @@ namespace WMBA5.Data
                             LastName = "Fil",
                             MemberID = "d60fd621",
                             JerseyNumber = 2,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                         
                             StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Injured").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         },
@@ -200,7 +200,7 @@ namespace WMBA5.Data
                             LastName = "Glaus",
                             MemberID = "df2db445",
                             JerseyNumber = 9,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
+                     
                             StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
                         },
@@ -210,7 +210,7 @@ namespace WMBA5.Data
                             LastName = "Counsell",
                             MemberID = "6148791e",
                             JerseyNumber = 8,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
+               
                             StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         },
@@ -244,7 +244,7 @@ namespace WMBA5.Data
                         {
                             ID = 1,
                             GamesPlayed = 50,
-                            PlayerApperance = 45,
+                            PlayerAppearance = 45,
                             Hits = 25,
                             RunsScored = 10,
                             StrikeOuts = 15,
@@ -256,7 +256,7 @@ namespace WMBA5.Data
                        {
                            ID = 2,
                            GamesPlayed = 45,
-                           PlayerApperance = 40,
+                           PlayerAppearance = 40,
                            Hits = 20,
                            RunsScored = 12,
                            StrikeOuts = 10,
@@ -268,7 +268,7 @@ namespace WMBA5.Data
                        {
                            ID = 3,
                            GamesPlayed = 55,
-                           PlayerApperance = 50,
+                           PlayerAppearance = 50,
                            Hits = 30,
                            RunsScored = 15,
                            StrikeOuts = 12,
@@ -280,7 +280,7 @@ namespace WMBA5.Data
                         {
                             ID = 4,
                             GamesPlayed = 48,
-                            PlayerApperance = 42,
+                            PlayerAppearance = 42,
                             Hits = 22,
                             RunsScored = 11,
                             StrikeOuts = 14,
@@ -292,7 +292,7 @@ namespace WMBA5.Data
                         {
                             ID = 5,
                             GamesPlayed = 60,
-                            PlayerApperance = 55,
+                            PlayerAppearance = 55,
                             Hits = 28,
                             RunsScored = 13,
                             StrikeOuts = 18,
@@ -304,7 +304,7 @@ namespace WMBA5.Data
                        {
                            ID = 6,
                            GamesPlayed = 42,
-                           PlayerApperance = 38,
+                           PlayerAppearance = 38,
                            Hits = 18,
                            RunsScored = 9,
                            StrikeOuts = 11,
@@ -316,7 +316,7 @@ namespace WMBA5.Data
                         {
                             ID = 7,
                             GamesPlayed = 47,
-                            PlayerApperance = 43,
+                            PlayerAppearance = 43,
                             Hits = 23,
                             RunsScored = 12,
                             StrikeOuts = 13,
@@ -328,7 +328,7 @@ namespace WMBA5.Data
                         {
                             ID = 8,
                             GamesPlayed = 52,
-                            PlayerApperance = 48,
+                            PlayerAppearance = 48,
                             Hits = 27,
                             RunsScored = 14,
                             StrikeOuts = 16,
