@@ -97,12 +97,12 @@ namespace WMBA5.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            //Game to Lineup
-            modelBuilder.Entity<Game>()
-                .HasOne(c => c.Lineup)
-                .WithOne( c => c.Game)
-                .HasForeignKey<Lineup>(c => c.GameID)
-                .IsRequired();
+            ////Game to Lineup
+            //modelBuilder.Entity<Game>()
+            //    .HasOne(c => c.Lineup)
+            //    .WithOne( c => c.Game)
+            //    .HasForeignKey<Lineup>(c => c.GameID)
+            //    .IsRequired();
 
             ////Player to Lineup
             //modelBuilder.Entity<Player>()
