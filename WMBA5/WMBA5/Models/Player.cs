@@ -23,7 +23,7 @@ namespace WMBA5.Models
             get
             {
 
-                return MemberID + " - " + FirstName + " " + LastName
+                return FirstName + " " + LastName
                     + (string.IsNullOrEmpty(Nickname) ? "" :
                         (" (" + Nickname + ") "));
             }
