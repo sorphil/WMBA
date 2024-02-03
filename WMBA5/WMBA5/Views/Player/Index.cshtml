@@ -40,16 +40,16 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th class="col-md-3">
                 <input type="submit" name="actionButton" value="Player" class="btn btn-link" />
-            </th>   
-            <th>
+            </th>
+                <th class="col-md-3">
                  <input type="submit" value="Team" class="btn btn-toolbar" />
             </th>
-            <th>
+                <th class="col-md-3">
                     <input type="submit" value="Division" class="btn btn-toolbar" />
             </th>
-             <th style="min-width:120px">
+             <th>
                     <a asp-action="Create" class="btn btn-sm btn-outline-success"
                        role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
                         <strong>&#x270D; Create New</strong>
@@ -73,15 +73,15 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                            &#x270E;
+                            &#x270E; Edit
                         </a>
                         <a asp-controller="PlayerStat" asp-action="Index" asp-route-PlayerID="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                            &#x1F50E;
+                            &#x1F50E; Details
                         </a>
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                            &#x274C;
+                            &#x274C; Delete
                         </a>
                 
                     </td>
@@ -91,6 +91,8 @@
 </table>
     <partial name="_PagingNavBar" />
 </form>
+
+
 @section Scripts {
     <script type="text/javascript">
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

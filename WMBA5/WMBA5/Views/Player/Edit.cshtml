@@ -36,7 +36,7 @@
            
             <div class="form-group">
                 <label asp-for="JerseyNumber" class="control-label"></label>
-                <input asp-for="JerseyNumber" class="form-control" />
+                <input asp-for="JerseyNumber" class="form-control" min="0" max="99" />
                 <span asp-validation-for="JerseyNumber" class="text-danger"></span>
             </div>
             
