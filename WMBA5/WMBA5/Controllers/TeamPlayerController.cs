@@ -10,6 +10,7 @@ using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
 using WMBA5.Utilities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WMBA5.Controllers
 {
@@ -23,9 +24,15 @@ namespace WMBA5.Controllers
         }
 
         // GET: TeamPlayer
-        public async Task<IActionResult> Index(  string SearchString, int? TeamID,
+        public async Task<IActionResult> Index(int? TeamID, string SearchString,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "Players")
         {
+            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
+
+            if (!TeamID.HasValue)
+            {
+                return Redirect(ViewData["returnURL"].ToString());
+            }
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
             int numberFilters = 0;
@@ -38,20 +45,20 @@ namespace WMBA5.Controllers
       
             PopulateDropDownLists();
 
-            var players = _context.Players
-                .Include(t => t.Team)
-                .Include(t => t.PlayerAtBats)
-                .Include(t => t.PlayerStats)
-                .Where(t => t.TeamID == TeamID)
-                .AsNoTracking();
-            if (!TeamID.HasValue)
-            {
-                //Go back to the proper return URL for the Player controller
-                return Redirect(ViewData["returnURL"].ToString());
-            }
+            //var players = _context.Players
+            //    .Include(t => t.Team)
+            //    .Include(t => t.PlayerAtBats)
+            //    .Include(t => t.PlayerStats)
+            //    .Where(t => t.TeamID == TeamID)
+            //    .AsNoTracking();
+            var players = from p in _context.Players
+                            .Include(t => t.Team)
+                          where p.TeamID == TeamID.GetValueOrDefault()
+                          select p;
+
 
             //Add as many filters as needed
-            if (!string.IsNullOrEmpty(SearchString))
+            if (!System.String.IsNullOrEmpty(SearchString))
             {
                 players = players.Where(p => p.LastName.ToUpper().Contains(SearchString.Trim().ToUpper())
                                   || p.FirstName.ToUpper().Contains(SearchString.Trim().ToUpper()));
@@ -70,7 +77,7 @@ namespace WMBA5.Controllers
             }
 
             //Before we sort, see if we have called for a change of filtering or sorting
-            if (!string.IsNullOrEmpty(actionButton)) //Form Submitted!
+            if (!System.String.IsNullOrEmpty(actionButton)) //Form Submitted!
             {
                 page = 1;//Reset page to start
 
@@ -88,14 +95,12 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     players = players
-                        .OrderBy(p => p.LastName)
-                        .ThenBy(p => p.FirstName);
+                        .OrderBy(p => p.FirstName);
                 }
                 else
                 {
                     players = players
-                        .OrderByDescending(p => p.LastName)
-                        .ThenBy(p => p.FirstName);
+                        .OrderByDescending(p => p.FirstName);
                 }
             }
             //Set sort for next time
@@ -103,14 +108,15 @@ namespace WMBA5.Controllers
             ViewData["sortDirection"] = sortDirection;
 
             Team team = await _context.Teams
-                .Include(t => t.Players)
                 .Include(t => t.Coach)
                 .Include(t => t.Division)
                 .Where(t => t.ID == TeamID.GetValueOrDefault())
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
+
             ViewBag.Team = team;
+
 
             //Handle Paging
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
