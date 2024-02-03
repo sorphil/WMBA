@@ -28,7 +28,7 @@ namespace WMBA5.Controllers
         {
             ViewData["Filtering"] = "btn-outline-secondary";
             int numberFilters = 0;
-            string[] sortOptions = new[] { "Team", "Coach" };
+            string[] sortOptions = new[] { "Team", "Coach", "Division" };
             PopulateDropDownLists();
 
             var teams = _context.Teams
@@ -91,6 +91,19 @@ namespace WMBA5.Controllers
                 {
                     teams = teams
                         .OrderBy(t => t.Coach);
+                }
+            }
+            else if (sortField == "Division")
+            {
+                if (sortDirection == "asc")
+                {
+                    teams = teams
+                        .OrderByDescending(t => t.Division);
+                }
+                else
+                {
+                    teams = teams
+                        .OrderBy(t => t.Division);
                 }
             }
             ViewData["sortField"] = sortField;
