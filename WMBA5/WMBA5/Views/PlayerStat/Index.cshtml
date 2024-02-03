@@ -61,7 +61,10 @@
             </td>
             <td>
                 @* Disabled for the moment (we haven't linked stats to game yet') *@
-                <a >Go to Game</a> |
+                        <a asp-controller="Game" asp-action="Details" asp-route-id="@item.GameID" class="btn btn-sm btn-outline-primary"
+                           role="button" data-bs-toggle="tooltip">
+                            Go to Game
+                        </a>
             </td>
         </tr>
 }
