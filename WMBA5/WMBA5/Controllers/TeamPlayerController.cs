@@ -83,7 +83,6 @@ namespace WMBA5.Controllers
                     sortField = actionButton;//Sort by the button clicked
                 }
             }
-            //Now we know which field and direction to sort by
             if (sortField == "Player")
             {
                 if (sortDirection == "asc")
