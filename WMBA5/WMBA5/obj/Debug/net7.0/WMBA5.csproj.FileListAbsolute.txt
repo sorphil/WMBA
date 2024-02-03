@@ -2152,3 +2152,5 @@ C:\Users\psori\source\New folder\WMBA5\WMBA5\obj\Debug\net7.0\refint\WMBA5.dll
 C:\Users\psori\source\New folder\WMBA5\WMBA5\obj\Debug\net7.0\WMBA5.pdb
 C:\Users\psori\source\New folder\WMBA5\WMBA5\obj\Debug\net7.0\WMBA5.genruntimeconfig.cache
 C:\Users\psori\source\New folder\WMBA5\WMBA5\obj\Debug\net7.0\ref\WMBA5.dll
+C:\Users\jf697\OneDrive\Escritorio\WMBA Test\WMBA5\WMBA5\bin\Debug\net7.0\EPPlus.dll
+C:\Users\jf697\OneDrive\Escritorio\WMBA Test\WMBA5\WMBA5\bin\Debug\net7.0\System.Xml.XPath.XmlDocument.dll

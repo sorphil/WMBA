@@ -8,6 +8,9 @@ using System.Net.Mail;
 using WMBA5.ViewModels;
 using WMBA5.CustomControllers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore.Storage;
+using WMBA5.Utilities;
+using OfficeOpenXml;
 
 namespace WMBA5.Controllers
 {
@@ -26,7 +29,7 @@ namespace WMBA5.Controllers
         {
             ViewData["Filtering"] = "btn-outline-secondary";
             int numberFilters = 0;
-            string[] sortOptions = new[] { "Team", "Coach" };
+            string[] sortOptions = new[] { "Team", "Coach", "Division" };
             PopulateDropDownLists();
 
             var teams = _context.Teams
@@ -91,13 +94,26 @@ namespace WMBA5.Controllers
                         .OrderBy(t => t.Coach);
                 }
             }
+            else if (sortField == "Division")
+            {
+                if (sortDirection == "asc")
+                {
+                    teams = teams
+                        .OrderByDescending(t => t.Division);
+                }
+                else
+                {
+                    teams = teams
+                        .OrderBy(t => t.Division);
+                }
+            }
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
             //Handle Paging
-            //int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-            //ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-            //var pagedData = await PaginatedList<Team>.CreateAsync(teams.AsNoTracking(), page ?? 1, pageSize);
-            return View(await teams.ToListAsync());
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Team>.CreateAsync(teams.AsNoTracking(), page ?? 1, pageSize);
+            return View(pagedData);
         }
 
         // GET: Team/Details/5
@@ -135,14 +151,21 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,TeamName,CoachID,DivisionID,LineupID")] Team team)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(team);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(team);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
+                ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
             }
-            ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
+            catch (RetryLimitExceededException /* dex */)
+            {
+                ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+            }
             return View(team);
         }
 
@@ -194,35 +217,44 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,TeamName,CoachID,DivisionID,LineupID")] Team team, string[] selectedOptions)
         {
-            if (id != team.ID)
+            try
             {
-                return NotFound();
-            }
-            UpdateTeamPlayerListboxes(selectedOptions, team);
+                if (id != team.ID)
+                {
+                    return NotFound();
+                }
+                UpdateTeamPlayerListboxes(selectedOptions, team);
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(team);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TeamExists(team.ID))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(team);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!TeamExists(team.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+
+                ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
+                ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
             }
-        
-            ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
+            catch (RetryLimitExceededException)
+            {
+                ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists see your system administrator.");
+            }
+
+            
             return View(team);
         }
 
@@ -255,14 +287,28 @@ namespace WMBA5.Controllers
             {
                 return Problem("Entity set 'WMBAContext.Teams'  is null.");
             }
-            var team = await _context.Teams.FindAsync(id);
-            if (team != null)
+            var team = await _context.Teams
+                .Include(t => t.Coach)
+                .Include(t => t.Division)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            try
             {
-                _context.Teams.Remove(team);
-            }
+                if (team != null)
+                {
+                    _context.Teams.Remove(team);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                return Redirect(ViewData["returnURL"].ToString());
+
+
+            }
+            catch (DbUpdateException)
+            {
+                //Note: there is really no reason a delete should fail if you can "talk" to the database.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            return View(team);
         }
 
         private bool TeamExists(int id)
@@ -317,6 +363,7 @@ namespace WMBA5.Controllers
 
         private async void UpdateTeamPlayerListboxes(string[] selectedOptions, Team teamToUpdate)
         {
+            
             if (selectedOptions == null)
             {
                 teamToUpdate.Players = new List<Player>();
@@ -332,6 +379,8 @@ namespace WMBA5.Controllers
                     if (!currentOptionsHS.Contains(r.ID))//but not currently in the Team - Add it!
                     {
                         teamToUpdate.Players.Add( await _context.Players.FindAsync(r.ID));
+                        Player playerToUpdate = await _context.Players.FindAsync(r.ID);
+                        playerToUpdate.TeamID = teamToUpdate.ID;
                     }
                 }
                 else //not selected
@@ -349,6 +398,35 @@ namespace WMBA5.Controllers
 
                 }
             }
+        }
+
+        public async Task<IActionResult> InsertFromExcel(IFormFile theExcel)
+        {
+            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
+            ExcelPackage excel;
+            using (var memoryStream = new MemoryStream())
+            {
+                await theExcel.CopyToAsync(memoryStream);
+                excel = new ExcelPackage(memoryStream);
+            }
+            var workSheet = excel.Workbook.Worksheets[0];
+            var start = workSheet.Dimension.Start;
+            var end = workSheet.Dimension.End;
+
+            List<Team> teams = new List<Team>();
+            for(int row = start.Row; row <= end.Row; row++)
+            {
+                Team t = new Team
+                {
+                    TeamName = workSheet.Cells[row, 1].Text,
+                    CoachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 2].Text).ID,
+                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 3].Text).ID
+                };
+                teams.Add(t);
+            }
+            _context.Teams.AddRange(teams);
+            _context.SaveChanges();
+            return Redirect(ViewData["ReturnURL"].ToString());
         }
     }
 }

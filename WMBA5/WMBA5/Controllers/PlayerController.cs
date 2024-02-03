@@ -34,7 +34,7 @@ namespace WMBA5.Controllers
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Player" };
+            string[] sortOptions = new[] { "Player", "Division", "Team" };
 
             PopulateDropDownLists();
 
@@ -112,6 +112,32 @@ namespace WMBA5.Controllers
                         .ThenBy(p => p.FirstName);
                 }
             }
+            if (sortField == "Division")
+            {
+                if (sortDirection == "asc")
+                {
+                    players = players
+                        .OrderBy(p => p.Division);
+                }
+                else
+                {
+                    players = players
+                        .OrderByDescending(p => p.Division);
+                }
+            }
+            if (sortField == "Team")
+            {
+                if (sortDirection == "asc")
+                {
+                    players = players
+                        .OrderBy(p => p.Team);
+                }
+                else
+                {
+                    players = players
+                        .OrderByDescending(p => p.Team);
+                }
+            }
             //Set sort for next time
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
@@ -148,9 +174,8 @@ namespace WMBA5.Controllers
         // GET: Player/Create
         public IActionResult Create()
         {
-            Player player = new Player();
             PopulateDropDownLists();
-            return View(player);
+            return View();
 
         }
 
@@ -167,7 +192,7 @@ namespace WMBA5.Controllers
                 {
                     _context.Add(player);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Details", new { player.ID });
+                    return RedirectToAction(nameof(Index));
                 }
             }
             catch (RetryLimitExceededException /* dex */)
@@ -185,7 +210,6 @@ namespace WMBA5.Controllers
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
             }
-            PopulateDropDownLists();
             return View(player);
         }
 
@@ -203,6 +227,7 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
             ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
             return View(player);
         }
 
