@@ -11,6 +11,7 @@ using WMBA5.CustomControllers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using WMBA5.Utilities;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Numerics;
 
 namespace WMBA5.Controllers
 {
@@ -42,7 +43,6 @@ namespace WMBA5.Controllers
                 .Include(p=>p.Team)
                 .Include(p => p.PlayerAtBats)
                 .Include(p => p.PlayerStats)
-                .Include(p=>p.Division)
                 .Include(p=>p.Division)
                 .AsNoTracking();
 
@@ -162,6 +162,7 @@ namespace WMBA5.Controllers
                 .Include(p => p.Team)
                 .Include(p => p.PlayerAtBats)
                 .Include(p => p.PlayerStats)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
             {
@@ -185,7 +186,7 @@ namespace WMBA5.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
          public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
-        {
+         {
             try
             {
                 if (ModelState.IsValid)
@@ -193,6 +194,13 @@ namespace WMBA5.Controllers
                     _context.Add(player);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        error.ToString();
+                    }
                 }
             }
             catch (RetryLimitExceededException /* dex */)
@@ -210,8 +218,9 @@ namespace WMBA5.Controllers
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
             }
+            PopulateDropDownLists(player);
             return View(player);
-        }
+         }
 
         // GET: Player/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -221,13 +230,18 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
 
-            var player = await _context.Players.FindAsync(id);
+            var player = await _context.Players
+                .Include(p => p.Team)
+                .FirstOrDefaultAsync(p => p.ID == id);
+
             if (player == null)
             {
                 return NotFound();
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
+            //ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+            //ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
+
+            PopulateDropDownLists(player);
             return View(player);
         }
 
@@ -236,23 +250,33 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,TeamID")] Player player)
+        public async Task<IActionResult> Edit(int id) //, [Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
         {
-            if (id != player.ID)
+            //Go get the player to update
+            var playerToUpdate = await _context.Players
+                .Include(p => p.Team)
+                .FirstOrDefaultAsync(p => p.ID == id);
+            
+            if (playerToUpdate == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (await TryUpdateModelAsync<Player>(playerToUpdate, "", 
+                p=> p.MemberID, p=>p.FirstName, p=>p.LastName, p=>p.Nickname, p=>p.JerseyNumber, p=>p.StatusID, p=>p.DivisionID, p=>p.TeamID))
             {
                 try
                 {
-                    _context.Update(player);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (RetryLimitExceededException /* dex */)
                 {
-                    if (!PlayerExists(player.ID))
+                    ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+                }
+                catch(DbUpdateConcurrencyException )
+                {
+                    if (!PlayerExists(playerToUpdate.ID))
                     {
                         return NotFound();
                     }
@@ -261,10 +285,37 @@ namespace WMBA5.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException )
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-            return View(player);
+            
+
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+            //        _context.Update(player);
+            //        await _context.SaveChangesAsync();
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!PlayerExists(player.ID))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+
+            PopulateDropDownLists(playerToUpdate);
+            return View(playerToUpdate);
         }
 
         // GET: Player/Delete/5
@@ -293,16 +344,34 @@ namespace WMBA5.Controllers
         {
             if (_context.Players == null)
             {
-                return Problem("Entity set 'WMBAContext.Players'  is null.");
+                return Problem("No Player to Delete.");
             }
-            var player = await _context.Players.FindAsync(id);
-            if (player != null)
+            var player = await _context.Players
+                .Include (p=>p.Team)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+            try
             {
-                _context.Players.Remove(player);
+                if (player != null)
+                {
+                    _context.Players.Remove(player);
+                }
+                await _context.SaveChangesAsync();
+                return Redirect(ViewData["returnURL"].ToString());
+            }
+            catch (DbUpdateException dex)
+            {
+                if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
+                {
+                    ModelState.AddModelError("", "Unable to Delete Player. Try again, and if the problem persists see your system administrator");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
             }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return View(player);
         }
         private SelectList TeamSelectionList(int? selectedId)
         {
