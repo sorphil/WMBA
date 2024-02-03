@@ -216,35 +216,44 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,TeamName,CoachID,DivisionID,LineupID")] Team team, string[] selectedOptions)
         {
-            if (id != team.ID)
+            try
             {
-                return NotFound();
-            }
-            UpdateTeamPlayerListboxes(selectedOptions, team);
+                if (id != team.ID)
+                {
+                    return NotFound();
+                }
+                UpdateTeamPlayerListboxes(selectedOptions, team);
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(team);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TeamExists(team.ID))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(team);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!TeamExists(team.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+
+                ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
+                ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
             }
-        
-            ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
+            catch (RetryLimitExceededException)
+            {
+                ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists see your system administrator.");
+            }
+
+            
             return View(team);
         }
 
@@ -277,14 +286,28 @@ namespace WMBA5.Controllers
             {
                 return Problem("Entity set 'WMBAContext.Teams'  is null.");
             }
-            var team = await _context.Teams.FindAsync(id);
-            if (team != null)
+            var team = await _context.Teams
+                .Include(t => t.Coach)
+                .Include(t => t.Division)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            try
             {
-                _context.Teams.Remove(team);
-            }
+                if (team != null)
+                {
+                    _context.Teams.Remove(team);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                return Redirect(ViewData["returnURL"].ToString());
+
+
+            }
+            catch (DbUpdateException)
+            {
+                //Note: there is really no reason a delete should fail if you can "talk" to the database.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            return View(team);
         }
 
         private bool TeamExists(int id)

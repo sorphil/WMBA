@@ -203,6 +203,7 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
             ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
             return View(player);
         }
 
