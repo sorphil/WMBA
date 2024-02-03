@@ -45,18 +45,18 @@
                 <th>
                     <input type="submit" name="actionButton" value="Oponent" class="btn btn-link" />
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PlayingAt)
-                </th>
+                @* <th>
+                @Html.DisplayNameFor(model => model.PlayingAt)
+                </th> *@
                 <th>
                     @Html.DisplayNameFor(model => model.Outcome)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Division)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.LineupID)
-                </th>
+                @*    <th>
+                @Html.DisplayNameFor(model => model.LineupID)
+                </th> *@
                 <th style="min-width:120px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success"
                        role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
@@ -75,30 +75,30 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Location)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Oponent)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PlayingAt)
-                    </td>
+                    @*        <td>
+                @Html.DisplayFor(modelItem => item.Oponent)
+                </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.PlayingAt)
+                </td> *@
                     <td>
                         @Html.DisplayFor(modelItem => item.Outcome)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Division.DivisionName)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LineupID)
-                    </td>
+                    @*             <td>
+                @Html.DisplayFor(modelItem => item.LineupID)
+                </td> *@
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             &#x270E;
                         </a>
-@*                         <a asp-controller="PlayerStat" asp-action="Index" asp-route-PlayerID="@item.ID" class="btn btn-sm btn-outline-primary"
-                           role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                            &#x1F50E;
-                        </a> *@
+                     <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                    role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                    &#x1F50E;
+                    </a> 
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                             &#x274C;

@@ -15,13 +15,7 @@ namespace WMBA5.Models
         [StringLength(30, ErrorMessage = "Location cannot be more than 30 characters long.")]
         public string Location { get; set; }
 
-        [Required(ErrorMessage = "You cannot leave the Oponent blank.")]
-        [StringLength(50, ErrorMessage = "Oponent cannot be more than 50 characters long.")]
-        public string Oponent { get; set; }
-
-        [Display(Name ="Playing At")]
-        [Required(ErrorMessage = "You must specify if your team is playing Home or Away.")]
-        public string PlayingAt { get; set; }
+        
         public string Outcome { get; set; } //Win or lose
 
         [Display(Name ="Division Name")]
@@ -29,10 +23,7 @@ namespace WMBA5.Models
         public int DivisionID { get; set; }
         public Division Division { get; set; }
 
-        public int LineupID { get; set; }
-        public Lineup Lineup { get; set; }
-
-
+        public ICollection<PlayerStat> PlayerStats { get; set; } = new HashSet<PlayerStat>();
         public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
     }

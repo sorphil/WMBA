@@ -45,7 +45,7 @@ namespace WMBA5.Controllers
             }
             if (!string.IsNullOrEmpty(SearchString))
             {
-                gamesQuery = gamesQuery.Where(g => g.Oponent.Contains(SearchString));
+                //gamesQuery = gamesQuery.Where(g => g.Oponent.Contains(SearchString));
                 numberFilters++;
             }
             //Give feedback about the state of the filters
@@ -80,7 +80,7 @@ namespace WMBA5.Controllers
                     gamesQuery = sortDirection == "asc" ? gamesQuery.OrderBy(g => g.Location) : gamesQuery.OrderByDescending(g => g.Location);
                     break;
                 case "Oponent":
-                    gamesQuery = sortDirection == "asc" ? gamesQuery.OrderBy(g => g.Oponent) : gamesQuery.OrderByDescending(g => g.Oponent);
+                    //gamesQuery = sortDirection == "asc" ? gamesQuery.OrderBy(g => g.Oponent) : gamesQuery.OrderByDescending(g => g.Oponent);
                     break;
             }
 
