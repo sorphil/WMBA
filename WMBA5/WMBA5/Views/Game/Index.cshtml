@@ -40,17 +40,11 @@
                     @Html.DisplayNameFor(model => model.StartTime)
                 </th>
                 <th>
-                    <input type="submit" @* name="actionButton" *@ value="Home Team" class="btn btn-link" />
-                </th>
-                <th>
-                    <input type="submit" name="actionButton" value="Away Team" class="btn btn-link" />
-                </th>
-                <th>
                     <input type="submit" name="actionButton" value="Location" class="btn btn-link" />
                 </th>
-                @* <th>
+                <th>
                     <input type="submit" name="actionButton" value="Oponent" class="btn btn-link" />
-                </th> *@
+                </th>
                 @* <th>
                 @Html.DisplayNameFor(model => model.PlayingAt)
                 </th> *@
@@ -77,12 +71,6 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.StartTime)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TeamGame.HomeTeam.TeamName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TeamGame.AwayTeam.TeamName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Location)

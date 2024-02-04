@@ -124,11 +124,6 @@ namespace WMBA5.Data
                 .HasIndex(p => p.MemberID)
                 .IsUnique();
 
-			modelBuilder.Entity<TeamGame>()
-				.HasOne(tg => tg.AwayTeam)
-				.WithMany(t => t.AwayTeamGames)
-				.HasForeignKey(tg => tg.AwayTeamID)
-				.OnDelete(DeleteBehavior.Restrict);
-		}
+        }
     }
 }
