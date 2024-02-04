@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
@@ -35,6 +37,7 @@ namespace WMBA5.Controllers
             }
 
             var coach = await _context.Coaches
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (coach == null)
             {
@@ -57,11 +60,22 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,CoachName")] Coach coach)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(coach);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(coach);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new {coach.ID});
+                }
+            }
+            catch (RetryLimitExceededException/* dex */)
+            {
+                ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
             return View(coach);
         }
@@ -74,11 +88,14 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
 
-            var coach = await _context.Coaches.FindAsync(id);
+            var coach = await _context.Coaches
+                .FirstOrDefaultAsync(d => d.ID == id);
+
             if (coach == null)
             {
                 return NotFound();
             }
+
             return View(coach);
         }
 
@@ -87,23 +104,30 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CoachName")] Coach coach)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id != coach.ID)
+            var coachToUpdate = await _context.Coaches
+                .FirstOrDefaultAsync(d => d.ID == id);
+
+            if (coachToUpdate == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (await TryUpdateModelAsync<Coach>(coachToUpdate,"", d=>d.CoachName))
             {
                 try
                 {
-                    _context.Update(coach);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { coachToUpdate.ID });
+                }
+                catch (RetryLimitExceededException /* dex */)
+                {
+                    ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CoachExists(coach.ID))
+                    if (!CoachExists(coachToUpdate.ID))
                     {
                         return NotFound();
                     }
@@ -112,9 +136,13 @@ namespace WMBA5.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
             }
-            return View(coach);
+
+            return View(coachToUpdate);
         }
 
         // GET: Coach/Delete/5
@@ -126,6 +154,7 @@ namespace WMBA5.Controllers
             }
 
             var coach = await _context.Coaches
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (coach == null)
             {
@@ -142,16 +171,33 @@ namespace WMBA5.Controllers
         {
             if (_context.Coaches == null)
             {
-                return Problem("Entity set 'WMBAContext.Coaches'  is null.");
+                return Problem("No Coach to Delete.");
             }
-            var coach = await _context.Coaches.FindAsync(id);
-            if (coach != null)
+            var coach = await _context.Coaches
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+            try
             {
-                _context.Coaches.Remove(coach);
+                if (coach != null)
+                {
+                    _context.Coaches.Remove(coach);
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (DbUpdateException dex)
+            {
+                if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
+                {
+                    ModelState.AddModelError("", "Unable to Delete Coach. Remember, you cannot delete a Coach who is managing a team.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+            }
+            return View(coach);
         }
 
         private bool CoachExists(int id)
