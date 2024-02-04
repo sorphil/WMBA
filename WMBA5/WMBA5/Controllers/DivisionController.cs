@@ -49,8 +49,9 @@ namespace WMBA5.Controllers
         // GET: Division/Create
         public IActionResult Create()
         {
-            ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ID");
-            return View();
+            ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ClubName");
+            Division division = new Division();
+            return View(division);
         }
 
         // POST: Division/Create
@@ -60,13 +61,20 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,DivisionName,ClubID")] Division division)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(division);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(division);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new {division.ID});
+                }
             }
-            ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ID", division.ClubID);
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ClubName", division.ClubID);
             return View(division);
         }
 
@@ -83,7 +91,7 @@ namespace WMBA5.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ID", division.ClubID);
+            ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ClubName", division.ClubID);
             return View(division);
         }
 
@@ -92,23 +100,26 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,DivisionName,ClubID")] Division division)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id != division.ID)
+            var divisionToUpdate = await _context.Divisions
+                .FirstOrDefaultAsync(a => a.ID == id);
+
+            if (divisionToUpdate == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (await TryUpdateModelAsync<Division>(divisionToUpdate,"", a => a.DivisionName, a => a.ClubID))
             {
                 try
                 {
-                    _context.Update(division);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new {divisionToUpdate.ID});
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DivisionExists(division.ID))
+                    if (!DivisionExists(divisionToUpdate.ID))
                     {
                         return NotFound();
                     }
@@ -117,10 +128,14 @@ namespace WMBA5.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+                return RedirectToAction("Details", new { divisionToUpdate.ID });
             }
-            ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ID", division.ClubID);
-            return View(division);
+            ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ClubName", divisionToUpdate.ClubID);
+            return View(divisionToUpdate);
         }
 
         // GET: Division/Delete/5
@@ -149,16 +164,31 @@ namespace WMBA5.Controllers
         {
             if (_context.Divisions == null)
             {
-                return Problem("Entity set 'WMBAContext.Divisions'  is null.");
+                return Problem("No Division to Delete.");
             }
             var division = await _context.Divisions.FindAsync(id);
-            if (division != null)
+            try
             {
-                _context.Divisions.Remove(division);
+                if (division != null)
+                {
+                    _context.Divisions.Remove(division);
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (DbUpdateException dex)
+            {
+                if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
+                {
+                    ModelState.AddModelError("", "Unable to Delete Division. You cannot delete a Division if it has team in it.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+            }
+            return View(division);
         }
 
         private bool DivisionExists(int id)
