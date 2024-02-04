@@ -263,12 +263,12 @@ namespace WMBA5.Controllers
             {
                 try
                 {
-                    _context.Update(player);
+                    _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PlayerExists(player.ID))
+                    if (!PlayerExists(playerToUpdate.ID))
                     {
                         return NotFound();
                     }
@@ -279,8 +279,8 @@ namespace WMBA5.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-            return View(player);
+            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
+            return View(playerToUpdate);
         }
 
         // GET: Player/Delete/5
