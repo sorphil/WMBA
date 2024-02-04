@@ -184,8 +184,9 @@ namespace WMBA5.Controllers
                 {
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
-            }
+            }  
             PopulateDropDownLists();
+            
             return View(player);
         }
 
@@ -202,7 +203,7 @@ namespace WMBA5.Controllers
             {
                 return NotFound();
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+            PopulateDropDownLists();
             return View(player);
         }
 
@@ -217,28 +218,27 @@ namespace WMBA5.Controllers
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(player);
+                    _context.Add(player);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Player", new { PlayerID = player.ID });
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PlayerExists(player.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PlayerExists(player.ID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            PopulateDropDownLists();
             return View(player);
         }
 
