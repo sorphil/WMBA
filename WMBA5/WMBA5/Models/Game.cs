@@ -9,14 +9,14 @@ namespace WMBA5.Models
         [Display(Name = "Date")]
         [Required(ErrorMessage = "You must enter date and time for the Game.")]
         [DataType(DataType.DateTime)]
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; set; } = DateTime.Today;
 
         [Required(ErrorMessage = "You cannot leave the Location blank.")]
         [StringLength(30, ErrorMessage = "Location cannot be more than 30 characters long.")]
         public string Location { get; set; }
 
-
-        public string Outcome { get; set; } //Win or lose
+        //Win or lose, default to TBD (To be determined)
+        public string Outcome { get; set; } = "TBD";
 
         [Display(Name = "Division Name")]
         [Required(ErrorMessage = "You must select a Division")]
