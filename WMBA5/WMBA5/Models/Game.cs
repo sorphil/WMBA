@@ -26,5 +26,9 @@ namespace WMBA5.Models
         public ICollection<PlayerStat> PlayerStats { get; set; } = new HashSet<PlayerStat>();
         public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
-    }
+
+		public TeamGame TeamGame { get; set; }
+		public ICollection<TeamGame> TeamGames = new HashSet<TeamGame>();
+
+	}
 }
