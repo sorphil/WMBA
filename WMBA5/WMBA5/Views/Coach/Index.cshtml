@@ -11,7 +11,7 @@
             <th class="text-center" style="min-width:120px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success"
                        role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
-                        <strong>&#x270D; Create</strong>
+                        <strong>&#x270D; <small>Create New</small></strong>
                     </a>
                 </th>
         </tr>
@@ -25,15 +25,15 @@
              <td class="text-center">
                     <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                        role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                        &#x270E;
+                        &#x270E; <small>Edit</small>
                     </a>
                     <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                        role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                        &#x1F50E;
+                        &#x1F50E; <small>Details</small>
                     </a>
                     <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                        role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                        &#x274C;
+                        &#x274C; <small>Delete</small>
                     </a>
                 </td>
         </tr>
