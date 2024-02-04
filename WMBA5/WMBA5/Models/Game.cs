@@ -6,7 +6,7 @@ namespace WMBA5.Models
     {
         public int ID { get; set; }
 
-        [Display(Name ="Date")]
+        [Display(Name = "Date")]
         [Required(ErrorMessage = "You must enter date and time for the Game.")]
         [DataType(DataType.DateTime)]
         public DateTime StartTime { get; set; }
@@ -15,10 +15,10 @@ namespace WMBA5.Models
         [StringLength(30, ErrorMessage = "Location cannot be more than 30 characters long.")]
         public string Location { get; set; }
 
-        
+
         public string Outcome { get; set; } //Win or lose
 
-        [Display(Name ="Division Name")]
+        [Display(Name = "Division Name")]
         [Required(ErrorMessage = "You must select a Division")]
         public int DivisionID { get; set; }
         public Division Division { get; set; }
@@ -26,5 +26,9 @@ namespace WMBA5.Models
         public ICollection<PlayerStat> PlayerStats { get; set; } = new HashSet<PlayerStat>();
         public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
+
+        public TeamGame TeamGame { get; set; }
+        public ICollection<TeamGame> TeamGames = new HashSet<TeamGame>();
+
     }
 }

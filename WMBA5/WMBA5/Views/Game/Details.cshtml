@@ -17,22 +17,34 @@
             @Html.DisplayFor(model => model.StartTime)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TeamGame.HomeTeam)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TeamGame.HomeTeam.TeamName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TeamGame.AwayTeam)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TeamGame.AwayTeam.TeamName)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Location)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Location)
         </dd>
-   @*      <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Oponent)
+        @*      <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Oponent)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Oponent)
+        @Html.DisplayFor(model => model.Oponent)
         </dd> *@
-@*         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PlayingAt)
+        @*         <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.PlayingAt)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PlayingAt)
+        @Html.DisplayFor(model => model.PlayingAt)
         </dd> *@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Outcome)
@@ -46,11 +58,11 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Division.DivisionName)
         </dd>
-     @*    <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LineupID)
+        @*    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.LineupID)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LineupID)
+        @Html.DisplayFor(model => model.LineupID)
         </dd> *@
     </dl>
 </div>

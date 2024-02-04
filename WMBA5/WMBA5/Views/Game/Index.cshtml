@@ -40,11 +40,17 @@
                     @Html.DisplayNameFor(model => model.StartTime)
                 </th>
                 <th>
-                    <input type="submit" name="actionButton" value="Location" class="btn btn-link" />
+                    <input type="submit" @* name="actionButton" *@ value="Home Team" class="btn btn-link" />
                 </th>
                 <th>
-                    <input type="submit" name="actionButton" value="Oponent" class="btn btn-link" />
+                    <input type="submit" name="actionButton" value="Away Team" class="btn btn-link" />
                 </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Location" class="btn btn-link" />
+                </th>
+                @* <th>
+                <input type="submit" name="actionButton" value="Oponent" class="btn btn-link" />
+                </th> *@
                 @* <th>
                 @Html.DisplayNameFor(model => model.PlayingAt)
                 </th> *@
@@ -73,6 +79,12 @@
                         @Html.DisplayFor(modelItem => item.StartTime)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.TeamGame.HomeTeam.TeamName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TeamGame.AwayTeam.TeamName)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.Location)
                     </td>
                     @*        <td>
@@ -95,10 +107,10 @@
                            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             &#x270E;
                         </a>
-                     <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-                    role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                    &#x1F50E;
-                    </a> 
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                           role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            &#x1F50E;
+                        </a>
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                             &#x274C;

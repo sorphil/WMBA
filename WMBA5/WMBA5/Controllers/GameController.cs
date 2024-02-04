@@ -22,10 +22,17 @@ namespace WMBA5.Controllers
         public async Task<IActionResult> Index(int? DivisionID, string SearchString, string actionButton, string sortDirection = "asc", string sortField = "Location")
         {
             PopulateDropDownLists();
-           
+
             ViewData["CurrentFilter"] = SearchString;
 
-            var gamesQuery = _context.Games.Include(g => g.Division).AsQueryable();
+            //var gamesQuery = _context.Games.Include(g => g.Division).AsQueryable();
+
+            var gamesQuery = _context.Games.Include(g => g.Division)
+                                .Include(g => g.TeamGame)
+                                    .ThenInclude(tg => tg.HomeTeam)
+                                .Include(g => g.TeamGame)
+                                    .ThenInclude(tg => tg.AwayTeam)
+                                .AsTracking();
 
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
@@ -100,6 +107,10 @@ namespace WMBA5.Controllers
 
             var game = await _context.Games
                 .Include(g => g.Division)
+                .Include(g => g.TeamGame)
+                .ThenInclude(tg => tg.HomeTeam)
+                .Include(g => g.TeamGame)
+                .ThenInclude(tg => tg.AwayTeam)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -113,21 +124,40 @@ namespace WMBA5.Controllers
         public IActionResult Create()
         {
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName");
-            return View();
+            ViewData["Teams"] = new SelectList(_context.Teams, "ID", "TeamName");
+
+            // Create a new Game instance with an associated TeamGame
+            var newGame = new Game
+            {
+                TeamGame = new TeamGame()
+            };
+
+            return View(newGame);
         }
 
         // POST: Game/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,LineupID")] Game game)
+        public async Task<IActionResult> Create([Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,LineupID")] Game game, int selectedHomeTeam, int selectedAwayTeam)
         {
             if (ModelState.IsValid)
             {
+                // Create a new TeamGame and associate it with the game
+                var teamGame = new TeamGame { HomeTeamID = selectedHomeTeam, AwayTeamID = selectedAwayTeam, GameID = game.ID };
+                game.TeamGame = teamGame;
+
+                // Add the game and teamGame to the context
                 _context.Add(game);
+                _context.Add(teamGame);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            PopulateDropDownList(game);
+
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
+            ViewData["Teams"] = new SelectList(_context.Teams, "ID", "TeamName");
             return View(game);
         }
 
@@ -139,11 +169,19 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Games.FindAsync(id);
+            var game = await _context.Games
+                .Include(d => d.TeamGame).ThenInclude(d => d.HomeTeam)
+               .Include(d => d.TeamGame).ThenInclude(d => d.AwayTeam)
+               .Include(d => d.Division)
+               .FirstOrDefaultAsync(d => d.ID == id);
+
             if (game == null)
             {
                 return NotFound();
             }
+            PopulateDropDownList(game);
+
+            ViewData["Teams"] = new SelectList(_context.Teams, "ID", "TeamName");
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
             return View(game);
         }
@@ -151,7 +189,7 @@ namespace WMBA5.Controllers
         // POST: Game/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,LineupID")] Game game)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,LineupID")] Game game, int selectedHomeTeam, int selectedAwayTeam)
         {
             if (id != game.ID)
             {
@@ -162,7 +200,37 @@ namespace WMBA5.Controllers
             {
                 try
                 {
-                    _context.Update(game);
+                    if (selectedHomeTeam == 0 || selectedAwayTeam == 0)
+                    {
+                        ModelState.AddModelError("", "Home Team and Away Team are required.");
+                        PopulateDropDownList(game);
+                        ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionSummary", game.DivisionID);
+                        ViewData["Teams"] = new SelectList(_context.Teams, "ID", "TeamName");
+                        return View(game);
+                    }
+                    // Find the existing game in the database
+                    var existingGame = await _context.Games
+                        .Include(g => g.TeamGame)
+                        .FirstOrDefaultAsync(m => m.ID == id);
+
+                    if (existingGame == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update the game properties
+                    existingGame.DivisionID = game.DivisionID;
+
+                    // Update the associated TeamGame
+                    if (existingGame.TeamGame == null)
+                    {
+                        existingGame.TeamGame = new TeamGame();
+                    }
+
+                    existingGame.TeamGame.HomeTeamID = selectedHomeTeam;
+                    existingGame.TeamGame.AwayTeamID = selectedAwayTeam;
+
+                    // Save changes
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -178,10 +246,10 @@ namespace WMBA5.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Teams"] = new SelectList(_context.Teams, "ID", "TeamName");
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
             return View(game);
         }
-
         // GET: Game/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -221,6 +289,27 @@ namespace WMBA5.Controllers
         private void PopulateDropDownLists(Game game = null)
         {
             ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
+        }
+        private void PopulateDropDownList(Game game)
+        {
+            var allTeams = _context.Teams.ToList();
+
+            // Check if TeamGame is null
+            if (game.TeamGame == null)
+            {
+                ViewData["Teams"] = new SelectList(allTeams, "ID", "TeamName");
+                ViewData["SelectedHomeTeam"] = null;
+                ViewData["SelectedAwayTeam"] = null;
+                return;
+            }
+
+            // Populate selected home and away teams
+            var selectedHomeTeam = game.TeamGame.HomeTeam?.ID;
+            var selectedAwayTeam = game.TeamGame.AwayTeam?.ID;
+
+            ViewData["Teams"] = new SelectList(allTeams, "ID", "TeamName");
+            ViewData["SelectedHomeTeam"] = selectedHomeTeam;
+            ViewData["SelectedAwayTeam"] = selectedAwayTeam;
         }
         private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
     }
