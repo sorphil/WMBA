@@ -7,7 +7,7 @@ namespace WMBA5.Models
         public int ID { get; set; }
 
         [Display(Name = "Team Name")]
-        [Required(ErrorMessage = "You cant leave the Division Name blank")]
+        [Required(ErrorMessage = "You cant leave the Team Name blank")]
         public string TeamName { get; set; }
 
         //Foreign keys

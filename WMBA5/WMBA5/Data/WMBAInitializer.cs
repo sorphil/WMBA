@@ -58,7 +58,7 @@ namespace WMBA5.Data
                        },
                        new Coach
                        {
-                           CoachName = "Dave Kendall"
+                           CoachName = "Dave Kendell"
                        },
                        new Coach
                        {
@@ -132,13 +132,13 @@ namespace WMBA5.Data
                         new Team
                         {
                             TeamName = "Bisons",
-                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendall").ID,
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendell").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID
                         },
                         new Team
                         {
                             TeamName = "Dragons",
-                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendall").ID,
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendell").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID
                         },
                         new Team

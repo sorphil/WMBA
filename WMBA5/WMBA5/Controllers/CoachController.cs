@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
 
 namespace WMBA5.Controllers
 {
-    public class CoachController : Controller
+    public class CoachController : ElephantController
     {
         private readonly WMBAContext _context;
 
