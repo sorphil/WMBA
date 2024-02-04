@@ -4,6 +4,16 @@ namespace WMBA5.Models
 {
     public class Team
     {
+        #region Summary Properties
+        [Display(Name = "Team Name")]
+        public string TeamSummary
+        {
+            get
+            {
+                return TeamName + " " + Division.DivisionName;
+            }
+        }
+        #endregion
         public int ID { get; set; }
 
         [Display(Name = "Team Name")]
