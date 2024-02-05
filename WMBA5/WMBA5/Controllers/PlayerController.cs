@@ -251,15 +251,10 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id) //, [Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
         {
-            //Go get the player to update
-            var playerToUpdate = await _context.Players
-
-                .Include(p => p.Status)
-                .Include(p => p.Team).ThenInclude(p => p.Division)
-=======
-                .Include(p => p.Team)
-                .Include(p=> p.Division  )
-
+			//Go get the player to update
+			var playerToUpdate = await _context.Players
+				.Include(p => p.Status)
+				.Include(p => p.Team).ThenInclude(p => p.Division)
                 .FirstOrDefaultAsync(p => p.ID == id);
             
             if (playerToUpdate == null)
