@@ -41,7 +41,7 @@
                 <th style="min-width:120px">
                     <a asp-action="Add" asp-route-TeamID="@team.ID" asp-route-TeamName="@team.TeamName" class="btn btn-sm btn-outline-success"
                        role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
-                        <strong>&#x270D; Create New</strong>
+                        <strong>&#x270D; <small>Create New</small></strong>
                     </a>
                 </th>
             </tr>
@@ -60,11 +60,11 @@
                     <td>
                         <a asp-action="update" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                            &#x270E;
+                            &#x270E; <small>Update</small>
                         </a>
                         <a asp-action="Remove" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Delete From Team">
-                            &#x274C;
+                            &#x274C; <small>Remove</small>
                         </a>
                     </td>
                 </tr>

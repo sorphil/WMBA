@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.ContentModel;
 using System.Linq;
+
 using System.Numerics;
+=======
+using System.Linq.Expressions;
+
 using System.Threading.Tasks;
 using WMBA5.CustomControllers;
 using WMBA5.Data;
@@ -137,23 +141,105 @@ namespace WMBA5.Controllers
             return View(newGame);
         }
 
-        // POST: Game/Create
-        [HttpPost]
+		// GET: Game/AddTeam/5
+		public async Task<IActionResult> AddTeams(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var game = await _context.Games
+				.Include(g => g.Division)
+                .Include(g => g.TeamGame).ThenInclude(tg => tg.HomeTeam)
+                .Include(g => g.TeamGame).ThenInclude(tg => tg.AwayTeam)
+				.FirstOrDefaultAsync(m => m.ID == id);
+
+			if (game == null)
+			{
+				return NotFound();
+			}
+
+			// Filter teams based on DivisionID of the game
+			var teamsInSameDivision = _context.Teams.Where(t => t.DivisionID == game.DivisionID);
+
+			ViewData["SelectedHomeTeam"] = new SelectList(teamsInSameDivision, "ID", "TeamName");
+			ViewData["SelectedAwayTeam"] = new SelectList(teamsInSameDivision, "ID", "TeamName");
+
+			return View(game);
+		}
+
+		// POST: Game/AddTeam/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> AddTeams(int id, [Bind("ID")] Game gameViewModel, int selectedHomeTeam, int selectedAwayTeam)
+		{
+			var gameToUpdate = await _context.Games.Include(g => g.TeamGame).FirstOrDefaultAsync(g => g.ID == id);
+
+			if (gameToUpdate == null)
+			{
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
+			{
+				// Update the TeamGame for the game
+				if (gameToUpdate.TeamGame == null)
+				{
+					gameToUpdate.TeamGame = new TeamGame();
+				}
+				gameToUpdate.TeamGame.HomeTeamID = selectedHomeTeam;
+				gameToUpdate.TeamGame.AwayTeamID = selectedAwayTeam;
+
+				try
+				{
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!GameExists(gameToUpdate.ID))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
+				}
+				return RedirectToAction(nameof(Index));
+			}
+
+			// If we got this far, something failed, redisplay form
+			return View(gameViewModel);
+		}
+
+
+		// POST: Game/Create
+		[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,LineupID")] Game game, int selectedHomeTeam, int selectedAwayTeam)
+        public async Task<IActionResult> Create([Bind("ID,StartTime,Location,Outcome,DivisionID")] Game game)/* int selectedHomeTeam, int selectedAwayTeam)*/
         {
-            if (ModelState.IsValid)
+            try
             {
-                // Create a new TeamGame and associate it with the game
-                var teamGame = new TeamGame { HomeTeamID = selectedHomeTeam, AwayTeamID = selectedAwayTeam, GameID = game.ID };
-                game.TeamGame = teamGame;
+                if (ModelState.IsValid)
+                {
+                    //// Create a new TeamGame and associate it with the game
+                    //var teamGame = new TeamGame { HomeTeamID = selectedHomeTeam, AwayTeamID = selectedAwayTeam, GameID = game.ID };
+                    //game.TeamGame = teamGame;
 
-                // Add the game and teamGame to the context
-                _context.Add(game);
-                _context.Add(teamGame);
+                    // Add the game and teamGame to the context
+                    _context.Add(game);
+                    //_context.Add(teamGame);
 
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("AddTeams", new { game.ID });
+                }
+            }
+
+            catch(Exception ex) 
+            {
+                ModelState.AddModelError("", ex.Message);
+
             }
 
             PopulateDropDownList(game);

@@ -18,7 +18,7 @@ namespace WMBA5.Data
         public DbSet<PlayerStat> PlayerStats { get; set; }
         public DbSet<PlayerAtBat> PlayerAtBats { get; set; }
         public DbSet<Inning> Innings { get; set; }
-        public DbSet<Lineup> Lineups { get; set; }
+        //public DbSet<Lineup> Lineups { get; set; }
 
         public DbSet<Status> Statuses { get; set; }
 
@@ -112,11 +112,11 @@ namespace WMBA5.Data
             //    .IsRequired();
 
             //Team to Lineup
-            modelBuilder.Entity<Team>()
-                .HasMany<Lineup>(c => c.Lineups)
-                .WithOne(c => c.Team)
-                .HasForeignKey(c => c.TeamID)
-                .IsRequired();
+            //modelBuilder.Entity<Team>()
+            //    .HasMany<Lineup>(c => c.Lineups)
+            //    .WithOne(c => c.Team)
+            //    .HasForeignKey(c => c.TeamID)
+            //    .IsRequired();
 
 
             //To Ensure Players has Unique MemberID

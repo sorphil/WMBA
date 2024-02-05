@@ -1,12 +1,13 @@
 ﻿@model WMBA5.Models.Game
 
 @{
-	ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Game";
 }
 
-<partial name="_ViewHeading" />
-<hr />
+<h1>Create Game</h1>
+
 <div class="row">
+
 	<div class="col-md-4">
 		<form asp-action="Create">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -39,11 +40,37 @@
 			</div>
 		</form>
 	</div>
+
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StartTime" class="control-label">Start Time</label>
+                <input asp-for="StartTime" class="form-control" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label">Location</label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DivisionID" class="control-label">Division</label>
+                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
+                <span asp-validation-for="DivisionID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
 </div>
 
 <div>
-	<a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to List</a>
 </div>
+
 
 @section Scripts{
 	@{
@@ -58,3 +85,6 @@
 		});
 	</script>
 }
+
+       
+

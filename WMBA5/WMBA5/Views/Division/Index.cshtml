@@ -1,14 +1,8 @@
 ﻿@model IEnumerable<WMBA5.Models.Division>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<partial name="_ViewHeading" />
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -18,7 +12,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Club)
             </th>
-            <th></th>
+            <th class="text-center" style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success"
+                       role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
+                        <strong>&#x270D; <small>Create New</small></strong>
+                    </a>
+                </th>
         </tr>
     </thead>
     <tbody>
@@ -28,14 +27,32 @@
                 @Html.DisplayFor(modelItem => item.DivisionName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Club.ID)
+                @Html.DisplayFor(modelItem => item.Club.ClubName)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                       role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                        &#x270E; <small>Edit</small>
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                       role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                        &#x1F50E; <small>Details</small>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                       role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                        &#x274C; <small>Delete</small>
+                    </a>
+                </td>
         </tr>
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

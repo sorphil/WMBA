@@ -7,3 +7,14 @@ Update Database
 
 Update-Database -Context WMBAContext
 
+
+
+
+
+
+
+Add-Migration -Context WMBAContext -o Data\WMBAMigrations Initial
+Update-Database -Context WMBAContext
+
+Add-Migration -Context ApplicationDbContext -OutputDir Data\Migrations Initial
+Update-Database -Context ApplicationDbContext
