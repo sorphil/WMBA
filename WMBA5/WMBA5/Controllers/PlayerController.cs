@@ -252,6 +252,7 @@ namespace WMBA5.Controllers
             //Go get the player to update
             var playerToUpdate = await _context.Players
                 .Include(p => p.Team)
+                .Include(p=> p.Division  )
                 .FirstOrDefaultAsync(p => p.ID == id);
             
             if (playerToUpdate == null)
