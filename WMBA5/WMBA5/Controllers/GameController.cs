@@ -5,7 +5,7 @@ using NuGet.ContentModel;
 using System.Linq;
 
 using System.Numerics;
-=======
+
 using System.Linq.Expressions;
 
 using System.Threading.Tasks;
