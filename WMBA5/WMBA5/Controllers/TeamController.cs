@@ -11,6 +11,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.EntityFrameworkCore.Storage;
 using WMBA5.Utilities;
 using OfficeOpenXml;
+using OfficeOpenXml.Table;
 
 namespace WMBA5.Controllers
 {
@@ -400,32 +401,101 @@ namespace WMBA5.Controllers
             }
         }
 
-        public async Task<IActionResult> InsertFromExcel(IFormFile theExcel)
+        public async Task<IActionResult> InsertFromExcel(IFormFile TheExcel)
         {
             ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
-            ExcelPackage excel;
-            using (var memoryStream = new MemoryStream())
+            string feedBack = string.Empty;
+            if (TheExcel != null)
             {
-                await theExcel.CopyToAsync(memoryStream);
-                excel = new ExcelPackage(memoryStream);
-            }
-            var workSheet = excel.Workbook.Worksheets[0];
-            var start = workSheet.Dimension.Start;
-            var end = workSheet.Dimension.End;
-
-            List<Team> teams = new List<Team>();
-            for(int row = start.Row; row <= end.Row; row++)
-            {
-                Team t = new Team
+                string mimeType = TheExcel.ContentType;
+                long fileLength = TheExcel.Length;
+                if (!(mimeType == "" || fileLength == 0))//Looks like we have a file!!!
                 {
-                    TeamName = workSheet.Cells[row, 1].Text,
-                    CoachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 2].Text).ID,
-                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 3].Text).ID
-                };
-                teams.Add(t);
+                    if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet") || mimeType.Contains("xlsx"))
+                    {
+                        ExcelPackage excel;
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await TheExcel.CopyToAsync(memoryStream);
+                            excel = new ExcelPackage(memoryStream);
+                        }
+                        var workSheet = excel.Workbook.Worksheets[0];
+                        if (workSheet.Cells[1, 1].Text == "Team Name" &&
+                                workSheet.Cells[1, 2].Text == "Coach")
+                        {
+                            var start = workSheet.Dimension.Start;
+                            var end = workSheet.Dimension.End;
+                            List<Team> teams = new List<Team>();
+                            for (int row = start.Row + 1; row <= end.Row; row++)
+                            {
+                                Team p = new Team
+                                {
+                                    TeamName = workSheet.Cells[row, 1].Text,
+                                    CoachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 2].Text).ID,
+                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 3].Text).ID
+                                };
+                                teams.Add(p);
+                                _context.Teams.AddRange(teams);
+                                _context.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            feedBack = "Error: That file is not an Excel spreadsheet.";
+                        }
+                    }
+                    else if (mimeType.Contains("text/csv"))
+                    {
+                        var format = new ExcelTextFormat();
+                        format.Delimiter = ',';
+                        bool firstRowIsHeader = true;
+
+                        using var reader = new System.IO.StreamReader(TheExcel.OpenReadStream());
+
+                        using ExcelPackage package = new ExcelPackage();
+                        var result = reader.ReadToEnd();
+                        ExcelWorksheet workSheet = package.Workbook.Worksheets.Add("Imported Report Data");
+
+                        workSheet.Cells["A1"].LoadFromText(result, format, TableStyles.None, firstRowIsHeader);
+                        if (workSheet.Cells[1, 1].Text == "Team Name" &&
+                            workSheet.Cells[1, 2].Text == "Coach")
+                        {
+                            var start = workSheet.Dimension.Start;
+                            var end = workSheet.Dimension.End;
+                            List<Team> teams = new List<Team>();
+                            for (int row = start.Row + 1; row <= end.Row; row++)
+                            {
+                                Team p = new Team
+                                {
+                                    TeamName = workSheet.Cells[row, 1].Text,
+                                    CoachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 2].Text).ID,
+                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 3].Text).ID
+                                };
+                                teams.Add(p);
+                                _context.Teams.AddRange(teams);
+                                _context.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            feedBack = "Error: You may have selected the wrong file to upload.";
+                        }
+                    }
+                    else
+                    {
+                        feedBack = "Error: That file is not an Excel spreadsheet.";
+                    }
+                }
+                else
+                {
+                    feedBack = "Error:  file appears to be empty";
+                }
             }
-            _context.Teams.AddRange(teams);
-            _context.SaveChanges();
+            else
+            {
+                feedBack = "Error: No file uploaded";
+            }
+            TempData["Feedback"] = feedBack;
             return Redirect(ViewData["ReturnURL"].ToString());
         }
     }
