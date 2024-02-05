@@ -239,7 +239,9 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
             ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-            return View(player);
+			ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
+			ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", player.StatusID);
+			return View(player);
         }
 
         // POST: Player/Edit/5
@@ -251,7 +253,8 @@ namespace WMBA5.Controllers
         {
             //Go get the player to update
             var playerToUpdate = await _context.Players
-                .Include(p => p.Team)
+                .Include(p => p.Status)
+                .Include(p => p.Team).ThenInclude(p => p.Division)
                 .FirstOrDefaultAsync(p => p.ID == id);
             
             if (playerToUpdate == null)
@@ -259,13 +262,16 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
+				p => p.MemberID, p => p.FirstName, p => p.LastName, p => p.Nickname,
+				p => p.JerseyNumber, p => p.StatusID, p => p.DivisionID, p => p.TeamID))
             {
                 try
                 {
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
-                }
+					return RedirectToAction(nameof(Index));
+				}
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PlayerExists(playerToUpdate.ID))
@@ -277,10 +283,15 @@ namespace WMBA5.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
-            return View(playerToUpdate);
+            //ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
+            PopulateDropDownLists(playerToUpdate);
+			ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
+			ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", playerToUpdate.DivisionID);
+			ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", playerToUpdate.StatusID);
+
+			return View(playerToUpdate);
         }
 
         // GET: Player/Delete/5

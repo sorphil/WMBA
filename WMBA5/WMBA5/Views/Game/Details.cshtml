@@ -17,16 +17,22 @@
             @Html.DisplayFor(model => model.StartTime)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Division)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Division.DivisionName)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TeamGame.HomeTeam)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TeamGame.HomeTeam.TeamSummary)
+            @Html.DisplayFor(model => model.TeamGame.HomeTeam.TeamName)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TeamGame.AwayTeam)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TeamGame.AwayTeam.TeamSummary)
+            @Html.DisplayFor(model => model.TeamGame.AwayTeam.TeamName)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Location)
@@ -34,36 +40,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Location)
         </dd>
-        @*      <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Oponent)
-        </dt>
-        <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Oponent)
-        </dd> *@
-        @*         <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.PlayingAt)
-        </dt>
-        <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.PlayingAt)
-        </dd> *@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Outcome)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Outcome)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Division)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Division.DivisionName)
-        </dd>
-        @*    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.LineupID)
-        </dt>
-        <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.LineupID)
-        </dd> *@
     </dl>
 </div>
 <div>
