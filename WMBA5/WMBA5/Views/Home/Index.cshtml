@@ -3,13 +3,80 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Dashboard</h1>
-    <a asp-controller="Team" asp-action="Index" class="btn btn-outline-dark">Go to Teams</a>
-    @*  <p>Click the "Go to Teams" buttons to have acces to the Teams Page, manage Teams, and see a list of all the players that are enrolled in a specific Team</p> *@
-    <a asp-controller="Player" asp-action="Index" class="btn btn-outline-dark">Go to Players</a>
-    @* <p>Click the "Go to Players" buttons to have acces to the Players Page, manage Player, and see a list of all the stats that every player has</p> *@
-    <a asp-controller="Game" asp-action="Index" class="btn btn-outline-dark">Go to Games</a>
-    @* <p>Click the "Go to Games" buttons to have acces to the Games Page, manage Ganes, and see the details and result of every match</p> *@
-    <a asp-controller="Coach" asp-action="Index" class="btn btn-outline-dark">Go to Coaches</a>
-    <a asp-controller="Division" asp-action="Index" class="btn btn-outline-dark">Go to Division</a>
+    <table class="border-1">
+        <thead>
+            <tr>
+                <th class="border-1 table-dash">
+                    <label>Teams</label>
+                </th>
+                <th class="border-1 table-dash">
+                    <label>Game</label>
+                </th>
+                <th class="border-1 table-dash">
+                    <label>Coach</label>
+                </th>
+                <th class="border-1 table-dash">
+                    <label>Division</label>
+                </th>
+                <th class="border-1 table-dash">
+                    <label>Players</label>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="border-1 table-dash">
+                    <p>
+                        The Teams page will allow you to see a list of all the registered teams, their division,
+                        and the coach who is in charge of the team, you can create a new team by clicking on “create new team”
+                        and filling out the form with the team data, You can edit it by clicking on the button with a pencil,
+                        delete it by clicking on the red x or go to the details by clicking on the magnifying glass button and see
+                        the details of the team and at the same time a list with all the players that are part of the team.
+                    </p>
+                </td>
+                <td class="border-1 table-dash">
+                    <p>
+                        The Game page will allow you to see a list of all the scheduled games, see the teams that will be part of the match,
+                        the day and time of the match, and if the match has already taken place, see the result (if you have not yet played
+                        the result, it will be “to be defined”), you can create a new match, edit, delete it, or view the details of each one.
+                    </p>
+                </td>
+                <td class="border-1 table-dash">
+                    <p>
+                        The Coach page will allow you to manage all the coaches, when you enter you will be able to see a list with all the coaches and
+                        the team they coach, you will be able to create a new coach by clicking on the “create new” button, edit it by clicking on the button
+                        with the pencil, see all its details with the button with a magnifying glass and delete it with the button with a red x.
+                    </p>
+                </td>
+                <td class="border-1 table-dash">
+                    <p>The Division page will allow you to manage all divisions, create a new one if necessary, edit it, view its details or delete it if necessary.</p>
+                </td>
+                <td class="border-1 table-dash">
+                    <p>
+                        The Players page will allow you to see a list of all the players who are registered in the association; you will be able to see the team they are part of and
+                        the division to which they belong.By clicking on the “Create new” button you can create a new player, you must fill out the form with all the player's data
+                        such as first and last name, division in which he will play, shirt number, member ID, and you can add nickname if you have one, at the same
+                        time as assigning it to a team, if you don't have a team, you can assign it later.You can edit a player's data, if necessary, go to the details,
+                        and see all his information and in turn his statistics during the season, you can also delete him by clicking on the button with a red x.
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a asp-controller="Team" asp-action="Index" class="btn btn-outline-dark">Go to Teams</a>
+                    @*  <p>Click the "Go to Teams" buttons to have acces to the Teams Page, manage Teams, and see a list of all the players that are enrolled in a specific Team</p> *@
+                </td>
+                <td>
+                    <a asp-controller="Game" asp-action="Index" class="btn btn-outline-dark">Go to Games</a>
+                    @* <p>Click the "Go to Games" buttons to have acces to the Games Page, manage Ganes, and see the details and result of every match</p> *@
+                </td>
+                <td>    <a asp-controller="Coach" asp-action="Index" class="btn btn-outline-dark">Go to Coaches</a></td>
+                <td>    <a asp-controller="Division" asp-action="Index" class="btn btn-outline-dark">Go to Division</a></td>
+                <td>
+                    <a asp-controller="Player" asp-action="Index" class="btn btn-outline-dark">Go to Players</a>
+                    @* <p>Click the "Go to Players" buttons to have acces to the Players Page, manage Player, and see a list of all the stats that every player has</p> *@
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
