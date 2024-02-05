@@ -1,0 +1,34 @@
+﻿@model WMBA5.Models.Game
+
+@{
+    ViewData["Title"] = "Add Teams";
+}
+
+<h1>Add Teams to Game</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="AddTeams" method="post">
+            <input type="hidden" asp-for="ID" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Home Team</label>
+                <select asp-for="TeamGame.HomeTeamID" class="form-control" asp-items="@(ViewData["SelectedHomeTeam"] as SelectList)"></select>
+                <span asp-validation-for="TeamGame.HomeTeamID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Away Team</label>
+                <select asp-for="TeamGame.AwayTeamID" class="form-control" asp-items="@(ViewData["SelectedAwayTeam"] as SelectList)"></select>
+                <span asp-validation-for="TeamGame.AwayTeamID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save Teams" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
