@@ -12,6 +12,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using WMBA5.Utilities;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Numerics;
+using OfficeOpenXml.Table;
+using OfficeOpenXml;
 
 namespace WMBA5.Controllers
 {
@@ -366,6 +368,109 @@ namespace WMBA5.Controllers
         private bool PlayerExists(int id)
         {
           return _context.Players.Any(e => e.ID == id);
+        }
+        public async Task<IActionResult> InsertFromExcel(IFormFile ExcelPlayer)
+        {
+            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Player");
+            string feedBack = string.Empty;
+            if (ExcelPlayer != null)
+            {
+                string mimeType = ExcelPlayer.ContentType;
+                long fileLength = ExcelPlayer.Length;
+                if (!(mimeType == "" || fileLength == 0))//Looks like we have a file!!!
+                {
+                    if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet") || mimeType.Contains("xlsx"))
+                    {
+                        ExcelPackage excel;
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await ExcelPlayer.CopyToAsync(memoryStream);
+                            excel = new ExcelPackage(memoryStream);
+                        }
+                        var workSheet = excel.Workbook.Worksheets[0];
+                        if (workSheet.Cells[1, 4].Text == "Team" &&
+                                workSheet.Cells[1, 6].Text == "Division")
+                        {
+                            var start = workSheet.Dimension.Start;
+                            var end = workSheet.Dimension.End;
+                            List<Player> players = new List<Player>();
+                            for (int row = start.Row + 1; row <= end.Row; row++)
+                            {
+                                Player p = new Player
+                                {
+                                    FirstName = workSheet.Cells[row, 1].Text,
+                                    LastName = workSheet.Cells[row, 2].Text,
+                                    MemberID = workSheet.Cells[row, 3].Text,
+                                    TeamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 5].Text).ID,
+                                    StatusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 6].Text).ID,
+                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 7].Text).ID
+                                };
+                                players.Add(p);
+                                _context.Players.AddRange(players);
+                                _context.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            feedBack = "Error: That file is not an Excel spreadsheet.";
+                        }
+                    }
+                    else if (mimeType.Contains("text/csv"))
+                    {
+                        var format = new ExcelTextFormat();
+                        format.Delimiter = ',';
+                        bool firstRowIsHeader = true;
+
+                        using var reader = new System.IO.StreamReader(ExcelPlayer.OpenReadStream());
+
+                        using ExcelPackage package = new ExcelPackage();
+                        var result = reader.ReadToEnd();
+                        ExcelWorksheet workSheet = package.Workbook.Worksheets.Add("Imported Report Data");
+
+                        workSheet.Cells["A1"].LoadFromText(result, format, TableStyles.None, firstRowIsHeader);
+                        if (workSheet.Cells[1, 4].Text == "Team" &&
+                            workSheet.Cells[1, 6].Text == "Division")
+                        {
+                            var start = workSheet.Dimension.Start;
+                            var end = workSheet.Dimension.End;
+                            List<Player> players = new List<Player>();
+                            for (int row = start.Row + 1; row <= end.Row; row++)
+                            {
+                                Player p = new Player
+                                {
+                                    FirstName = workSheet.Cells[row, 1].Text,
+                                    LastName = workSheet.Cells[row, 2].Text,
+                                    MemberID = workSheet.Cells[row, 3].Text,
+                                    TeamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 4].Text).ID,
+                                    StatusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 5].Text).ID,
+                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text).ID
+                                };
+                                players.Add(p);
+                                _context.Players.AddRange(players);
+                                _context.SaveChanges(); ;
+                            }
+                        }
+                        else
+                        {
+                            feedBack = "Error: You may have selected the wrong file to upload.";
+                        }
+                    }
+                    else
+                    {
+                        feedBack = "Error: That file is not an Excel spreadsheet.";
+                    }
+                }
+                else
+                {
+                    feedBack = "Error:  file appears to be empty";
+                }
+            }
+            else
+            {
+                feedBack = "Error: No file uploaded";
+            }
+            TempData["Feedback"] = feedBack;
+            return Redirect(ViewData["ReturnURL"].ToString());
         }
     }
 }

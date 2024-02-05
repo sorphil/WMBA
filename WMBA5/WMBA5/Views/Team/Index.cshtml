@@ -91,15 +91,21 @@
 <form asp-action="InsertFromExcel" asp-controller="Team" method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-4">
+            <label class="fw-bold h4">Import Teams:</label>
+            <p>
+                Please upload an excel or CVS file with this layout:<br />
+                Team  |  Coach  |  Division
+            </p>
             <div class="form-group">
                 <label class="control-label custome-file-label">Upload File:</label>
                 <div class="input-group mb-3">
-                    <input type="file"  class="form-control" name="theExcel" id="theExcel"/>
+                    <input type="file" class="form-control" name="theExcel" id="theExcel" />
                 </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Upload Data" class="btn btn-primary" />
             </div>
+            <label class="alert-danger">@TempData["FeedBack"]</label>
         </div>
     </div>
 </form>
