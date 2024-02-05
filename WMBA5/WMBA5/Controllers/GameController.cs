@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.ContentModel;
 using System.Linq;
+
+using System.Numerics;
+=======
 using System.Linq.Expressions;
+
 using System.Threading.Tasks;
 using WMBA5.CustomControllers;
 using WMBA5.Data;
@@ -365,14 +370,51 @@ namespace WMBA5.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        
+        
+
+        //Selecting the division for game
         private SelectList DivisionSelectionList(int? selectedId)
         {
             return new SelectList(_context.Divisions, "ID", "DivisionName", selectedId);
         }
-        private void PopulateDropDownLists(Game game = null)
-        {
-            ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
-        }
+
+        //Selecting Teams that are part of the division we select
+		//private SelectList TeamSelectionList(int? selectedId, int DivisionID)
+		//{
+		//	var query = from t in _context.Teams
+		//				where t.DivisionID == DivisionID
+		//				select t;
+		//	return new SelectList(query.OrderBy(p => p.TeamName), "ID", "TeamSummary", selectedId);
+
+			
+		//}
+		private void PopulateDropDownLists(Game game = null)
+		{
+			ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
+		}
+		//private void PopulateDropDownList(Game game)
+		//{
+
+		//	if ((game?.DivisionID).HasValue)
+		//	{   //Careful: CityID might have a value but the City object could be missing
+		//		if (game.Division == null)
+		//		{
+		//			game.Division = _context.Divisions.Find(game.DivisionID);
+		//		}
+		//		ViewData["DivisionID"] = DivisionSelectionList(game.Division.ID);
+		//		ViewData["HomeTeamID"] = TeamSelectionList(game.TeamGame.HomeTeam?.ID,game.Division.ID);
+		//		ViewData["AwayTeamID"] = TeamSelectionList(game.TeamGame.AwayTeam?.ID, game.Division.ID);
+		//	}
+		//	else
+		//	{
+		//		ViewData["DivisionID"] = DivisionSelectionList(null);
+		//		ViewData["HomeTeamID"] = TeamSelectionList(null, 0);
+		//		ViewData["AwayTeamID"] = TeamSelectionList(null, 0);
+		//	}
+		//}
+		
+
         private void PopulateDropDownList(Game game)
         {
             var allTeams = _context.Teams.ToList();
@@ -394,6 +436,11 @@ namespace WMBA5.Controllers
             ViewData["SelectedHomeTeam"] = selectedHomeTeam;
             ViewData["SelectedAwayTeam"] = selectedAwayTeam;
         }
-        private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
+		//[HttpGet]
+		//public JsonResult GetCities(int DivisionID)
+		//{
+		//	return Json(TeamSelectionList(DivisionID, 0));
+		//}
+		private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
     }
 }
