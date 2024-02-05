@@ -4,6 +4,16 @@ namespace WMBA5.Models
 {
     public class Team
     {
+        #region Summary Properties
+        [Display(Name = "Team Name")]
+        public string TeamSummary
+        {
+            get
+            {
+                return TeamName + " " + Division.DivisionName;
+            }
+        }
+        #endregion
         public int ID { get; set; }
 
         [Display(Name = "Team Name")]
@@ -27,6 +37,10 @@ namespace WMBA5.Models
         public ICollection<Lineup> Lineups { get; set; } = new HashSet<Lineup>();
 
         public ICollection<Player> Players { get; set; } = new HashSet<Player>();
-        
+
+        public ICollection<TeamGame> HomeTeamGames { get; set; } = new HashSet<TeamGame>();
+
+        public ICollection<TeamGame> AwayTeamGames { get; set; } = new HashSet<TeamGame>();
+
     }
 }

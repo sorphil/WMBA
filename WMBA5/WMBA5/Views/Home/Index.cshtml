@@ -3,6 +3,13 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Dashboard</h1>
+    <a asp-controller="Team" asp-action="Index" class="btn btn-outline-dark">Go to Teams</a>
+    @*  <p>Click the "Go to Teams" buttons to have acces to the Teams Page, manage Teams, and see a list of all the players that are enrolled in a specific Team</p> *@
+    <a asp-controller="Player" asp-action="Index" class="btn btn-outline-dark">Go to Players</a>
+    @* <p>Click the "Go to Players" buttons to have acces to the Players Page, manage Player, and see a list of all the stats that every player has</p> *@
+    <a asp-controller="Game" asp-action="Index" class="btn btn-outline-dark">Go to Games</a>
+    @* <p>Click the "Go to Games" buttons to have acces to the Games Page, manage Ganes, and see the details and result of every match</p> *@
+    <a asp-controller="Coach" asp-action="Index" class="btn btn-outline-dark">Go to Coaches</a>
+    <a asp-controller="Division" asp-action="Index" class="btn btn-outline-dark">Go to Division</a>
 </div>
