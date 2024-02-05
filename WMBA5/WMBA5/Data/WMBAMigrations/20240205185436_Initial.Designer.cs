@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240204030152_Initial")]
+    [Migration("20240205185436_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -119,41 +119,6 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasIndex("GameID");
 
                     b.ToTable("Innings");
-                });
-
-            modelBuilder.Entity("WMBA5.Models.Lineup", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("BattingOrder")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FieldingPosition")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("GameID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsPlaying")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PlayerID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TeamID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("GameID");
-
-                    b.HasIndex("PlayerID");
-
-                    b.HasIndex("TeamID");
-
-                    b.ToTable("Lineups");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Player", b =>
@@ -303,12 +268,6 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Property<int>("DivisionID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("LineupID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("LineupID1")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("TeamName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -318,8 +277,6 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasIndex("CoachID");
 
                     b.HasIndex("DivisionID");
-
-                    b.HasIndex("LineupID1");
 
                     b.ToTable("Teams");
                 });
@@ -382,33 +339,6 @@ namespace WMBA5.Data.WMBAMigrations
                         .IsRequired();
 
                     b.Navigation("Game");
-                });
-
-            modelBuilder.Entity("WMBA5.Models.Lineup", b =>
-                {
-                    b.HasOne("WMBA5.Models.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WMBA5.Models.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WMBA5.Models.Team", "Team")
-                        .WithMany("Lineups")
-                        .HasForeignKey("TeamID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("Player");
-
-                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Player", b =>
@@ -497,15 +427,9 @@ namespace WMBA5.Data.WMBAMigrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WMBA5.Models.Lineup", "Lineup")
-                        .WithMany()
-                        .HasForeignKey("LineupID1");
-
                     b.Navigation("Coach");
 
                     b.Navigation("Division");
-
-                    b.Navigation("Lineup");
                 });
 
             modelBuilder.Entity("WMBA5.Models.TeamGame", b =>
@@ -580,8 +504,6 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Navigation("AwayTeamGames");
 
                     b.Navigation("HomeTeamGames");
-
-                    b.Navigation("Lineups");
 
                     b.Navigation("Players");
                 });
