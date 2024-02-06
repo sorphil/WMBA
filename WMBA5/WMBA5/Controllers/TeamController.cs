@@ -420,8 +420,8 @@ namespace WMBA5.Controllers
                             excel = new ExcelPackage(memoryStream);
                         }
                         var workSheet = excel.Workbook.Worksheets[0];
-                        if (workSheet.Cells[1, 2].Text == "Team Name" &&
-                                workSheet.Cells[1, 3].Text == "Coach")
+                        if (workSheet.Cells[1, 1].Text == "Team Name" &&
+                                workSheet.Cells[1, 2].Text == "Coach")
                         {
                             var start = workSheet.Dimension.Start;
                             var end = workSheet.Dimension.End;
@@ -430,10 +430,9 @@ namespace WMBA5.Controllers
                             {
                                 Team p = new Team
                                 {
-                                    ID = int.Parse(workSheet.Cells[row, 1].Text),
-                                    TeamName = workSheet.Cells[row, 2].Text,
-                                    CoachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 3].Text).ID,
-                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 4].Text).ID
+                                    TeamName = workSheet.Cells[row, 1].Text,
+                                    CoachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 2].Text).ID,
+                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 3].Text).ID
                                 };
                                 teams.Add(p);
                                 _context.Teams.AddRange(teams);
@@ -442,7 +441,7 @@ namespace WMBA5.Controllers
                         }
                         else
                         {
-                            feedBack = "Error: That file is not an Excel spreadsheet.";
+                            feedBack = "Error: You may have selected the wrong file to upload.";
                         }
                     }
                     else if (mimeType.Contains("text/csv"))
