@@ -441,7 +441,7 @@ namespace WMBA5.Controllers
                         }
                         else
                         {
-                            feedBack = "Error: That file is not an Excel spreadsheet.";
+                            feedBack = "Error: You may have selected the wrong file to upload.";
                         }
                     }
                     else if (mimeType.Contains("text/csv"))
