@@ -23,7 +23,7 @@ namespace WMBA5.Data
         public DbSet<PlayerAtBat> PlayerAtBats { get; set; }
         public DbSet<Inning> Innings { get; set; }
         //public DbSet<Lineup> Lineups { get; set; }
-
+        public DbSet<TeamGame> TeamGames { get; set; }
         public DbSet<Status> Statuses { get; set; }
 
 
