@@ -85,10 +85,11 @@
                            role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             &#x1F50E; <small>Details</small>
                         </a>
-                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                       @*  Commenting it cause we dont want to delete players
+                           <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                             &#x274C; <small>Delete</small>
-                        </a>
+                        </a> *@
                 
                     </td>
         </tr>
