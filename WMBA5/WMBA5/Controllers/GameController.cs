@@ -25,7 +25,8 @@ namespace WMBA5.Controllers
         }
 
         // GET: Game with filtering, searching, and sorting
-        public async Task<IActionResult> Index(int? DivisionID, string SearchString, string actionButton, string sortDirection = "asc", string sortField = "Location")
+        public async Task<IActionResult> Index(int? DivisionID, int? OutcomeID, int? LocationID, int? TeamID,
+            string SearchString, string actionButton, string sortDirection = "asc", string sortField = "Location")
         {
             PopulateDropDownLists();
 
@@ -34,6 +35,8 @@ namespace WMBA5.Controllers
             //var gamesQuery = _context.Games.Include(g => g.Division).AsQueryable();
 
             var gamesQuery = _context.Games.Include(g => g.Division)
+                                .Include(g => g.Outcome)
+                                .Include(g => g.Location)
                                 .Include(g => g.TeamGame)
                                     .ThenInclude(tg => tg.HomeTeam)
                                 .Include(g => g.TeamGame)
@@ -54,6 +57,21 @@ namespace WMBA5.Controllers
             if (DivisionID.HasValue)
             {
                 gamesQuery = gamesQuery.Where(g => g.DivisionID == DivisionID);
+                numberFilters++;
+            }
+            if (OutcomeID.HasValue)
+            {
+                gamesQuery = gamesQuery.Where(g => g.OutcomeID == OutcomeID);
+                numberFilters++;
+            }
+            if (LocationID.HasValue)
+            {
+                gamesQuery = gamesQuery.Where(g => g.LocationID == LocationID);
+                numberFilters++;
+            }
+            if (TeamID.HasValue)
+            {
+                gamesQuery = gamesQuery.Where(g => g.TeamGame.HomeTeam.ID == TeamID || g.TeamGame.AwayTeam.ID == TeamID);
                 numberFilters++;
             }
             if (!string.IsNullOrEmpty(SearchString))
@@ -99,6 +117,7 @@ namespace WMBA5.Controllers
 
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
+            PopulateDropDownLists();
 
             return View(await gamesQuery.ToListAsync());
         }
@@ -217,7 +236,7 @@ namespace WMBA5.Controllers
 		// POST: Game/Create
 		[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,StartTime,Location,Outcome,DivisionID")] Game game)/* int selectedHomeTeam, int selectedAwayTeam)*/
+        public async Task<IActionResult> Create([Bind("ID,StartTime,LocationID,OutcomeID, DivisionID")] Game game)/* int selectedHomeTeam, int selectedAwayTeam)*/
         {
             try
             {
@@ -370,50 +389,74 @@ namespace WMBA5.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-        
-        
+
+
 
         //Selecting the division for game
-        private SelectList DivisionSelectionList(int? selectedId)
-        {
-            return new SelectList(_context.Divisions, "ID", "DivisionName", selectedId);
-        }
 
         //Selecting Teams that are part of the division we select
-		//private SelectList TeamSelectionList(int? selectedId, int DivisionID)
-		//{
-		//	var query = from t in _context.Teams
-		//				where t.DivisionID == DivisionID
-		//				select t;
-		//	return new SelectList(query.OrderBy(p => p.TeamName), "ID", "TeamSummary", selectedId);
+        //private SelectList TeamSelectionList(int? selectedId, int DivisionID)
+        //{
+        //	var query = from t in _context.Teams
+        //				where t.DivisionID == DivisionID
+        //				select t;
+        //	return new SelectList(query.OrderBy(p => p.TeamName), "ID", "TeamSummary", selectedId);
 
-			
-		//}
-		private void PopulateDropDownLists(Game game = null)
+
+        //}
+        private SelectList LocationSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Locations
+                .OrderBy(m => m.LocationName), "ID", "LocationName", selectedId);
+        }
+        private SelectList DivisionSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Divisions
+                .OrderBy(m => m.DivisionName), "ID", "DivisionName", selectedId);
+        }
+        private SelectList OutcomeSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Outcomes
+                .OrderBy(m => m.OutcomeString), "ID", "OutcomeString", selectedId);
+        }
+        private SelectList TeamSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Teams
+                .OrderBy(m => m.TeamName), "ID", "TeamName", selectedId);
+        }
+        private void PopulateDropDownLists(Game game = null)
 		{
-			ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
-		}
-		//private void PopulateDropDownList(Game game)
-		//{
+		   ViewData["OutcomeID"] = OutcomeSelectionList(game?.OutcomeID);
+           ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
+           ViewData["LocationID"] = LocationSelectionList(game?.LocationID);
+           ViewData["TeamID"] = TeamSelectionList(game?.TeamGame.HomeTeamID);
+        }
+        //private void PopulateDropDownList(Game game)
+        //{
 
-		//	if ((game?.DivisionID).HasValue)
-		//	{   //Careful: CityID might have a value but the City object could be missing
-		//		if (game.Division == null)
-		//		{
-		//			game.Division = _context.Divisions.Find(game.DivisionID);
-		//		}
-		//		ViewData["DivisionID"] = DivisionSelectionList(game.Division.ID);
-		//		ViewData["HomeTeamID"] = TeamSelectionList(game.TeamGame.HomeTeam?.ID,game.Division.ID);
-		//		ViewData["AwayTeamID"] = TeamSelectionList(game.TeamGame.AwayTeam?.ID, game.Division.ID);
-		//	}
-		//	else
-		//	{
-		//		ViewData["DivisionID"] = DivisionSelectionList(null);
-		//		ViewData["HomeTeamID"] = TeamSelectionList(null, 0);
-		//		ViewData["AwayTeamID"] = TeamSelectionList(null, 0);
-		//	}
-		//}
-		
+        //	if ((game?.DivisionID).HasValue)
+        //	{   //Careful: CityID might have a value but the City object could be missing
+        //		if (game.Division == null)
+        //		{
+        //			game.Division = _context.Divisions.Find(game.DivisionID);
+        //		}
+        //		ViewData["DivisionID"] = DivisionSelectionList(game.Division.ID);
+        //		ViewData["HomeTeamID"] = TeamSelectionList(game.TeamGame.HomeTeam?.ID,game.Division.ID);
+        //		ViewData["AwayTeamID"] = TeamSelectionList(game.TeamGame.AwayTeam?.ID, game.Division.ID);
+        //	}
+        //	else
+        //	{
+        //		ViewData["DivisionID"] = DivisionSelectionList(null);
+        //		ViewData["HomeTeamID"] = TeamSelectionList(null, 0);
+        //		ViewData["AwayTeamID"] = TeamSelectionList(null, 0);
+        //	}
+        //}
+
+      
 
         private void PopulateDropDownList(Game game)
         {
@@ -423,6 +466,7 @@ namespace WMBA5.Controllers
             if (game.TeamGame == null)
             {
                 ViewData["Teams"] = new SelectList(allTeams, "ID", "TeamName");
+             
                 ViewData["SelectedHomeTeam"] = null;
                 ViewData["SelectedAwayTeam"] = null;
                 return;
