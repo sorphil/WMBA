@@ -27,10 +27,15 @@
                 @Html.DropDownList("SelectedAwayTeam", (SelectList)ViewBag.Teams, "Select an Away Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
             </div>
             <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
+                <label asp-for="LocationID" class="control-label"></label>
+                <select asp-for="LocationID" class="form-control" asp-items="ViewBag.LocationID"></select>
+                <span asp-validation-for="LocationID" class="text-danger"></span>
             </div>
+            @* <div class="form-group">
+            <label asp-for="Location" class="control-label"></label>
+            <input asp-for="Location" class="form-control" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+            </div> *@
             @*    <div class="form-group">
             <label asp-for="Oponent" class="control-label"></label>
             <input asp-for="Oponent" class="form-control" />
