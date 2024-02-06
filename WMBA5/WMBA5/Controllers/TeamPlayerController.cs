@@ -161,27 +161,40 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,TeamID")] Player player, string TeamName)
-        {   
+        public async Task<IActionResult> Add([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player, string TeamName)
+        {
             try
             {
                 if (ModelState.IsValid)
                 {
                     _context.Add(player);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Details", new { player.ID });
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        error.ToString();
+                    }
                 }
             }
             catch (RetryLimitExceededException /* dex */)
             {
                 ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException dex)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed: Players.MemberID"))
+                {
+                    ModelState.AddModelError("MemberID", "Unable to save changes. Remember, you cannot have duplicate Member IDs.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
             }
             PopulateDropDownLists();
-            ViewData["TeamName"] = TeamName;
             return View(player);
         }
 
@@ -199,6 +212,8 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
             ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
+            ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", player.StatusID);
             return View(player);
         }
 
@@ -207,35 +222,42 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, [Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,TeamID")] Player player)
+        public async Task<IActionResult> Update(int id)
         {
-            if (id != player.ID)
+            //Go get the player to update
+            var playerToUpdate = await _context.Players
+                .Include(p => p.Status)
+                .Include(p => p.Team).ThenInclude(p => p.Division)
+                .FirstOrDefaultAsync(p => p.ID == id);
+
+            if (playerToUpdate == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
+                p => p.MemberID, p => p.FirstName, p => p.LastName, p => p.Nickname,
+                p => p.JerseyNumber, p => p.StatusID, p => p.DivisionID, p => p.TeamID))
             {
                 try
                 {
-                    _context.Update(player);
+                    _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (RetryLimitExceededException /* dex */)
                 {
-                    if (!PlayerExists(player.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-            return View(player);
+            //ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
+            PopulateDropDownLists(playerToUpdate);
+            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
+            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", playerToUpdate.DivisionID);
+            ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", playerToUpdate.StatusID);
+
+            return View(playerToUpdate);
         }
 
         // GET: Player/Delete/5
@@ -281,9 +303,23 @@ namespace WMBA5.Controllers
                 .Teams
                 .OrderBy(m => m.TeamName), "ID", "TeamName", selectedId);
         }
+        private SelectList DivisionSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Divisions
+                .OrderBy(m => m.DivisionName), "ID", "DivisionName", selectedId);
+        }
+        private SelectList StatusSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Statuses
+                .OrderBy(m => m.StatusName), "ID", "StatusName", selectedId);
+        }
         private void PopulateDropDownLists(Player player = null)
         {
             ViewData["TeamID"] = TeamSelectionList(player?.TeamID);
+            ViewData["DivisionID"] = DivisionSelectionList(player?.DivisionID);
+            ViewData["StatusID"] = StatusSelectionList(player?.StatusID);
         }
         private bool PlayerExists(int id)
         {
