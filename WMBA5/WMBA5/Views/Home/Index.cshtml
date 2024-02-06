@@ -6,8 +6,8 @@
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         grid-template-rows: repeat(6, 1fr);
-        grid-column-gap: 30px;
-        grid-row-gap: 30px;
+        grid-column-gap: 0;
+        grid-row-gap:0;
         /* box-shadow: 0 0 8px 0 rgba(0,0,0,0.2); */
     }
 
@@ -40,16 +40,19 @@
         cursor: pointer;
         padding: 0;
         margin: 0;
+        color:black;
+        text-decoration:none;
     }
 
         .grid-btn:hover, .grid-btn:focus {
             text-decoration: underline;
             opacity: 100%;
+            color:black;
         }
 </style>
 <h1>Homepage</h1> <hr/>
 <div class="main-body-grid">
-    <div class="main-grid-item-1">
+    <div class="main-grid-item-1" style="border-right:solid;border-color:grey;border-width:1px; padding-right:20px">
         <h3 class="grid-item-header">
             Players
         </h3>
@@ -71,9 +74,9 @@
             To delete an existing player, press the "Delete" button in the last column of the corresponding row the player is in
         </p> *@
 
-        <button class="grid-btn">Go to Page >></button>
+        <a asp-controller="Player" asp-action="Index" class="grid-btn">Go to Page >></a>
     </div>
-    <div class="main-grid-item-2">
+    <div class="main-grid-item-2" style="padding-left:20px;">
         <h3 class="grid-item-header">
             Teams
         </h3>
@@ -94,9 +97,18 @@
             To delete an existing team, press the "Delete" button in the last column of the corresponding row the team is in
         </p> *@
 
-        <button class="grid-btn">Go to Page >></button>
+        <a asp-controller="Team" asp-action="Index" class="grid-btn">Go to Page >></a>
     </div>
-    <div class="main-grid-item-3">
+    <div class="main-grid-item-3" style="border-right:solid;border-top:solid;border-color:grey;border-width:1px; padding-right:20px;padding-top:20px; padding-left:20px;">
+        <h3 class="grid-item-header">
+            Divisions
+        </h3>
+        <p class="grid-item-text">
+            This page will allow you to see all the divisions in the system. As well as the ability to create new divisions, and edit or delete existing ones
+        </p>
+        <a asp-controller="Division" asp-action="Index" class="grid-btn">Go to Page >></a>
+    </div>
+    <div class="main-grid-item-4" style="border-right:solid;border-top:solid;border-color:grey;border-width:1px; padding-right:20px; padding-top:20px;">
         <h3 class="grid-item-header">
             Games
         </h3>
@@ -116,17 +128,9 @@
             To delete an existing game, press the "Delete" button in the last column of the corresponding row the game is in
         </p> *@
 
-        <button class="grid-btn">Go to Page >></button>
+        <a asp-controller="Game" asp-action="Index" class="grid-btn">Go to Page >></a>
     </div>
-    <div class="main-grid-item-4">
-        <h3 class="grid-item-header">
-            Divisions
-        </h3>
-        <p class="grid-item-text">
-            This page will allow you to see all the divisions in the system. As well as the ability to create new divisions, and edit or delete existing ones
-        </p>
-    </div>
-    <div class="main-grid-item-5">
+    <div class="main-grid-item-5" style="border-top:solid;border-color:grey;border-width:1px; padding-top:20px;padding-left:20px;">
         <h3 class="grid-item-header">
             Coaches
         </h3>
@@ -134,6 +138,6 @@
             This page will allow you to see all the coaches registered in the system. As well as the ability to create/register new coaches, and edit or delete existing ones
         </p>
 
-        <button class="grid-btn">Go to Page >></button>
+        <a asp-controller="Coach" asp-action="Index" class="grid-btn">Go to Page >></a>
     </div>
 </div>
