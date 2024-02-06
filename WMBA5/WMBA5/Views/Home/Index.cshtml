@@ -1,82 +1,139 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<style>
+    .main-body-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        grid-column-gap: 30px;
+        grid-row-gap: 30px;
+        /* box-shadow: 0 0 8px 0 rgba(0,0,0,0.2); */
+    }
 
-<div class="text-center">
-    <table class="border-1">
-        <thead>
-            <tr>
-                <th class="border-1 table-dash">
-                    <label>Teams</label>
-                </th>
-                <th class="border-1 table-dash">
-                    <label>Game</label>
-                </th>
-                <th class="border-1 table-dash">
-                    <label>Coach</label>
-                </th>
-                <th class="border-1 table-dash">
-                    <label>Division</label>
-                </th>
-                <th class="border-1 table-dash">
-                    <label>Players</label>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="border-1 table-dash">
-                    <p>
-                        The Teams page will allow you to see a list of all the registered teams, their division,
-                        and the coach who is in charge of the team, you can create a new team by clicking on “create new team”
-                        and filling out the form with the team data, You can edit it by clicking on the button with a pencil,
-                        delete it by clicking on the red x or go to the details by clicking on the magnifying glass button and see
-                        the details of the team and at the same time a list with all the players that are part of the team.
-                    </p>
-                </td>
-                <td class="border-1 table-dash">
-                    <p>
-                        The Game page will allow you to see a list of all the scheduled games, see the teams that will be part of the match,
-                        the day and time of the match, and if the match has already taken place, see the result (if you have not yet played
-                        the result, it will be “to be defined”), you can create a new match, edit, delete it, or view the details of each one.
-                    </p>
-                </td>
-                <td class="border-1 table-dash">
-                    <p>
-                        The Coach page will allow you to manage all the coaches, when you enter you will be able to see a list with all the coaches and
-                        the team they coach, you will be able to create a new coach by clicking on the “create new” button, edit it by clicking on the button
-                        with the pencil, see all its details with the button with a magnifying glass and delete it with the button with a red x.
-                    </p>
-                </td>
-                <td class="border-1 table-dash">
-                    <p>The Division page will allow you to manage all divisions, create a new one if necessary, edit it, view its details or delete it if necessary.</p>
-                </td>
-                <td class="border-1 table-dash">
-                    <p>
-                        The Players page will allow you to see a list of all the players who are registered in the association; you will be able to see the team they are part of and
-                        the division to which they belong.By clicking on the “Create new” button you can create a new player, you must fill out the form with all the player's data
-                        such as first and last name, division in which he will play, shirt number, member ID, and you can add nickname if you have one, at the same
-                        time as assigning it to a team, if you don't have a team, you can assign it later.You can edit a player's data, if necessary, go to the details,
-                        and see all his information and in turn his statistics during the season, you can also delete him by clicking on the button with a red x.
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <a asp-controller="Team" asp-action="Index" class="btn btn-outline-dark">Go to Teams</a>
-                    @*  <p>Click the "Go to Teams" buttons to have acces to the Teams Page, manage Teams, and see a list of all the players that are enrolled in a specific Team</p> *@
-                </td>
-                <td>
-                    <a asp-controller="Game" asp-action="Index" class="btn btn-outline-dark">Go to Games</a>
-                    @* <p>Click the "Go to Games" buttons to have acces to the Games Page, manage Ganes, and see the details and result of every match</p> *@
-                </td>
-                <td>    <a asp-controller="Coach" asp-action="Index" class="btn btn-outline-dark">Go to Coaches</a></td>
-                <td>    <a asp-controller="Division" asp-action="Index" class="btn btn-outline-dark">Go to Division</a></td>
-                <td>
-                    <a asp-controller="Player" asp-action="Index" class="btn btn-outline-dark">Go to Players</a>
-                    @* <p>Click the "Go to Players" buttons to have acces to the Players Page, manage Player, and see a list of all the stats that every player has</p> *@
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    .main-grid-item-1 {
+        grid-area: 1 / 1 / 4 / 4;
+    }
+
+    .main-grid-item-2 {
+        grid-area: 1 / 4 / 4 / 7;
+    }
+
+    .main-grid-item-3 {
+        grid-area: 4 / 3 / 7 / 5;
+    }
+
+    .main-grid-item-4 {
+        grid-area: 4 / 1 / 7 / 3;
+    }
+
+    .main-grid-item-5 {
+        grid-area: 4 / 5 / 7 / 7;
+    }
+
+    .grid-btn {
+        border: none;
+        background-color: transparent;
+        font-weight: bolder;
+        font-size: 15px;
+        opacity: 70%;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+    }
+
+        .grid-btn:hover, .grid-btn:focus {
+            text-decoration: underline;
+            opacity: 100%;
+        }
+</style>
+<h1>Homepage</h1> <hr/>
+<div class="main-body-grid">
+    <div class="main-grid-item-1">
+        <h3 class="grid-item-header">
+            Players
+        </h3>
+        <p class="grid-item-text">
+            This page will allow you to see all the registered players with relevant information such as their team, their division,
+            and the status of the player arranged in a table of rows and columns as well as the ability to create/register new players, and edit or delete existing ones 
+        </p>
+      @*   <p class="grid-item-text">
+            To create a new player, press the "Create New" button and fill the form out with appropriate data
+        </p>
+        <p class="grid-item-text">
+            To view the details of a player for more information, press the "Details" button found in the last column of the corresponding row the player is in.
+            Here you will find additional information such as the player's Member ID, their jersey number as well as their game stats
+        </p>
+        <p class="grid-item-text">
+            To edit an existing player, press the "Edit" button in the last column of the corresponding row the player is in
+        </p>
+        <p class="grid-item-text">
+            To delete an existing player, press the "Delete" button in the last column of the corresponding row the player is in
+        </p> *@
+
+        <button class="grid-btn">Go to Page >></button>
+    </div>
+    <div class="main-grid-item-2">
+        <h3 class="grid-item-header">
+            Teams
+        </h3>
+        <p class="grid-item-text">
+            This page will allow you to see all the registered teams with relevant information such as their division,
+            and the coach in charge of the team arranged in a table of rows and columns as well as the ability to create new teams, and edit or delete existing ones
+        </p>
+        @* <p class="grid-item-text">
+            To create a new team, press the "Create New" button and fill the form out with appropriate data
+        </p>
+        <p class="grid-item-text">
+            To view the details of a team for more information, press the "Details" button found in the last column of the corresponding row the team is in.This page will also display the various players that are in the team along with some nominal information as well as the ability to directly update those players
+        </p>
+        <p class="grid-item-text">
+            To edit an existing team, press the "Edit" button in the last column of the corresponding row the team is in
+        </p>
+        <p class="grid-item-text">
+            To delete an existing team, press the "Delete" button in the last column of the corresponding row the team is in
+        </p> *@
+
+        <button class="grid-btn">Go to Page >></button>
+    </div>
+    <div class="main-grid-item-3">
+        <h3 class="grid-item-header">
+            Games
+        </h3>
+        <p class="grid-item-text">
+            This page will allow you to see all the games recorded in the system, with relevant information such as their start date, the teams playing, the location of the game, and other relevant information; all arranged in a table of rows and columns, and also will provide you with the ability to create new teams, and edit or delete existing ones
+        </p>
+       @*  <p class="grid-item-text">
+            To create a new game, press the "Create New" button and fill the form out with appropriate data
+        </p>
+        <p class="grid-item-text">
+            To view the details of a game for more information, press the "Details" button found in the last column of the corresponding row the game is in.
+        </p>
+        <p class="grid-item-text">
+            To edit an existing game, press the "Edit" button in the last column of the corresponding row the game is in
+        </p>
+        <p class="grid-item-text">
+            To delete an existing game, press the "Delete" button in the last column of the corresponding row the game is in
+        </p> *@
+
+        <button class="grid-btn">Go to Page >></button>
+    </div>
+    <div class="main-grid-item-4">
+        <h3 class="grid-item-header">
+            Divisions
+        </h3>
+        <p class="grid-item-text">
+            This page will allow you to see all the divisions in the system. As well as the ability to create new divisions, and edit or delete existing ones
+        </p>
+    </div>
+    <div class="main-grid-item-5">
+        <h3 class="grid-item-header">
+            Coaches
+        </h3>
+        <p class="grid-item-text">
+            This page will allow you to see all the coaches registered in the system. As well as the ability to create/register new coaches, and edit or delete existing ones
+        </p>
+
+        <button class="grid-btn">Go to Page >></button>
+    </div>
 </div>
