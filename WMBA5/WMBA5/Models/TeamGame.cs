@@ -4,7 +4,7 @@ namespace WMBA5.Models
 {
     public class TeamGame : IValidatableObject
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
 
         [Display(Name = "Home Team")]
         //[Required(ErrorMessage = "Home Team is required")]
