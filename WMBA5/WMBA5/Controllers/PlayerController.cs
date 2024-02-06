@@ -43,6 +43,7 @@ namespace WMBA5.Controllers
 
             var players = _context.Players 
                 .Include(p=>p.Team)
+                .Include(p=>p.Status)
                 .Include(p => p.PlayerAtBats)
                 .Include(p => p.PlayerStats)
                 .Include(p=>p.Division)
