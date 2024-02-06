@@ -5,14 +5,16 @@
 .item-nav {
     font-size: 22px;
     font-weight: bold;
+    border: solid 3.5px transparent;
+    margin: 5px;
 }
 
     .item-nav:hover {
         text-decoration: underline;
         text-decoration-color: white;
         border-radius: 10px;
-        border: solid;
-        border-color: white;
+        border: solid 3.5px white;
+        /*border-color: white;*/
     }
 
 .background-body {
