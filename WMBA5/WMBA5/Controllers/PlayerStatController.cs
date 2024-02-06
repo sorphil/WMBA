@@ -168,8 +168,10 @@ namespace WMBA5.Controllers
 
             Player player = await _context.Players
             .Include(p => p.Team)
+            .Include( p => p.Status)
             .Include(p => p.PlayerAtBats)
             .Include(p => p.PlayerStats)
+            .Include(p => p.Division)
             .Where(t => t.ID == PlayerID.GetValueOrDefault())
             .AsNoTracking()
             .FirstOrDefaultAsync();
@@ -191,7 +193,8 @@ namespace WMBA5.Controllers
             }
 
             var player = await _context.Players
-                .Include(p => p.Team)
+                .Include(p => p.Team).ThenInclude(p => p.Division)
+                .Include(p => p.Status)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
             {

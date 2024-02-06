@@ -61,7 +61,6 @@ namespace WMBA5.Models
         [Required(ErrorMessage = "You cannot leave the Status Blank")]
         public int StatusID { get; set; }
         [Display(Name ="Status")]
-        [Required(ErrorMessage="You cannot leave the Status Blank")]
         public Status Status { get; set; }
 
         //Foreign key
