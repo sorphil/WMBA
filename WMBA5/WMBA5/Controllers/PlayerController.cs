@@ -401,9 +401,9 @@ namespace WMBA5.Controllers
                                     FirstName = workSheet.Cells[row, 1].Text,
                                     LastName = workSheet.Cells[row, 2].Text,
                                     MemberID = workSheet.Cells[row, 3].Text,
-                                    TeamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 5].Text).ID,
-                                    StatusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 6].Text).ID,
-                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 7].Text).ID
+                                    TeamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 4].Text).ID,
+                                    StatusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 5].Text).ID,
+                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text).ID
                                 };
                                 players.Add(p);
                                 _context.Players.AddRange(players);
