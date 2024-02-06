@@ -111,11 +111,11 @@ namespace WMBA5.Data
                          },
                         new Outcome
                         {
-                            OutcomeString = "Home - Win"
+                            OutcomeString = "Win-Home"
                         },
                         new Outcome
                         {
-                            OutcomeString = "Away - Win",
+                            OutcomeString = "Win-Away",
                         },
                         new Outcome
                         {
