@@ -136,6 +136,8 @@ namespace WMBA5.Controllers
                 .ThenInclude(tg => tg.HomeTeam)
                 .Include(g => g.TeamGame)
                 .ThenInclude(tg => tg.AwayTeam)
+                .Include(g=>g.Outcome)
+                .Include(g=>g.Location)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
