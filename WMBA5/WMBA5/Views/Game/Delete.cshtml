@@ -21,7 +21,7 @@
             @Html.DisplayNameFor(model => model.Location)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Location)
+            @Html.DisplayFor(model => model.Location.LocationName)
         </dd>
 @*         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Oponent)
@@ -39,7 +39,7 @@
             @Html.DisplayNameFor(model => model.Outcome)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Outcome)
+            @Html.DisplayFor(model => model.Outcome.OutcomeString)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Division)

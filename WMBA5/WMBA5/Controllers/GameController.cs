@@ -156,7 +156,7 @@ namespace WMBA5.Controllers
             {
                 TeamGame = new TeamGame()
             };
-
+            PopulateDropDownList(newGame);
             return View(newGame);
         }
 
@@ -248,11 +248,10 @@ namespace WMBA5.Controllers
 
                     // Add the game and teamGame to the context
                     _context.Add(game);
-                    //_context.Add(teamGame);
 
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("AddTeams", new { game.ID });
-                }
+					return RedirectToAction(nameof(Index));
+				}
             }
 
             catch(Exception ex) 
@@ -296,7 +295,7 @@ namespace WMBA5.Controllers
         // POST: Game/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,StartTime,Location,Oponent,PlayingAt,Outcome,DivisionID,LineupID")] Game game, int selectedHomeTeam, int selectedAwayTeam)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,StartTime,LocationID,OutcomeID, DivisionID")] Game game, int selectedHomeTeam, int selectedAwayTeam)
         {
             if (id != game.ID)
             {
@@ -367,6 +366,8 @@ namespace WMBA5.Controllers
 
             var game = await _context.Games
                 .Include(g => g.Division)
+                .Include(g=>g.Outcome)
+                .Include(g=>g.Location)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -428,7 +429,7 @@ namespace WMBA5.Controllers
                 .Teams
                 .OrderBy(m => m.TeamName), "ID", "TeamName", selectedId);
         }
-        private void PopulateDropDownLists(Game game = null)
+        private void PopulateDropDownLists(Game? game = null)
 		{
 		   ViewData["OutcomeID"] = OutcomeSelectionList(game?.OutcomeID);
            ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
@@ -460,7 +461,10 @@ namespace WMBA5.Controllers
 
         private void PopulateDropDownList(Game game)
         {
-            var allTeams = _context.Teams.ToList();
+			ViewData["OutcomeID"] = OutcomeSelectionList(game?.OutcomeID);
+			ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
+			ViewData["LocationID"] = LocationSelectionList(game?.LocationID);
+			var allTeams = _context.Teams.ToList();
 
             // Check if TeamGame is null
             if (game.TeamGame == null)
