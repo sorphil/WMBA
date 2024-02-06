@@ -40,14 +40,17 @@
 <table class="table">
     <thead>
         <tr>
-            <th class="col-md-3">
+            <th class="col-md-5">
                 <input type="submit" name="actionButton" value="Player" class="btn btn-link" />
             </th>
-                <th class="col-md-3">
+                <th class="col-md-5">
                     <input type="submit" name="actionButton" value="Team" class="btn btn-link" />
             </th>
-                <th class="col-md-3">
+                <th class="col-md-5">
                     <input type="submit" name="actionButton" value="Division" class="btn btn-link" />
+            </th>
+            <th class="col-md-5">
+                    <input type="submit" name="actionButton" value="Status" class="btn btn-toolbar" />
             </th>
              <th>
                     <a asp-action="Create" class="btn btn-sm btn-outline-success"
@@ -66,9 +69,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Team.TeamName)
             </td>
-                    <td>
+             <td>
                         @Html.DisplayFor(modelItem => item.Division.DivisionName)
-                    </td>
+             </td>
+             <td>
+                        @Html.DisplayFor(modelItem => item.Status.StatusName)
+              </td>
 
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
