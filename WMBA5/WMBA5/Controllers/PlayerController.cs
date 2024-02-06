@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System.Numerics;
 using OfficeOpenXml.Table;
 using OfficeOpenXml;
+using Microsoft.VisualBasic.FileIO;
 
 namespace WMBA5.Controllers
 {
@@ -380,45 +381,306 @@ namespace WMBA5.Controllers
         {
           return _context.Players.Any(e => e.ID == id);
         }
+        //public async Task<IActionResult> InsertFromExcel(IFormFile ExcelPlayer)
+        //{
+        //    ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Player");
+        //    string feedBack = string.Empty;
+        //    if (ExcelPlayer != null)
+        //    {
+        //        string mimeType = ExcelPlayer.ContentType;
+        //        long fileLength = ExcelPlayer.Length;
+        //        if (!(mimeType == "" || fileLength == 0))//Looks like we have a file!!!
+        //        {
+        //            if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet") || mimeType.Contains("xlsx"))
+        //            {
+        //                ExcelPackage excel;
+        //                using (var memoryStream = new MemoryStream())
+        //                {
+        //                    await ExcelPlayer.CopyToAsync(memoryStream);
+        //                    excel = new ExcelPackage(memoryStream);
+        //                }
+        //                var workSheet = excel.Workbook.Worksheets[0];
+        //                if (workSheet.Cells[1, 4].Text == "Team" &&
+        //                        workSheet.Cells[1, 6].Text == "Division")
+        //                {
+        //                    var start = workSheet.Dimension.Start;
+        //                    var end = workSheet.Dimension.End;
+        //                    List<Player> players = new List<Player>();
+        //                    for (int row = start.Row + 1; row <= end.Row; row++)
+        //                    {
+        //                        Player p = new Player
+        //                        {
+        //                            FirstName = workSheet.Cells[row, 1].Text,
+        //                            LastName = workSheet.Cells[row, 2].Text,
+        //                            MemberID = workSheet.Cells[row, 3].Text,
+        //                            TeamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 4].Text).ID,
+        //                            StatusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 5].Text).ID,
+        //                            DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text).ID
+        //                        };
+        //                        players.Add(p);
+        //                        _context.Players.AddRange(players);
+        //                        _context.SaveChanges();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    feedBack = "Error: That file is not an Excel spreadsheet.";
+        //                }
+        //            }
+        //            else if (mimeType.Contains("text/csv"))
+        //            {
+        //                var format = new ExcelTextFormat();
+        //                format.Delimiter = ',';
+        //                bool firstRowIsHeader = true;
+
+        //                using var reader = new System.IO.StreamReader(ExcelPlayer.OpenReadStream());
+
+        //                using ExcelPackage package = new ExcelPackage();
+        //                var result = reader.ReadToEnd();
+        //                ExcelWorksheet workSheet = package.Workbook.Worksheets.Add("Imported Report Data");
+
+        //                workSheet.Cells["A1"].LoadFromText(result, format, TableStyles.None, firstRowIsHeader);
+        //                if (workSheet.Cells[1, 4].Text == "Team" &&
+        //                    workSheet.Cells[1, 6].Text == "Division")
+        //                {
+        //                    var start = workSheet.Dimension.Start;
+        //                    var end = workSheet.Dimension.End;
+        //                    List<Player> players = new List<Player>();
+        //                    for (int row = start.Row + 1; row <= end.Row; row++)
+        //                    {
+        //                        Player p = new Player
+        //                        {
+        //                            FirstName = workSheet.Cells[row, 1].Text,
+        //                            LastName = workSheet.Cells[row, 2].Text,
+        //                            MemberID = workSheet.Cells[row, 3].Text,
+        //                            TeamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 4].Text).ID,
+        //                            StatusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 5].Text).ID,
+        //                            DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text).ID
+        //                        };
+        //                        players.Add(p);
+        //                    }
+        //                    _context.Players.AddRange(players);
+        //                    _context.SaveChanges(); ;
+        //                }
+        //                else
+        //                {
+        //                    feedBack = "Error: You may have selected the wrong file to upload.";
+        //                }
+        //            }
+        //            else
+        //            {
+        //                feedBack = "Error: That file is not an Excel spreadsheet.";
+        //            }
+        //        }
+        //        else
+        //        {
+        //            feedBack = "Error:  file appears to be empty";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        feedBack = "Error: No file uploaded";
+        //    }
+        //    TempData["Feedback"] = feedBack;
+        //    return Redirect(ViewData["ReturnURL"].ToString());
+        //}
         public async Task<IActionResult> InsertFromExcel(IFormFile ExcelPlayer)
         {
             ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Player");
             string feedBack = string.Empty;
+
             if (ExcelPlayer != null)
             {
-                string mimeType = ExcelPlayer.ContentType;
-                long fileLength = ExcelPlayer.Length;
-                if (!(mimeType == "" || fileLength == 0))//Looks like we have a file!!!
+                try
                 {
-                    if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet") || mimeType.Contains("xlsx"))
+                    string mimeType = ExcelPlayer.ContentType;
+                    long fileLength = ExcelPlayer.Length;
+
+                    if (!(mimeType == "" || fileLength == 0)) // Looks like we have a file!!!
                     {
-                        ExcelPackage excel;
-                        using (var memoryStream = new MemoryStream())
+                        if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet") || mimeType.Contains("xlsx"))
                         {
-                            await ExcelPlayer.CopyToAsync(memoryStream);
-                            excel = new ExcelPackage(memoryStream);
-                        }
-                        var workSheet = excel.Workbook.Worksheets[0];
-                        if (workSheet.Cells[1, 4].Text == "Team" &&
-                                workSheet.Cells[1, 6].Text == "Division")
-                        {
-                            var start = workSheet.Dimension.Start;
-                            var end = workSheet.Dimension.End;
-                            List<Player> players = new List<Player>();
-                            for (int row = start.Row + 1; row <= end.Row; row++)
+                            ExcelPackage excel;
+                            using (var memoryStream = new MemoryStream())
                             {
-                                Player p = new Player
+                                await ExcelPlayer.CopyToAsync(memoryStream);
+                                excel = new ExcelPackage(memoryStream);
+                            }
+
+                            var workSheet = excel.Workbook.Worksheets[0];
+
+                            if (workSheet.Cells[1, 4].Text == "Team" &&
+                                workSheet.Cells[1, 6].Text == "Division")
+                            {
+                                var start = workSheet.Dimension.Start;
+                                var end = workSheet.Dimension.End;
+                                List<Player> players = new List<Player>();
+
+                                for (int row = start.Row + 1; row <= end.Row; row++)
                                 {
-                                    FirstName = workSheet.Cells[row, 1].Text,
-                                    LastName = workSheet.Cells[row, 2].Text,
-                                    MemberID = workSheet.Cells[row, 3].Text,
-                                    TeamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 4].Text).ID,
-                                    StatusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 5].Text).ID,
-                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text).ID
-                                };
-                                players.Add(p);
-                                _context.Players.AddRange(players);
-                                _context.SaveChanges();
+                                    var firstName = workSheet.Cells[row, 1].Text;
+                                    var lastName = workSheet.Cells[row, 2].Text;
+                                    var memberID = workSheet.Cells[row, 3].Text;
+                                    var teamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 4].Text)?.ID;
+                                    var statusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 5].Text)?.ID;
+                                    var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text)?.ID;
+
+                                    if (teamID != null && statusID != null && divisionId != null)
+                                    {
+                                        // Check if the team with the same name already exists
+                                        var existingTeam = _context.Players.FirstOrDefault(t => t.FirstName == firstName);
+
+                                        if (existingTeam == null)
+                                        {
+                                            // Team does not exist, add it to the list
+                                            Player p = new Player
+                                            {
+                                                FirstName = firstName,
+                                                LastName = lastName,
+                                                MemberID = memberID,
+                                                TeamID = teamID.Value,
+                                                StatusID = statusID.Value,
+                                                DivisionID = divisionId.Value
+                                            };
+                                            players.Add(p);
+                                        }
+                                        else
+                                        {
+                                            // Team with the same name already exists, handle accordingly (skip, update, etc.)
+                                            feedBack = $"Error: Player with memeberID '{memberID}' already exists.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Handle the case where Coach or Division was not found
+                                        feedBack = "Error: Team, Status or Division not found for some records.";
+                                    }
+                                }
+
+                                using (var transaction = _context.Database.BeginTransaction())
+                                {
+                                    try
+                                    {
+                                        _context.Players.AddRange(players);
+                                        _context.SaveChanges();
+                                        transaction.Commit();
+                                        if (feedBack == "")
+                                        {
+                                            feedBack = "Players added successfully.";
+                                        }
+                                        else if (players.Count > 0)
+                                        {
+                                            feedBack = "Players have been added if they were not already in the database.";
+                                        }
+                                        else
+                                        {
+                                            feedBack = "Players already exists in the database. No teams were added.";
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        transaction.Rollback();
+                                        feedBack = $"Error: An error occurred while saving data. {ex.Message}";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                feedBack = "Error: You may have selected the wrong file to upload.";
+                            }
+                        }
+                        else if (mimeType.Contains("text/csv"))
+                        {
+                            using (var reader = new StreamReader(ExcelPlayer.OpenReadStream()))
+                            using (var csvParser = new TextFieldParser(reader))
+                            {
+                                csvParser.SetDelimiters(",");
+
+                                // Skip header row
+                                if (!csvParser.EndOfData)
+                                {
+                                    csvParser.ReadLine();
+                                }
+
+                                List<Player> players = new List<Player>();
+
+                                while (!csvParser.EndOfData)
+                                {
+                                    string[] fields = csvParser.ReadFields();
+
+                                    if (fields.Length >= 3) // Ensure there are at least 3 fields (Team Name, Coach, Division)
+                                    {
+                                        var firstName = fields[0];
+                                        var lastName = fields[1];
+                                        var memberID = fields[2];
+                                        var teamID = _context.Teams.FirstOrDefault(c => c.TeamName == fields[3])?.ID;
+                                        var statusID = _context.Statuses.FirstOrDefault(c => c.StatusName == fields[4])?.ID;
+                                        var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == fields[5])?.ID;
+
+                                        if (statusID != null && teamID != null && divisionId != null)
+                                        {
+                                            // Check if the team with the same name already exists
+                                            var existingTeam = _context.Players.FirstOrDefault(t => t.FirstName == firstName);
+
+                                            if (existingTeam == null)
+                                            {
+                                                // Team does not exist, add it to the list
+                                                Player p = new Player
+                                                {
+                                                    FirstName = firstName,
+                                                    LastName = lastName,
+                                                    MemberID = memberID,
+                                                    TeamID = teamID.Value,
+                                                    StatusID = statusID.Value,
+                                                    DivisionID = divisionId.Value
+                                                };
+                                                players.Add(p);
+                                            }
+                                            else
+                                            {
+                                                // Team with the same name already exists, handle accordingly (skip, update, etc.)
+                                                feedBack = $"Error: Player with memberID '{memberID}' already exists.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Handle the case where Coach or Division was not found
+                                            feedBack = "Error: Team, Status or Division not found for some records.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        feedBack = "Error: CSV file does not have the required columns.";
+                                        break; // Exit the loop as the CSV structure is not as expected
+                                    }
+                                }
+
+                                using (var transaction = _context.Database.BeginTransaction())
+                                {
+                                    try
+                                    {
+                                        _context.Players.AddRange(players);
+                                        _context.SaveChanges();
+                                        transaction.Commit();
+                                        if (feedBack == "")
+                                        {
+                                            feedBack = "Players added successfully.";
+                                        }
+                                        else if (players.Count > 0)
+                                        {
+                                            feedBack = "Players have been added if they were not already in the database.";
+                                        }
+                                        else
+                                        {
+                                            feedBack = "Players already exists in the database. No teams were added.";
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        transaction.Rollback();
+                                        feedBack = $"Error: An error occurred while saving data. {ex.Message}";
+                                    }
+                                }
                             }
                         }
                         else
@@ -426,61 +688,23 @@ namespace WMBA5.Controllers
                             feedBack = "Error: That file is not an Excel spreadsheet.";
                         }
                     }
-                    else if (mimeType.Contains("text/csv"))
-                    {
-                        var format = new ExcelTextFormat();
-                        format.Delimiter = ',';
-                        bool firstRowIsHeader = true;
-
-                        using var reader = new System.IO.StreamReader(ExcelPlayer.OpenReadStream());
-
-                        using ExcelPackage package = new ExcelPackage();
-                        var result = reader.ReadToEnd();
-                        ExcelWorksheet workSheet = package.Workbook.Worksheets.Add("Imported Report Data");
-
-                        workSheet.Cells["A1"].LoadFromText(result, format, TableStyles.None, firstRowIsHeader);
-                        if (workSheet.Cells[1, 4].Text == "Team" &&
-                            workSheet.Cells[1, 6].Text == "Division")
-                        {
-                            var start = workSheet.Dimension.Start;
-                            var end = workSheet.Dimension.End;
-                            List<Player> players = new List<Player>();
-                            for (int row = start.Row + 1; row <= end.Row; row++)
-                            {
-                                Player p = new Player
-                                {
-                                    FirstName = workSheet.Cells[row, 1].Text,
-                                    LastName = workSheet.Cells[row, 2].Text,
-                                    MemberID = workSheet.Cells[row, 3].Text,
-                                    TeamID = _context.Teams.FirstOrDefault(c => c.TeamName == workSheet.Cells[row, 4].Text).ID,
-                                    StatusID = _context.Statuses.FirstOrDefault(c => c.StatusName == workSheet.Cells[row, 5].Text).ID,
-                                    DivisionID = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text).ID
-                                };
-                                players.Add(p);
-                                _context.Players.AddRange(players);
-                                _context.SaveChanges(); ;
-                            }
-                        }
-                        else
-                        {
-                            feedBack = "Error: You may have selected the wrong file to upload.";
-                        }
-                    }
                     else
                     {
-                        feedBack = "Error: That file is not an Excel spreadsheet.";
+                        feedBack = "Error: File appears to be empty.";
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    feedBack = "Error:  file appears to be empty";
+                    feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
+                        $"Please try again or contact support.";
                 }
             }
             else
             {
-                feedBack = "Error: No file uploaded";
+                feedBack = "Error: No file uploaded.";
             }
-            TempData["Feedback"] = feedBack;
+
+            TempData["FeedBack"] = feedBack;
             return Redirect(ViewData["ReturnURL"].ToString());
         }
     }
