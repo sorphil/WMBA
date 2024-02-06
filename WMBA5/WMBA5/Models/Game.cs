@@ -11,12 +11,15 @@ namespace WMBA5.Models
         [DataType(DataType.DateTime)]
         public DateTime StartTime { get; set; } = DateTime.Today;
 
-        [Required(ErrorMessage = "You cannot leave the Location blank.")]
-        [StringLength(30, ErrorMessage = "Location cannot be more than 30 characters long.")]
-        public string Location { get; set; }
 
+        [Required(ErrorMessage = "You cannot leave the Location blank.")]
+        public int LocationID { get; set; }
+        public Location Location { get; set; }
+
+        [Display(Name = "Game Outcome")]
         //Win or lose, default to TBD (To be determined)
-        public string Outcome { get; set; } = "TBD";
+        public int OutcomeID { get; set; }
+        public Outcome Outcome { get; set; }
 
         [Display(Name = "Division Name")]
         [Required(ErrorMessage = "You must select a Division")]

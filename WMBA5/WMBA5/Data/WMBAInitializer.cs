@@ -75,6 +75,55 @@ namespace WMBA5.Data
                     context.SaveChanges();
                 }
 
+                if (!context.Locations.Any())
+                {
+                    context.Locations.AddRange(
+                         new Location
+                         {
+                             LocationName = "Stadium A",
+
+                         },
+                        new Location
+                        {
+                            LocationName = "Field B"
+                        },
+                        new Location
+                        {
+                            LocationName = "Stadium C",
+                        },
+                        new Location
+                        {
+                            LocationName = "Field D",
+                        },
+                        new Location
+                        {
+                            LocationName = "Stadium E",
+                        }
+                        );
+                }
+                if (!context.Outcomes.Any())
+                {
+                    context.Outcomes.AddRange(
+                         new Outcome
+                         {
+                             OutcomeString = "TBD",
+
+                         },
+                        new Outcome
+                        {
+                            OutcomeString = "Home - Win"
+                        },
+                        new Outcome
+                        {
+                            OutcomeString = "Away - Win",
+                        },
+                        new Outcome
+                        {
+                            OutcomeString = "Tie"
+                        }
+                        );
+                }
+
                 //Adding Division
                 if (!context.Divisions.Any())
                 {
@@ -149,47 +198,49 @@ namespace WMBA5.Data
                         });
                     context.SaveChanges();
                 }
-                if(!context.Games.Any())
+            
+
+                if (!context.Games.Any())
                 {
                     context.Games.AddRange(
                          new Game
                          {
                              ID = 1,
                              StartTime = DateTime.Parse("2024-02-01 14:00:00"),
-                             Location = "Stadium A",
-                             Outcome = "Win",
+                             LocationID = 1,
+                             OutcomeID = 1,
                              DivisionID = 1
                          },
                         new Game
                         {
                             ID = 2,
                             StartTime = DateTime.Parse("2024-02-05 15:30:00"),
-                            Location = "Field B",
-                            Outcome = "Lose",
+                            LocationID = 2,
+                            OutcomeID = 1,
                             DivisionID = 2
                         },
                         new Game
                         {
                             ID = 3,
                             StartTime = DateTime.Parse("2024-02-10 13:45:00"),
-                            Location = "Stadium C",
-                            Outcome = "Win",
+                            LocationID = 3,
+                            OutcomeID = 1,
                             DivisionID = 1
                         },
                         new Game
                         {
                             ID = 4,
                             StartTime = DateTime.Parse("2024-02-15 16:00:00"),
-                            Location = "Field D",
-                            Outcome = "Lose",
+                            LocationID = 1,
+                            OutcomeID = 1,
                             DivisionID = 2
                         },
                         new Game
                         {
                             ID = 5,
                             StartTime = DateTime.Parse("2024-02-20 14:15:00"),
-                            Location = "Stadium E",
-                            Outcome = "Win",
+                            LocationID = 4,
+                            OutcomeID = 1,
                             DivisionID = 1
                         }
                         );

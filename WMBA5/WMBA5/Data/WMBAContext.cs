@@ -15,6 +15,10 @@ namespace WMBA5.Data
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Team> Teams { get; set; }
+
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Outcome> Outcomes { get; set; }
+
         public DbSet<PlayerStat> PlayerStats { get; set; }
         public DbSet<PlayerAtBat> PlayerAtBats { get; set; }
         public DbSet<Inning> Innings { get; set; }
