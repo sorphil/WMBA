@@ -54,7 +54,7 @@ namespace WMBA5.Models
 
         [Range(1, 99, ErrorMessage = "Please enter a value between 1 and 99")]
         [Display(Name = "Jersey Number")]
-        public int? JerseyNumber { get; set; }
+        public int? JerseyNumber { get; set; } = null;
 
         //Status: Active or Inactive
         [Display(Name = "Status")]
@@ -96,6 +96,12 @@ namespace WMBA5.Models
                     yield return new ValidationResult("The jersey number you choose is already used by another player in the same team. Please choose a different jersey number.", new[] { "JerseyNumber" });
                 }
             }
+            //Adding validation so a player can olnly be in a team that is in its division or a superior Division
+            //Ex: A U11 player can play in a U13 Team, but a U13 player cannot play in a U11 team
+            //if (Division.ID > Team.Division.ID)
+            //{
+            //    yield return new ValidationResult("This player cant be in this division, the player is too old. Please choose a different division.", new[] { "TeamID" });
+            //}
         }
     }
 }
