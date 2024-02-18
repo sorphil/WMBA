@@ -1,7 +1,7 @@
 ﻿@model WMBA5.Models.Player
 
 <figure class="row">
-    <figcaption class="col mt-3"><h3><text class="d-none d-sm-inline"></text>@Model.FullName - @Model.MemberID</h3></figcaption>
+    <figcaption class="col mt-3"><h3><text class="d-none d-sm-inline"></text>@Model.Summary - @Model.MemberID</h3></figcaption>
 </figure>
 
 <div>
@@ -10,39 +10,35 @@
     <div class="row">
         <div class="col-md-6">
             <dl class="row">
-                <dt class="col-sm-4">
+                @* <dt class="col-sm-4">
                     @Html.DisplayNameFor(model => model.FirstName)
                 </dt>
                 <dd class="col-sm-8">
                     @Html.DisplayFor(model => model.FirstName)
-                </dd>
-                <dt class="col-sm-4">
+                </dd> *@
+                @* <dt class="col-sm-4">
                     @Html.DisplayNameFor(model => model.LastName)
                 </dt>
                 <dd class="col-sm-8">
                     @Html.DisplayFor(model => model.LastName)
+                </dd> *@
+                @* <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.MemberID)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.MemberID)
                 </dd>
                 <dt class="col-sm-4">
                     @Html.DisplayNameFor(model => model.Nickname)
                 </dt>
                 <dd class="col-sm-8">
                     @Html.DisplayFor(model => model.Nickname)
-                </dd>
+                </dd> *@
                 <dt class="col-sm-4">
                     @Html.DisplayNameFor(model => model.Status.StatusName)
                 </dt>
                 <dd class="col-sm-8">
                     @Html.DisplayFor(model => model.Status.StatusName)
-                </dd>
-            </dl>
-        </div>
-        <div class="col-md-6">
-            <dl class="row">
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.MemberID)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.MemberID)
                 </dd>
                 <dt class="col-sm-4">
                     @Html.DisplayNameFor(model => model.JerseyNumber)
