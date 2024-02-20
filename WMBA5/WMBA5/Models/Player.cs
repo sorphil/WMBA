@@ -95,6 +95,35 @@ namespace WMBA5.Models
                 {
                     yield return new ValidationResult("The jersey number you choose is already used by another player in the same team. Please choose a different jersey number.", new[] { "JerseyNumber" });
                 }
+                var player = dbContext.Players
+                    .FirstOrDefault(p => p.ID == ID);
+
+                var team = dbContext.Teams
+                    .FirstOrDefault(t => t.ID == TeamID);
+
+                if (player != null && team != null)
+                {
+                    var playerDivision = dbContext.Divisions
+                    .FirstOrDefault(d => d.ID == player.DivisionID); ;
+                    var teamDivision = dbContext.Divisions
+                    .FirstOrDefault(d => d.ID == team.DivisionID);
+                 
+                    if (playerDivision != null && teamDivision != null)
+                    {
+                        List<string> validDivisions = new List<string> { "9U", "11U", "13U", "15U", "18U" };
+                        // Get index of player and team divisions
+                        int playerIndex = validDivisions.IndexOf(playerDivision.DivisionName);
+                        int teamIndex = validDivisions.IndexOf(teamDivision.DivisionName);
+
+                        // Check if the team's division is lower than the player's division
+                        if (teamIndex < playerIndex)
+                        {
+                            yield return new ValidationResult("A player can only be assigned to a team with the same division or higher.", new[] { "DivisionID" });
+                        }
+                    }
+                  
+                }
+               
             }
             //Adding validation so a player can olnly be in a team that is in its division or a superior Division
             //Ex: A U11 player can play in a U13 Team, but a U13 player cannot play in a U11 team
