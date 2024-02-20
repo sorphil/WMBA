@@ -52,7 +52,7 @@ namespace WMBA5.Models
         [StringLength(100, ErrorMessage = "Last name cannot be more than 100 characters long.")]
         public string LastName { get; set; }
 
-        [Range(1, 99, ErrorMessage = "Please enter a value between 1 and 99")]
+        [Range(0, 99, ErrorMessage = "Please enter a value between 1 and 99")]
         [Display(Name = "Jersey Number")]
         public int? JerseyNumber { get; set; } = null;
 
