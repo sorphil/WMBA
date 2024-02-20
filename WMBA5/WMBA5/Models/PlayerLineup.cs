@@ -5,6 +5,7 @@ namespace WMBA5.Models
 {
     public class PlayerLineup
     {
+        public int ID {get; set;}
         [Display(Name = "Player")]
         public int PlayerID { get; set; }
         public Player Player { get; set; }
