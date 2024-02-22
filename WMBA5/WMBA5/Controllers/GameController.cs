@@ -486,11 +486,17 @@ namespace WMBA5.Controllers
             ViewData["SelectedHomeTeam"] = selectedHomeTeam;
             ViewData["SelectedAwayTeam"] = selectedAwayTeam;
         }
-		//[HttpGet]
-		//public JsonResult GetCities(int DivisionID)
-		//{
-		//	return Json(TeamSelectionList(DivisionID, 0));
-		//}
-		private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
+        //[HttpGet]
+        //public JsonResult GetCities(int DivisionID)
+        //{
+        //	return Json(TeamSelectionList(DivisionID, 0));
+        //}
+
+        [HttpGet]
+        public JsonResult GetLocations(int? id)
+        {
+            return Json(LocationSelectionList(id));
+        }
+        private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
     }
 }

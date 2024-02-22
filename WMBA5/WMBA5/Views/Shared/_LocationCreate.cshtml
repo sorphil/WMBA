@@ -1,0 +1,16 @@
+﻿@model WMBA5.Models.Location
+<form asp-controller="Location" asp-action="Create" id="createLocationForm">
+    <div class="text-danger validation-summary-errors"><ul id="ErrorList"></ul></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label asp-for="LocationName" class="control-label"></label>
+                <textarea asp-for="LocationName" class="form-control"></textarea>
+                <span asp-validation-for="LocationName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" id="submitLocationCreate" class="btn btn-outline-secondary" />
+            </div>
+        </div>
+    </div>
+</form>

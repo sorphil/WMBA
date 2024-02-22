@@ -2,7 +2,7 @@
 
 namespace WMBA5.CustomControllers
 {
-    public class TeamLookupsController:CognizantController
+    public class LookupsController:CognizantController
     {
         //Have each controller for a "Lookup" value inherit from this
         //so the appropriate return URL is available
