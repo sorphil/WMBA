@@ -72,5 +72,6 @@ namespace WMBA5.Models
             }
         }
 
+        public GameScore GameScore { get; set; }
     }
 }
