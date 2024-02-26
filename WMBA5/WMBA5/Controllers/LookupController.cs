@@ -40,5 +40,13 @@ namespace WMBA5.Controllers
                 .OrderBy(g => g.StartTime), "ID","StartTime" ,"Oponent");
             return PartialView("_Game");
         }
+
+        public PartialViewResult Location()
+        {
+            ViewData["GameID"] = new
+                SelectList(_context.Games
+                .OrderBy(g => g.LocationID), "ID", "LocationName");
+            return PartialView("_Location");
+        }
     }
 }
