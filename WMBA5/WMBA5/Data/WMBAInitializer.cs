@@ -246,41 +246,42 @@ namespace WMBA5.Data
                         );
                 }
 
-                if (!context.TeamGames.Any())
-                {
-                    context.TeamGames.AddRange(
-                         new TeamGame
-                         {
-                             HomeTeamID = 1,
-                             AwayTeamID = 2,
-                             GameID = 1
-                         },
-                        new TeamGame
-                        {
-                            HomeTeamID = 1,
-                            AwayTeamID = 3,
-                            GameID = 2,
-                        },
-                        new TeamGame
-                        {
-                            HomeTeamID = 2,
-                            AwayTeamID = 1,
-                            GameID = 3,
-                        },
-                        new TeamGame
-                        {
-                            HomeTeamID = 2,
-                            AwayTeamID = 3,
-                            GameID = 4,
-                        },
-                        new TeamGame
-                        {
-                            HomeTeamID = 4,
-                            AwayTeamID = 2,
-                            GameID = 5,
-                        }
-                        );
-                }
+                //if (!context.TeamGames.Any())
+                //{
+                //    context.TeamGames.AddRange(
+                //         new TeamGame
+                //         {
+                //             HomeTeamID = 1,
+                //             AwayTeamID = 2,
+                //             GameID = 1
+                //         },
+                //        new TeamGame
+                //        {
+                //            HomeTeamID = 1,
+                //            AwayTeamID = 3,
+                //            GameID = 2,
+                //        },
+                //        new TeamGame
+                //        {
+                //            HomeTeamID = 2,
+                //            AwayTeamID = 1,
+                //            GameID = 3,
+                //        },
+                //        new TeamGame
+                //        {
+                //            HomeTeamID = 2,
+                //            AwayTeamID = 3,
+                //            GameID = 4,
+                //        },
+                //        new TeamGame
+                //        {
+                //            HomeTeamID = 4,
+                //            AwayTeamID = 2,
+                //            GameID = 5,
+                //        }
+                //        );
+                //}
+
                 //Adding Players
                 if (!context.Players.Any())
                 {

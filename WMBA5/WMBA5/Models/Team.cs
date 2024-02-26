@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WMBA5.Models
 {
@@ -31,16 +32,16 @@ namespace WMBA5.Models
         [Required(ErrorMessage = "You must select a Division")]
         public int DivisionID { get; set; }
         public Division Division { get; set; }
-        //public int LineupID { get; set; }
-        //public Lineup Lineup { get; set; }
+        // Navigation properties
+        [Display(Name = "Home Team Games")]
+        [InverseProperty("HomeTeam")]
+        public ICollection<Game> HomeGames { get; set; }
 
-        //public ICollection<Lineup> Lineups { get; set; } = new HashSet<Lineup>();
+        [Display(Name = "Away Team Games")]
+        [InverseProperty("AwayTeam")]
+        public ICollection<Game> AwayGames { get; set; }
 
         public ICollection<Player> Players { get; set; } = new HashSet<Player>();
-
-        public ICollection<TeamGame> HomeTeamGames { get; set; } = new HashSet<TeamGame>();
-
-        public ICollection<TeamGame> AwayTeamGames { get; set; } = new HashSet<TeamGame>();
 
     }
 }
