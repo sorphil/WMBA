@@ -448,17 +448,19 @@ namespace WMBA5.Controllers
                 .Outcomes
                 .OrderBy(m => m.OutcomeString), "ID", "OutcomeString", selectedId);
         }
-        //private SelectList TeamSelectionList(int? selectedId)
-        //{
-        //    return new SelectList(_context
-        //        .Teams
-        //        .OrderBy(m => m.TeamName), "ID", "TeamName", selectedId);
-        //}
+        private SelectList TeamSelectionList(int? selectedId)
+        {
+            return new SelectList(_context
+                .Teams
+                .OrderBy(m => m.TeamName), "ID", "TeamName", selectedId);
+        }
         private void PopulateDropDownLists(Game? game = null)
 		{
 		   ViewData["OutcomeID"] = OutcomeSelectionList(game?.OutcomeID);
            ViewData["DivisionID"] = DivisionSelectionList(game?.DivisionID);
            ViewData["LocationID"] = LocationSelectionList(game?.LocationID);
+            ViewData["HomeTeamID"] = TeamSelectionList(game?.HomeTeamID);
+            ViewData["AwayTeamID"] = TeamSelectionList(game?.AwayTeamID);
         }
         //private void PopulateDropDownList(Game game)
         //{

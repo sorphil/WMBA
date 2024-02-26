@@ -57,10 +57,11 @@ namespace WMBA5.Models
         public int DivisionID { get; set; }
         public Division Division { get; set; }
 
-        public ICollection<PlayerStat> PlayerStats { get; set; } = new HashSet<PlayerStat>();
+
         public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
+
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
-        public ICollection<InGameStats> InGameStats { get; set; } = new HashSet<InGameStats>();
+   
         [Display(Name = "Game Players")]
         public ICollection<GamePlayer> GamePlayers { get; set; } = new HashSet<GamePlayer>();
 
@@ -72,6 +73,6 @@ namespace WMBA5.Models
             }
         }
 
-        public GameScore GameScore { get; set; }
+        
     }
 }

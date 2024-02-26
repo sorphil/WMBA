@@ -10,6 +10,7 @@
         //      .HasIndex(c => new { c.PlayerID, c.GameID})
         //      .IsUnique();
         public int ID { get; set; }
+        //public int TeamLineupID { get; set; }
         public TeamLineup TeamLineup { get; set; }
         public int GameID { get; set; }
         public Game Game { get; set; }

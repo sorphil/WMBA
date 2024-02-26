@@ -26,14 +26,15 @@ namespace WMBA5.Data
 
         //public DbSet<PlayerAtBat> PlayerAtBats { get; set; }
 
-        public DbSet<PlayerGameScore> PlayerGameScores { get; set; }
-        public DbSet<PlayerLineup> PlayerLineups { get; set; }
+        public DbSet<PlayerScore> PlayerScores { get; set; }
+        //public DbSet<PlayerLineup> PlayerLineups { get; set; }
 
         public DbSet<PlayerStat> PlayerStats { get; set; }
         public DbSet<Position> Positions { get; set; }
 
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Team> Teams { get; set; }
+
 
         //public DbSet<TeamLineup> TeamLineups { get; set; } // this is a enum not a class Dbset is not required for this.
 
@@ -157,12 +158,12 @@ namespace WMBA5.Data
                 .HasForeignKey(g => g.GameID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Game to InGameStats
-            modelBuilder.Entity<Game>()
-                .HasMany<InGameStats> (g => g.InGameStats)
-                .WithOne(g => g.Game)
-                .HasForeignKey(g => g.GameID)
-                .OnDelete(DeleteBehavior.Restrict);
+            ////Game to InGameStats
+            //modelBuilder.Entity<Game>()
+            //    .HasMany<InGameStats> (g => g.InGameStats)
+            //    .WithOne(g => g.Game)
+            //    .HasForeignKey(g => g.GameID)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             //Game to GameScore
             modelBuilder.Entity<Game>()
@@ -186,17 +187,17 @@ namespace WMBA5.Data
 
             //Player to PlayerGameScore
             modelBuilder.Entity<Player>()
-                .HasMany<PlayerGameScore>(g => g.PlayerGameScores)
+                .HasMany<PlayerScore>(g => g.PlayerScores)
                 .WithOne(g => g.Player)
                 .HasForeignKey(g => g.PlayerID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //GameScore to PlayerGameScore
-            modelBuilder.Entity<GameScore>()
-                .HasMany<PlayerGameScore>(g => g.PlayerGameScores)
-                .WithOne(g => g.GameScore)
-                .HasForeignKey(g => g.GameScoreID)
-                .OnDelete(DeleteBehavior.Restrict);
+            ////GameScore to PlayerScore
+            //modelBuilder.Entity<GameScore>()
+            //    .HasMany<PlayerScore>(g => g.PlayerScores)
+            //    .WithOne(g => g.GameScore)
+            //    .HasForeignKey(g => g.GameScoreID)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
