@@ -76,14 +76,14 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     playerStats = playerStats
-                        .OrderBy(p => p.PlayerAppearance)
-                        .ThenBy(p => p.PlayerAppearance);
+                        .OrderBy(p => p.Stat.PlayerAppearance);
+                        //.ThenBy(p => p.PlayerAppearance);
                 }
                 else
                 {
                     playerStats = playerStats
-                            .OrderByDescending(p => p.PlayerAppearance)
-                            .ThenBy(p => p.PlayerAppearance);
+                            .OrderByDescending(p => p.Stat.PlayerAppearance);
+                       
                 }
             }
             
@@ -92,14 +92,12 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     playerStats = playerStats
-                        .OrderBy(p => p.Hits)
-                        .ThenBy(p => p.Hits);
+                        .OrderBy(p => p.Stat.Hits);
                 }
                 else
                 {
                     playerStats = playerStats
-                            .OrderByDescending(p => p.Hits)
-                            .ThenBy(p => p.Hits);
+                            .OrderByDescending(p => p.Stat.Hits);
                 }
             }
             else if (sortField == "Runs Scored")
@@ -107,14 +105,13 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     playerStats = playerStats
-                            .OrderBy(p => p.RunsScored)
-                            .ThenBy(p => p.RunsScored);
+                            .OrderBy(p => p.Stat.RunsScored);
                 }
                 else
                 {
                     playerStats = playerStats
-                               .OrderByDescending(p => p.RunsScored)
-                               .ThenBy(p => p.RunsScored);
+                               .OrderByDescending(p => p.Stat.RunsScored);
+
                 }
             }
             else if (sortField == "Walks")
@@ -122,14 +119,12 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     playerStats = playerStats
-                            .OrderBy(p => p.Walks)
-                            .ThenBy(p => p.Walks);
+                            .OrderBy(p => p.Stat.Walks);
                 }
                 else
                 {
                     playerStats = playerStats
-                               .OrderByDescending(p => p.Walks)
-                               .ThenBy(p => p.Walks);
+                               .OrderByDescending(p => p.Stat.Walks);
                 }
             }
             else if (sortField == "Strike Outs")
@@ -137,14 +132,13 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     playerStats = playerStats
-                            .OrderBy(p => p.StrikeOuts)
-                            .ThenBy(p => p.StrikeOuts);
+                            .OrderBy(p => p.Stat.StrikeOuts)
+                            .ThenBy(p => p.Stat.StrikeOuts);
                 }
                 else
                 {
                     playerStats = playerStats
-                               .OrderByDescending(p => p.StrikeOuts)
-                               .ThenBy(p => p.StrikeOuts);
+                               .OrderByDescending(p => p.Stat.StrikeOuts);
                 }
             }
             else if (sortField == "RBI")
@@ -152,14 +146,12 @@ namespace WMBA5.Controllers
                 if (sortDirection == "asc")
                 {
                     playerStats = playerStats
-                            .OrderBy(p => p.RBI)
-                            .ThenBy(p => p.RBI);
+                            .OrderBy(p => p.Stat.RBI);
                 }
                 else
                 {
                     playerStats = playerStats
-                               .OrderByDescending(p => p.RBI)
-                               .ThenBy(p => p.RBI);
+                               .OrderByDescending(p => p.Stat.RBI);
                 }
             }
             //Set sort for next time
@@ -171,6 +163,7 @@ namespace WMBA5.Controllers
             .Include( p => p.Status)
             .Include(p => p.PlayerAtBats)
             .Include(p => p.PlayerStats)
+            .ThenInclude(ps=>ps.Stat)
             .Include(p => p.Division)
             .Where(t => t.ID == PlayerID.GetValueOrDefault())
             .AsNoTracking()

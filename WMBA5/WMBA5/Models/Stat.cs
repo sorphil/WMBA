@@ -16,5 +16,8 @@
         public int Walks { get; set; }
 
         public int RBI { get; set; }
+
+        //public int PlayerStatID { get; set; }
+        //public PlayerStat PlayerStat { get; set; }
     }
 }

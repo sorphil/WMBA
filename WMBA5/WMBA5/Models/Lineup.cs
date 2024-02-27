@@ -11,7 +11,7 @@
         public int TeamID { get; set; }
         public Team Team { get; set; }
 
-        public ICollection<PlayerLineup> Lineups { get; set; } = new HashSet<PlayerLineup>();
+        //public ICollection<PlayerLineup> Lineups { get; set; } = new HashSet<PlayerLineup>();
 
     }
 }

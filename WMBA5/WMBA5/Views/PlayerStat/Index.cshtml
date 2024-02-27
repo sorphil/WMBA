@@ -42,22 +42,22 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                    @Html.DisplayFor(modelItem => item.PlayerAppearance)
+                    @Html.DisplayFor(modelItem => item.Stat.PlayerAppearance)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.Hits)
+                    @Html.DisplayFor(modelItem => item.Stat.Hits)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.RunsScored)
+                        @Html.DisplayFor(modelItem => item.Stat.RunsScored)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.StrikeOuts)
+                        @Html.DisplayFor(modelItem => item.Stat.StrikeOuts)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.Walks)
+                        @Html.DisplayFor(modelItem => item.Stat.Walks)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.RBI)
+                        @Html.DisplayFor(modelItem => item.Stat.RBI)
             </td>
             <td>
                 @* Disabled for the moment (we haven't linked stats to game yet') *@
