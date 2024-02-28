@@ -18,9 +18,6 @@ namespace WMBA5.Models
         public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
 
 
-
-
-
         
 
     }

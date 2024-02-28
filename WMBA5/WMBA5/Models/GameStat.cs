@@ -11,6 +11,6 @@ namespace WMBA5.Models
         public int GameID { get; set; }
         public Game Game { get; set; }
         [Display(Name = "Player Stats")]
-        public ICollection<PlayerStat> PlayerStats { get; set; } = new HashSet<PlayerStat>();
+        public ICollection<Stat> Stats { get; set; } = new HashSet<Stat>();
     }
 }

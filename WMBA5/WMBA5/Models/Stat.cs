@@ -18,7 +18,14 @@ namespace WMBA5.Models
 
         public int RBI { get; set; }
 
-        //public int PlayerStatID { get; set; }
-        //public PlayerStat PlayerStat { get; set; }
+        //Foreign Key
+        public int PlayerID { get; set; }
+        public Player Player { get; set; }
+
+        public int InningID { get; set; }
+        public Inning Inning { get; set; }
+
+        public int GameID { get; set; }
+        public Game Game { get; set; }
     }
 }

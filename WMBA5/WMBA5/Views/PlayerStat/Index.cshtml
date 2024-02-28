@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WMBA5.Models.PlayerStat>
+﻿@model IEnumerable<WMBA5.ViewModels.GameStatsVM>
 
 @{
     WMBA5.Models.Player player = (WMBA5.Models.Player)ViewBag.Player;
@@ -13,7 +13,8 @@
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    <input type="hidden" name="PlayerID" value="@player.ID" />
+    <input  name="PlayerID" value="@player.ID" />
+
 <table class="table"> 
     <thead>
         <tr>
@@ -42,35 +43,40 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                    @Html.DisplayFor(modelItem => item.Stat.PlayerAppearance)
+                    @Html.DisplayFor(modelItem => item.TotalPlayerAppearances)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.Stat.Hits)
+                    @Html.DisplayFor(modelItem => item.TotalHits)
             </td>
             <td>
-                        @Html.DisplayFor(modelItem => item.Stat.RunsScored)
+                        @Html.DisplayFor(modelItem => item.TotalRunsScored)
             </td>
             <td>
-                        @Html.DisplayFor(modelItem => item.Stat.StrikeOuts)
+                        @Html.DisplayFor(modelItem => item.TotalStrikeOuts)
             </td>
             <td>
-                        @Html.DisplayFor(modelItem => item.Stat.Walks)
+                        @Html.DisplayFor(modelItem => item.TotalWalks)
             </td>
             <td>
-                        @Html.DisplayFor(modelItem => item.Stat.RBI)
+                        @Html.DisplayFor(modelItem => item.TotalRBI)
             </td>
             <td>
                 @* Disabled for the moment (we haven't linked stats to game yet') *@
-                        @* <a asp-controller="Game" asp-action="Details" asp-route-id="@item.GameID" class="btn btn-sm btn-outline-primary"
+                         <a asp-controller="Game" asp-action="Details" asp-route-id="@item.GameID" class="btn btn-sm btn-outline-primary"
                            role="button" data-bs-toggle="tooltip">
                             Go to Game
-                        </a> *@
+                              </a>
+                        <a asp-controller="PlayerStat" asp-action="Details" asp-route-PlayerID="@item.PlayerID" asp-route-GameID="@item.GameID" class="btn btn-sm btn-outline-primary"
+                           role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            &#x1F50E; <small>Details</small>
+                        </a>
             </td>
         </tr>
 }
-    </tbody>
-</table>
-    <partial name="_PagingNavBar" />
+    </tbody>  
+</table> 
+
+    @* <partial name="_PagingNavBar" /> *@
 </form>
 <div>
     <a asp-action="Edit" asp-controller="Player" asp-route-id="@player.ID">Edit @player.FullName</a> |

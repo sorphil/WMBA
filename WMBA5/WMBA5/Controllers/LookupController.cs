@@ -26,12 +26,12 @@ namespace WMBA5.Controllers
                 .OrderBy(p => p.LastName).ThenBy(p => p.FirstName), "ID", "FirstName","Nickname" ,"LastName");
             return PartialView("_Player");
         }
-        public PartialViewResult PlayerStats()
+        public PartialViewResult Stats()
         {
-            ViewData["PlayerStatsID"] = new
-                SelectList(_context.PlayerStats
+            ViewData["StatsID"] = new
+                SelectList(_context.Stats
                 .OrderBy(ps => ps.PlayerID), "ID", "Hits", "RunsScored", "RBI");
-            return PartialView("_PlayerStat");
+            return PartialView("_Stat");
         }
         public PartialViewResult Schedule()
         {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using WMBA5.Models;
 
 namespace WMBA5.Data
@@ -29,12 +30,11 @@ namespace WMBA5.Data
         public DbSet<PlayerScore> PlayerScores { get; set; }
         //public DbSet<PlayerLineup> PlayerLineups { get; set; }
 
-        public DbSet<PlayerStat> PlayerStats { get; set; }
+        public DbSet<Stat> Stats { get; set; }
         public DbSet<Position> Positions { get; set; }
 
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Team> Teams { get; set; }
-        public DbSet<Stat> Stats { get; set; }
 
 
         //public DbSet<TeamLineup> TeamLineups { get; set; } // this is a enum not a class Dbset is not required for this.
@@ -79,9 +79,9 @@ namespace WMBA5.Data
                 .HasForeignKey(c => c.DivisionID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Player to PlayerStats
+            //Player to Stats
             modelBuilder.Entity<Player>()
-                .HasMany<PlayerStat>(c => c.PlayerStats)
+                .HasMany<Stat>(c => c.Stats)
                 .WithOne(c => c.Player)
                 .HasForeignKey(c => c.PlayerID)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -199,6 +199,14 @@ namespace WMBA5.Data
             //    .WithOne(g => g.GameScore)
             //    .HasForeignKey(g => g.GameScoreID)
             //    .OnDelete(DeleteBehavior.Restrict);
+
+            // Games to Stat One To One
+            //modelBuilder.Entity<Game>()
+            //.HasOne(e => e.Stat)
+            //.WithOne(e => e.Stat)
+            //.HasForeignKey<Stat>(e => e.StatID)
+            //.IsRequired();
+
         }
 
 

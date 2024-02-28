@@ -77,7 +77,7 @@ namespace WMBA5.Models
         //public int LineupID { get; set; }
         //public Lineup Lineup { get; set; }
 
-        public ICollection<PlayerStat> PlayerStats { get; set; } = new HashSet<PlayerStat>();
+        public ICollection<Stat> Stats { get; set; } = new HashSet<Stat>();
         public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
         //public ICollection<InGameStats> InGameStats { get; set; } = new HashSet<InGameStats>();
