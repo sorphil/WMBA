@@ -1,4 +1,5 @@
-﻿namespace WMBA5.Models
+﻿using WMBA5.Data;
+namespace WMBA5.Models
 {
     public class Score
     {
