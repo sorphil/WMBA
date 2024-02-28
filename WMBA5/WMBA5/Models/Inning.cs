@@ -6,18 +6,18 @@ namespace WMBA5.Models
     {
         public int ID { get; set; }
 
-       //Foreign Key
+        public string InningNo { get; set; }
+
+        //Foreign Key
         [Display(Name = "Game")]
         public int GameID { get; set; }
         public Game Game { get; set; }
 
-        [Display(Name = "Team")]
-        public int TeamID { get; set; }
-        public Team Team { get; set; }
 
-        public int GameScoreID { get; set; }
-        public GameScore GameScore { get; set; }
-        public int GameStatID { get; set; }
-        public GameStat GameStat { get; set; }
+        public ICollection<Stat> Stats { get; set; } = new HashSet<Stat>();
+        public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
+
+
+
     }
 }
