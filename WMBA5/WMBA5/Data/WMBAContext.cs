@@ -200,5 +200,12 @@ namespace WMBA5.Data
             //    .HasForeignKey(g => g.GameScoreID)
             //    .OnDelete(DeleteBehavior.Restrict);
         }
+
+
+        //public DbSet<TeamLineup> TeamLineups { get; set; } // this is a enum not a class Dbset is not required for this.
+
+
+
+        public DbSet<WMBA5.Models.Score> Score { get; set; }
     }
 }

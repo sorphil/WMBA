@@ -1,0 +1,71 @@
+﻿@model IEnumerable<WMBA5.Models.Stat>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.GamesPlayed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerAppearance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hits)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RunsScored)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StrikeOuts)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Walks)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RBI)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.GamesPlayed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerAppearance)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hits)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RunsScored)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StrikeOuts)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Walks)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RBI)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
