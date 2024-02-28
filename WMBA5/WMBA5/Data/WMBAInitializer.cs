@@ -13,8 +13,8 @@ namespace WMBA5.Data
             try
             {
                 //Delete and recreate the database. Just for testing phase.
-                context.Database.EnsureDeleted();
-                //context.Database.EnsureCreated();
+                //context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
                 context.Database.Migrate();
 
                 //context.Database.Migrate();
@@ -203,6 +203,7 @@ namespace WMBA5.Data
 
                 if (!context.Games.Any())
                 {
+
                     context.Games.AddRange(
                          new Game
                          {
@@ -247,8 +248,56 @@ namespace WMBA5.Data
                         //    DivisionID = 1
                         //}
                         );
+                    context.SaveChanges();
                 }
-
+                if (!context.Innings.Any())
+                {
+                    context.Innings.AddRange(
+                        new Inning
+                        {
+                            ID = 1,
+                            InningNo = "Inning One",
+                            GameID = 1
+                        },
+                           new Inning
+                           {
+                               ID = 2,
+                               InningNo = "Inning Two",
+                               GameID = 1
+                           },
+                           new Inning
+                           {
+                               ID = 3,
+                               InningNo = "Inning Three",
+                               GameID = 1
+                           },
+                           new Inning
+                           {
+                               ID = 4,
+                               InningNo = "Inning Four",
+                               GameID = 1
+                           },
+                           new Inning
+                           {
+                               ID = 5,
+                               InningNo = "Inning Five",
+                               GameID = 1
+                           },
+                           new Inning
+                           {
+                               ID = 6,
+                               InningNo = "Inning Six",
+                               GameID = 1
+                           },
+                                new Inning
+                                {
+                                    ID = 7,
+                                    InningNo = "Inning Seven",
+                                    GameID = 1
+                                }
+                        );
+                    context.SaveChanges();
+                }
                 //if (!context.TeamGames.Any())
                 //{
                 //    context.TeamGames.AddRange(
@@ -310,248 +359,248 @@ namespace WMBA5.Data
                             TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
                             StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Steve",
-                            Nickname = "Goat",
-                            LastName = "Harrington",
-                            MemberID = "2J5Y0779",
-                            JerseyNumber = 22,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Dustin",
-                            Nickname = "Speedy",
-                            LastName = "Henderson",
-                            MemberID = "2F5H0659",
-                            JerseyNumber = 6,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Alphonso",
-                            Nickname = "Phonzy",
-                            LastName = "Davies",
-                            MemberID = "2B5B6779",
-                            JerseyNumber = 5,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Satoru",
-                            Nickname = "Capitan",
-                            LastName = "Endo",
-                            MemberID = "2D5H3279",
-                            JerseyNumber = 1,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Brandon",
-                            Nickname = "Tuki",
-                            LastName = "Villegas",
-                            MemberID = "2F5F0779",
-                            JerseyNumber = 9,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Lionel",
-                            Nickname = "Leo",
-                            LastName = "Messi",
-                            MemberID = "2M3M0779",
-                            JerseyNumber = 10,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Cristiano",
-                            Nickname = "CR7",
-                            LastName = "Ronaldo",
-                            MemberID = "2CR70779",
-                            JerseyNumber = 7,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Lucas",
-                            LastName = "Sinclair",
-                            MemberID = "2D5D8879",
-                            JerseyNumber = 23,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Daniel",
-                            Nickname = "Karate Kid",
-                            LastName = "Larusso",
-                            MemberID = "02dc3bfa",
-                            JerseyNumber = 2,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Jose",
-                            LastName = "Clark",
-                            MemberID = "02fc3bfa",
-                            JerseyNumber = 1,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Diego",
-                            Nickname = "Piggy",
-                            LastName = "Alas",
-                            MemberID = "12mc3bfa",
-                            JerseyNumber = 3,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Gamaliel",
-                            LastName = "Romualdo",
-                            MemberID = "13hc3dfa",
-                            JerseyNumber = 4,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Naruto",
-                            LastName = "Uzumaki",
-                            MemberID = "12nt3chk",
-                            JerseyNumber = 11,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Fernando",
-                            LastName = "Alonso",
-                            MemberID = "103c3bfa",
-                            JerseyNumber = 10,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Bernardo",
-                            LastName = "Silva",
-                            MemberID = "14fg3bfa",
-                            JerseyNumber = 11,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Erling",
-                            Nickname = "Majin buu",
-                            LastName = "Halland",
-                            MemberID = "16hj3bfa",
-                            JerseyNumber = 9,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Jose",
-                            LastName = "Santos",
-                            MemberID = "12kh3bfa",
-                            JerseyNumber = 13,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Carl",
-                            Nickname = "CJ",
-                            LastName = "Johnson",
-                            MemberID = "12cj3big",
-                            JerseyNumber = 66,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Royce",
-                            LastName = "Fil",
-                            MemberID = "d60fd621",
-                            JerseyNumber = 2,
-
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Injured").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Julio",
-                            LastName = "Glaus",
-                            MemberID = "df2db445",
-                            JerseyNumber = 9,
-
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Brian",
-                            LastName = "Counsell",
-                            MemberID = "6148791e",
-                            JerseyNumber = 8,
-
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Adam",
-                            LastName = "Estes",
-                            MemberID = "67476a1e",
-                            JerseyNumber = 7,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
-                        },
-                        new Player
-                        {
-                            FirstName = "Mike",
-                            LastName = "Hill",
-                            MemberID = "F2C6F254",
-                            JerseyNumber = 5,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
-                            StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         }
+                        //new Player
+                        //{
+                        //    FirstName = "Steve",
+                        //    Nickname = "Goat",
+                        //    LastName = "Harrington",
+                        //    MemberID = "2J5Y0779",
+                        //    JerseyNumber = 22,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Dustin",
+                        //    Nickname = "Speedy",
+                        //    LastName = "Henderson",
+                        //    MemberID = "2F5H0659",
+                        //    JerseyNumber = 6,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Alphonso",
+                        //    Nickname = "Phonzy",
+                        //    LastName = "Davies",
+                        //    MemberID = "2B5B6779",
+                        //    JerseyNumber = 5,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Satoru",
+                        //    Nickname = "Capitan",
+                        //    LastName = "Endo",
+                        //    MemberID = "2D5H3279",
+                        //    JerseyNumber = 1,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Brandon",
+                        //    Nickname = "Tuki",
+                        //    LastName = "Villegas",
+                        //    MemberID = "2F5F0779",
+                        //    JerseyNumber = 9,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Lionel",
+                        //    Nickname = "Leo",
+                        //    LastName = "Messi",
+                        //    MemberID = "2M3M0779",
+                        //    JerseyNumber = 10,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Cristiano",
+                        //    Nickname = "CR7",
+                        //    LastName = "Ronaldo",
+                        //    MemberID = "2CR70779",
+                        //    JerseyNumber = 7,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Lucas",
+                        //    LastName = "Sinclair",
+                        //    MemberID = "2D5D8879",
+                        //    JerseyNumber = 23,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Daniel",
+                        //    Nickname = "Karate Kid",
+                        //    LastName = "Larusso",
+                        //    MemberID = "02dc3bfa",
+                        //    JerseyNumber = 2,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Jose",
+                        //    LastName = "Clark",
+                        //    MemberID = "02fc3bfa",
+                        //    JerseyNumber = 1,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Diego",
+                        //    Nickname = "Piggy",
+                        //    LastName = "Alas",
+                        //    MemberID = "12mc3bfa",
+                        //    JerseyNumber = 3,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Gamaliel",
+                        //    LastName = "Romualdo",
+                        //    MemberID = "13hc3dfa",
+                        //    JerseyNumber = 4,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Naruto",
+                        //    LastName = "Uzumaki",
+                        //    MemberID = "12nt3chk",
+                        //    JerseyNumber = 11,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Fernando",
+                        //    LastName = "Alonso",
+                        //    MemberID = "103c3bfa",
+                        //    JerseyNumber = 10,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Bernardo",
+                        //    LastName = "Silva",
+                        //    MemberID = "14fg3bfa",
+                        //    JerseyNumber = 11,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Erling",
+                        //    Nickname = "Majin buu",
+                        //    LastName = "Halland",
+                        //    MemberID = "16hj3bfa",
+                        //    JerseyNumber = 9,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Jose",
+                        //    LastName = "Santos",
+                        //    MemberID = "12kh3bfa",
+                        //    JerseyNumber = 13,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Carl",
+                        //    Nickname = "CJ",
+                        //    LastName = "Johnson",
+                        //    MemberID = "12cj3big",
+                        //    JerseyNumber = 66,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Royce",
+                        //    LastName = "Fil",
+                        //    MemberID = "d60fd621",
+                        //    JerseyNumber = 2,
+
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Injured").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Julio",
+                        //    LastName = "Glaus",
+                        //    MemberID = "df2db445",
+                        //    JerseyNumber = 9,
+
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Brian",
+                        //    LastName = "Counsell",
+                        //    MemberID = "6148791e",
+                        //    JerseyNumber = 8,
+
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Adam",
+                        //    LastName = "Estes",
+                        //    MemberID = "67476a1e",
+                        //    JerseyNumber = 7,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                        //},
+                        //new Player
+                        //{
+                        //    FirstName = "Mike",
+                        //    LastName = "Hill",
+                        //    MemberID = "F2C6F254",
+                        //    JerseyNumber = 5,
+                        //    TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
+                        //    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                        //    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
+                        //}
                 );
                     context.SaveChanges();
                 }
@@ -570,7 +619,9 @@ namespace WMBA5.Data
                             StrikeOuts = 15,
                             Walks = 5,
                             RBI = 8,
-                            //PlayerStatID = 1, // Assuming PlayerID corresponds to an existing Player's ID
+                            PlayerID = 1,
+                            InningID = 1,
+                            GameID = 1
                         },
                        new Stat
                        {
@@ -582,28 +633,178 @@ namespace WMBA5.Data
                            StrikeOuts = 10,
                            Walks = 8,
                            RBI = 10,
-                           //PlayerStatID = 2, // Assuming PlayerID corresponds to an existing Player's ID
-                       });
-                    context.SaveChanges();
-                }
-                if (!context.PlayerStats.Any())
-                {
-                    context.PlayerStats.AddRange(
-                        new PlayerStat
+                           PlayerID = 1,
+                           InningID = 2,
+                           GameID = 1
+                       },
+                        new Stat
                         {
-                            ID = 1,
+                            ID = 3,
+                            GamesPlayed = 45,
+                            PlayerAppearance = 40,
+                            Hits = 20,
+                            RunsScored = 12,
+                            StrikeOuts = 10,
+                            Walks = 8,
+                            RBI = 10,
                             PlayerID = 1,
-                            GameID = 1,
-                            StatID = 1
+                            InningID = 3,
+                            GameID = 1
                         },
-                       new PlayerStat
-                       {
-                           ID = 1,
-                           PlayerID = 2,
-                           GameID = 1,
-                           StatID = 2
-                           //PlayerStatID = 2, // Assuming PlayerID corresponds to an existing Player's ID
-                       }); ;
+                         new Stat
+                         {
+                             ID = 4,
+                             GamesPlayed = 45,
+                             PlayerAppearance = 40,
+                             Hits = 20,
+                             RunsScored = 12,
+                             StrikeOuts = 10,
+                             Walks = 8,
+                             RBI = 10,
+                             PlayerID = 1,
+                             InningID = 4,
+                             GameID = 1
+                         },
+                          new Stat
+                          {
+                              ID = 5,
+                              GamesPlayed = 45,
+                              PlayerAppearance = 40,
+                              Hits = 20,
+                              RunsScored = 12,
+                              StrikeOuts = 10,
+                              Walks = 8,
+                              RBI = 10,
+                              PlayerID = 1,
+                              InningID = 5,
+                              GameID = 1
+                          },
+                           new Stat
+                           {
+                               ID = 6,
+                               GamesPlayed = 45,
+                               PlayerAppearance = 40,
+                               Hits = 20,
+                               RunsScored = 12,
+                               StrikeOuts = 10,
+                               Walks = 8,
+                               RBI = 10,
+                               PlayerID = 1,
+                               InningID = 6,
+                               GameID = 1
+                           },
+                            new Stat
+                            {
+                                ID = 7,
+                                GamesPlayed = 45,
+                                PlayerAppearance = 40,
+                                Hits = 20,
+                                RunsScored = 12,
+                                StrikeOuts = 10,
+                                Walks = 8,
+                                RBI = 10,
+                                PlayerID = 1,
+                                InningID = 7,
+                                GameID = 1
+                            },
+                             new Stat
+                             {
+                                 ID = 8,
+                                 GamesPlayed = 45,
+                                 PlayerAppearance = 40,
+                                 Hits = 20,
+                                 RunsScored = 12,
+                                 StrikeOuts = 10,
+                                 Walks = 8,
+                                 RBI = 10,
+                                 PlayerID = 2,
+                                 InningID = 1,
+                                 GameID = 1
+                             },
+                              new Stat
+                              {
+                                  ID = 9,
+                                  GamesPlayed = 45,
+                                  PlayerAppearance = 40,
+                                  Hits = 20,
+                                  RunsScored = 12,
+                                  StrikeOuts = 10,
+                                  Walks = 8,
+                                  RBI = 10,
+                                  PlayerID = 2,
+                                  InningID = 2,
+                                  GameID = 1
+                              },
+                               new Stat
+                               {
+                                   ID = 10,
+                                   GamesPlayed = 45,
+                                   PlayerAppearance = 40,
+                                   Hits = 20,
+                                   RunsScored = 12,
+                                   StrikeOuts = 10,
+                                   Walks = 8,
+                                   RBI = 10,
+                                   PlayerID = 2,
+                                   InningID = 3,
+                                   GameID = 1
+                               },
+                                new Stat
+                                {
+                                    ID = 11,
+                                    GamesPlayed = 45,
+                                    PlayerAppearance = 40,
+                                    Hits = 20,
+                                    RunsScored = 12,
+                                    StrikeOuts = 10,
+                                    Walks = 8,
+                                    RBI = 10,
+                                    PlayerID = 2,
+                                    InningID = 4,
+                                    GameID = 1
+                                },
+                                 new Stat
+                                 {
+                                     ID = 12,
+                                     GamesPlayed = 45,
+                                     PlayerAppearance = 40,
+                                     Hits = 20,
+                                     RunsScored = 12,
+                                     StrikeOuts = 10,
+                                     Walks = 8,
+                                     RBI = 10,
+                                     PlayerID = 2,
+                                     InningID = 5,
+                                     GameID = 1
+                                 },
+                                  new Stat
+                                  {
+                                      ID = 13,
+                                      GamesPlayed = 45,
+                                      PlayerAppearance = 40,
+                                      Hits = 20,
+                                      RunsScored = 12,
+                                      StrikeOuts = 10,
+                                      Walks = 8,
+                                      RBI = 10,
+                                      PlayerID = 2,
+                                      InningID = 6,
+                                      GameID = 1
+                                  },
+                                   new Stat
+                                   {
+                                       ID = 14,
+                                       GamesPlayed = 45,
+                                       PlayerAppearance = 40,
+                                       Hits = 20,
+                                       RunsScored = 12,
+                                       StrikeOuts = 10,
+                                       Walks = 8,
+                                       RBI = 10,
+                                       PlayerID = 2,
+                                       InningID = 7,
+                                       GameID = 1
+                                   });
                     context.SaveChanges();
                 }
             }
