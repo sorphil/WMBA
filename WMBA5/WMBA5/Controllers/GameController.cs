@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
+using AspNetCore;
 
 namespace WMBA5.Controllers
 {
@@ -425,9 +426,12 @@ namespace WMBA5.Controllers
                 var inningBalls = await _context.Games.Include(g => g.Innings)
                     .ThenInclude(g => g.Scores).ThenInclude(g => g.Balls).ToListAsync();
 
-
+                //Adding functunality to the buttons
+                //pending....
                 return RedirectToAction(nameof(Index));
             }
+
+            
 
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
             ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "Name");
