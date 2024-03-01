@@ -1,4 +1,4 @@
-﻿.main-body-grid {
+﻿/*.main-body-grid {
     display: grid;
     grid-template-columns: 0.25fr repeat(8, 1fr) 0.25fr;
     grid-template-rows: 0.25fr repeat(6, 1fr) 0.25fr;
@@ -42,7 +42,7 @@
     margin: 0;
 }
 
-    .grid-btn:hover, .grid-btn:focus {
-        text-decoration: underline;
-        opacity: 100%;
-    }
+.grid-btn:hover, .grid-btn:focus {
+    text-decoration: underline;
+    opacity: 100%;
+}*/
