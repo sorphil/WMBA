@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
-using AspNetCore;
 
 namespace WMBA5.Controllers
 {

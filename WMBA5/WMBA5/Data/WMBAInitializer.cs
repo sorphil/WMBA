@@ -13,8 +13,8 @@ namespace WMBA5.Data
             try
             {
                 //Delete and recreate the database. Just for testing phase.
-                //context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                context.Database.EnsureDeleted();
+                //context.Database.EnsureCreated();
                 context.Database.Migrate();
 
                 //context.Database.Migrate();
