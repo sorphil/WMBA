@@ -47,6 +47,39 @@
             @Html.DisplayFor(model => model.Outcome.OutcomeString)
         </dd>
     </dl>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Home Lineup: @Model.HomeTeam.TeamName
+                </th>
+                <th>
+                    Away Lineup: @Model.AwayTeam.TeamName
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @foreach (var item in Model.GamePlayers
+                    .Where(gp => gp.TeamLineup == TeamLineup.Home)
+                    .OrderBy(o => o.Player.LastName))
+                    {
+                        @item.Player.FullName <br />
+                    }
+                </td>
+                <td>
+                    @foreach (var item in Model.GamePlayers
+                    .Where(gp => gp.TeamLineup == TeamLineup.Away)
+                    .OrderBy(o => o.Player.LastName))
+                    {
+                        @item.Player.FullName <br />
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |

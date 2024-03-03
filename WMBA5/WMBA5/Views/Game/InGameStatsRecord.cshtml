@@ -3,10 +3,10 @@
 @{
     ViewData["Title"] = "Record Game";
 }
-<partial name="_ViewHeading" />
+@* <partial name="_ViewHeading" /> *@
 <h2>@ViewData["HomeTeamID"] vs @ViewData["AwayTeamID"] </h2>
 <hr />
-<form asp-action="InGameStatsRecord">
+<div>
 
     
     
@@ -22,9 +22,15 @@
     <label id="lblOut"for="btnOut">Outs: </label>
     <button id="btnOut" name="btnOut">+</button>
     <br />
+    <dt class="col-sm-4">
+        @Html.DisplayNameFor(model => model.HomeTeam.Players)
+    </dt>
+    <dd class="col-sm-8">
+        @Html.DisplayFor(model => model.HomeTeam.Players)
+    </dd>
 
     <label id="lblPlayer" for="pPlayer">Players</label>
-    <p id="pPlayer">Players will go here</p>
+    <p id="pPlayer">@Html.DisplayFor(model => model.HomeTeam.Players)</p>
     <br />
     <label id="lblIning" for="pIning">Inings</label>
     <p id="pIning">Inings info will go here</p>
@@ -35,4 +41,4 @@
 
     
 
-</form>
+</div>

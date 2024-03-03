@@ -34,7 +34,6 @@ namespace WMBA5.Models
         [Display(Name = "Home Team")]
         public Team HomeTeam { get; set; }
 
-
         [Display(Name = "Away Team")]
         [Required(ErrorMessage = "You must select the Away Team for the Game.")]
         public int AwayTeamID { get; set; }
