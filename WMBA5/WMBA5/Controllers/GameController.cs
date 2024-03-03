@@ -385,17 +385,20 @@ namespace WMBA5.Controllers
         }
 
         //Creating the action to record the in-game Stats for futher creation of the view
-        public async Task<IActionResult> InGameStatsRecord(Game game , int id)
+        public async Task<IActionResult> InGameStatsRecord(Game game, int? id)
         {
-            if(ModelState.IsValid)
-            {
-                var gameStats = await _context.Games
+            var gameStats = await _context.Games
+                .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
                 .Include(g => g.AwayTeam)
                 .Include(g => g.HomeTeam)
-                .Include(g => g.PlayerAtBats)
-               .Include(d => d.Division)
-               .Include(g => g.Innings).ThenInclude(g => g.Scores)
-               .FirstOrDefaultAsync(d => d.ID == id);
+                .Include(g => g.Division)
+                .Include(g => g.Outcome)
+                .Include(g => g.Location)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (ModelState.IsValid)
+            {
+                
 
                 //Making a list of the Home Team players to display in the players Listbox following ideation
                 //This is thinking that the coach from the home team is the one that will record the stats from his team
@@ -431,7 +434,7 @@ namespace WMBA5.Controllers
                 //Adding functunality to the buttons
                 //pending....
                 //return RedirectToAction(nameof(Index));
-                return View(game.HomeTeamID);
+                
             }
 
             
@@ -440,7 +443,7 @@ namespace WMBA5.Controllers
             ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "Name");
             ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "Name");
 
-            return View(game);
+            return View(gameStats);
         }
 
         // GET: Game/Delete/5
