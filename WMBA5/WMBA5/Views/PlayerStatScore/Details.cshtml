@@ -1,0 +1,25 @@
+﻿@model IEnumerable<WMBA5.Models.Stat>
+@{
+    WMBA5.Models.Player player = (WMBA5.Models.Player)ViewBag.Player;
+    <partial name="_PlayerPartial" model="player" />
+    ViewData["Title"] = ViewData["ControllerFriendlyName"];
+}
+
+<input type="hidden" name="PlayerID" value="@player.ID" />
+ 
+<a asp-controller="Game" asp-action="Details" asp-route-id="@ViewData["GameID"]" class="btn btn-sm btn-outline-primary"
+                                            role="button" data-bs-toggle="tooltip">
+    <h3>   @ViewData["GameSummary"]</h3>
+</a>
+@{
+    IEnumerable<WMBA5.Models.Stat> stats = (IEnumerable<WMBA5.Models.Stat>)ViewBag.Stats;
+    <partial name="_StatPartial" model="stats" />
+}
+@{
+    IEnumerable<WMBA5.Models.Score> scores = (IEnumerable<WMBA5.Models.Score>)ViewBag.Scores;
+    <partial name="_ScorePartial" model="scores" />
+}
+<div>
+    <a asp-action="Edit" asp-controller="Player" asp-route-id="@player.ID">Edit @player.FullName</a> |
+    <a href='@ViewData["returnURL"]'>Back to Player List</a>
+</div>

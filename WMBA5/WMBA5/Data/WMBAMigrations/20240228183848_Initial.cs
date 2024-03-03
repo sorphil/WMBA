@@ -315,16 +315,31 @@ namespace WMBA5.Data.WMBAMigrations
                     Out = table.Column<int>(type: "INTEGER", nullable: false),
                     Runs = table.Column<int>(type: "INTEGER", nullable: false),
                     Hits = table.Column<int>(type: "INTEGER", nullable: false),
-                    InningID = table.Column<int>(type: "INTEGER", nullable: true)
+                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    InningID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GameID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Score", x => x.ID);
                     table.ForeignKey(
+                        name: "FK_Score_Games_GameID",
+                        column: x => x.GameID,
+                        principalTable: "Games",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Score_Innings_InningID",
                         column: x => x.InningID,
                         principalTable: "Innings",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Score_Players_PlayerID",
+                        column: x => x.PlayerID,
+                        principalTable: "Players",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -365,71 +380,6 @@ namespace WMBA5.Data.WMBAMigrations
                         principalTable: "Players",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GameScores",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    GameID = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlayerAtBatID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GameScores", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_GameScores_Games_GameID",
-                        column: x => x.GameID,
-                        principalTable: "Games",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GameScores_PlayerAtBat_PlayerAtBatID",
-                        column: x => x.PlayerAtBatID,
-                        principalTable: "PlayerAtBat",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayerScores",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
-                    ScoreID = table.Column<int>(type: "INTEGER", nullable: false),
-                    GameID = table.Column<int>(type: "INTEGER", nullable: false),
-                    GameScoreID = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayerScores", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_PlayerScores_GameScores_GameScoreID",
-                        column: x => x.GameScoreID,
-                        principalTable: "GameScores",
-                        principalColumn: "ID");
-                    table.ForeignKey(
-                        name: "FK_PlayerScores_Games_GameID",
-                        column: x => x.GameID,
-                        principalTable: "Games",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerScores_Players_PlayerID",
-                        column: x => x.PlayerID,
-                        principalTable: "Players",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerScores_Score_ScoreID",
-                        column: x => x.ScoreID,
-                        principalTable: "Score",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -473,16 +423,6 @@ namespace WMBA5.Data.WMBAMigrations
                 column: "OutcomeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameScores_GameID",
-                table: "GameScores",
-                column: "GameID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GameScores_PlayerAtBatID",
-                table: "GameScores",
-                column: "PlayerAtBatID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Innings_GameID",
                 table: "Innings",
                 column: "GameID");
@@ -524,29 +464,19 @@ namespace WMBA5.Data.WMBAMigrations
                 column: "TeamID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlayerScores_GameID",
-                table: "PlayerScores",
+                name: "IX_Score_GameID",
+                table: "Score",
                 column: "GameID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlayerScores_GameScoreID",
-                table: "PlayerScores",
-                column: "GameScoreID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlayerScores_PlayerID",
-                table: "PlayerScores",
-                column: "PlayerID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlayerScores_ScoreID",
-                table: "PlayerScores",
-                column: "ScoreID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Score_InningID",
                 table: "Score",
                 column: "InningID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Score_PlayerID",
+                table: "Score",
+                column: "PlayerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stats_GameID",
@@ -581,22 +511,16 @@ namespace WMBA5.Data.WMBAMigrations
                 name: "GamePlayers");
 
             migrationBuilder.DropTable(
-                name: "PlayerScores");
+                name: "PlayerAtBat");
 
             migrationBuilder.DropTable(
                 name: "Positions");
 
             migrationBuilder.DropTable(
-                name: "Stats");
-
-            migrationBuilder.DropTable(
-                name: "GameScores");
-
-            migrationBuilder.DropTable(
                 name: "Score");
 
             migrationBuilder.DropTable(
-                name: "PlayerAtBat");
+                name: "Stats");
 
             migrationBuilder.DropTable(
                 name: "Innings");
