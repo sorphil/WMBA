@@ -398,7 +398,6 @@ namespace WMBA5.Data
                     context.Players.AddRange(
                         new Player
                         {
-                            ID= 1,
                             FirstName = "Lance",
                             LastName = "Glaus",
                             MemberID = "FE9113FF",
@@ -409,7 +408,6 @@ namespace WMBA5.Data
                         },
                         new Player
                         {
-                            ID = 2,
                             FirstName = "Brad",
                             LastName = "Lyon",
                             MemberID = "2C5E0779",
