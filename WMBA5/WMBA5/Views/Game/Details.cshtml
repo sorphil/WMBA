@@ -62,7 +62,7 @@
         <tbody>
             <tr>
                 <td>
-                    @foreach (var item in Model.GamePlayers
+                    @foreach (var item in Model.HomeTeam
                     .Where(gp => gp.TeamLineup == TeamLineup.Home)
                     .OrderBy(o => o.Player.LastName))
                     {

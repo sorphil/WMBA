@@ -80,7 +80,6 @@ namespace WMBA5.Models
         public ICollection<Stat> Stats { get; set; } = new HashSet<Stat>();
 
         //public ICollection<Game> Games { get; set; } 
-        public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
 
         public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
 

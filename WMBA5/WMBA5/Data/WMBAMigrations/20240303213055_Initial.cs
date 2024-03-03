@@ -266,7 +266,7 @@ namespace WMBA5.Data.WMBAMigrations
                         column: x => x.PlayerID,
                         principalTable: "Players",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -379,9 +379,10 @@ namespace WMBA5.Data.WMBAMigrations
                 column: "GameID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GamePlayers_PlayerID",
+                name: "IX_GamePlayers_PlayerID_GameID",
                 table: "GamePlayers",
-                column: "PlayerID");
+                columns: new[] { "PlayerID", "GameID" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Games_AwayTeamID",

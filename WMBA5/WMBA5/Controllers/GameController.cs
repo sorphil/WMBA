@@ -142,6 +142,8 @@ namespace WMBA5.Controllers
                 .Include(g=>g.Location)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
+
+
             if (game == null)
             {
                 return NotFound();
