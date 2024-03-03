@@ -58,6 +58,8 @@ namespace WMBA5.Models
 
 
         public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
+        public ICollection<Stat> Stats { get; set; } = new HashSet<Stat>();
+        public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
 
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
    

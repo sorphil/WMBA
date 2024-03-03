@@ -16,7 +16,6 @@ namespace WMBA5.Data
         public DbSet<Game> Games { get; set; }
 
         public DbSet<GamePlayer> GamePlayers { get; set; }
-        public DbSet<GameScore> GameScores { get; set; }
         public DbSet<Inning> Innings { get; set; }
 
         //public DbSet<Lineup> Lineups { get; set; }
@@ -27,7 +26,7 @@ namespace WMBA5.Data
 
         //public DbSet<PlayerAtBat> PlayerAtBats { get; set; }
 
-        public DbSet<PlayerScore> PlayerScores { get; set; }
+        public DbSet<Score> Scores { get; set; }
         //public DbSet<PlayerLineup> PlayerLineups { get; set; }
 
         public DbSet<Stat> Stats { get; set; }

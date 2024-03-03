@@ -1,6 +1,6 @@
 ﻿namespace WMBA5.ViewModels
 {
-    public class GameStatsVM
+    public class PlayerScoresStatsVM
     {
         public int GameID { get; set; }
         public int PlayerID { get; set; }
@@ -17,5 +17,12 @@
         public int TotalWalks { get; set; }
 
         public int TotalRBI { get; set; }
+
+        // Additional properties from the Score table
+        public int TotalBalls { get; set; }
+        public int TotalFoulBalls { get; set; }
+        public int TotalStrikes { get; set; }
+        public int TotalOut { get; set; }
+        public int TotalRuns { get; set; }
     }
 }

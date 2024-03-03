@@ -666,203 +666,83 @@ namespace WMBA5.Data
                 //Adding Stats
                 if (!context.Stats.Any())
                 {
-                    context.Stats.AddRange(
-                        new Stat
+                    Random rnd = new Random();
+
+                    for (int i = 1; i <= 7; i++)
+                    {
+                        context.Stats.Add(new Stat
                         {
-                            ID = 1,
-                            GamesPlayed = 50,
-                            PlayerAppearance = 45,
-                            Hits = 25,
-                            RunsScored = 10,
-                            StrikeOuts = 15,
-                            Walks = 5,
-                            RBI = 8,
+                            ID = i,
+                            GamesPlayed = rnd.Next(20, 60),
+                            PlayerAppearance = rnd.Next(20, 50),
+                            Hits = rnd.Next(10, 30),
+                            RunsScored = rnd.Next(5, 20),
+                            StrikeOuts = rnd.Next(5, 25),
+                            Walks = rnd.Next(2, 15),
+                            RBI = rnd.Next(5, 15),
                             PlayerID = 1,
-                            InningID = 1,
+                            InningID = i,
                             GameID = 1
-                        },
-                       new Stat
-                       {
-                           ID = 2,
-                           GamesPlayed = 45,
-                           PlayerAppearance = 40,
-                           Hits = 20,
-                           RunsScored = 12,
-                           StrikeOuts = 10,
-                           Walks = 8,
-                           RBI = 10,
-                           PlayerID = 1,
-                           InningID = 2,
-                           GameID = 1
-                       },
-                        new Stat
+                        });
+                    }
+
+                    //for (int i = 8; i <= 14; i++)
+                    //{
+                    //    context.Stats.Add(new Stat
+                    //    {
+                    //        ID = i,
+                    //        GamesPlayed = rnd.Next(20, 60),
+                    //        PlayerAppearance = rnd.Next(20, 50),
+                    //        Hits = rnd.Next(10, 30),
+                    //        RunsScored = rnd.Next(5, 20),
+                    //        StrikeOuts = rnd.Next(5, 25),
+                    //        Walks = rnd.Next(2, 15),
+                    //        RBI = rnd.Next(5, 15),
+                    //        PlayerID = 2,
+                    //        InningID = i,
+                    //        GameID = 1
+                    //    });
+                    //}
+                    context.SaveChanges();
+                }
+                if (!context.Scores.Any())
+                {
+                    Random rnd = new Random();
+
+                    // Seed scores for PlayerID = 1
+                    for (int i = 1; i <= 7; i++)
+                    {
+                        context.Scores.Add(new Score
                         {
-                            ID = 3,
-                            GamesPlayed = 45,
-                            PlayerAppearance = 40,
-                            Hits = 20,
-                            RunsScored = 12,
-                            StrikeOuts = 10,
-                            Walks = 8,
-                            RBI = 10,
+                            Balls = rnd.Next(0, 4), // Balls range from 0 to 3
+                            FoulBalls = rnd.Next(0, 3), // Foul balls range from 0 to 2
+                            Strikes = rnd.Next(0, 3), // Strikes range from 0 to 2
+                            Out = rnd.Next(0, 3), // Outs range from 0 to 2
+                            Runs = rnd.Next(0, 5), // Runs range from 0 to 4
+                            Hits = rnd.Next(0, 5), // Hits range from 0 to 4
                             PlayerID = 1,
-                            InningID = 3,
+                            InningID = i,
                             GameID = 1
-                        },
-                         new Stat
-                         {
-                             ID = 4,
-                             GamesPlayed = 45,
-                             PlayerAppearance = 40,
-                             Hits = 20,
-                             RunsScored = 12,
-                             StrikeOuts = 10,
-                             Walks = 8,
-                             RBI = 10,
-                             PlayerID = 1,
-                             InningID = 4,
-                             GameID = 1
-                         },
-                          new Stat
-                          {
-                              ID = 5,
-                              GamesPlayed = 45,
-                              PlayerAppearance = 40,
-                              Hits = 20,
-                              RunsScored = 12,
-                              StrikeOuts = 10,
-                              Walks = 8,
-                              RBI = 10,
-                              PlayerID = 1,
-                              InningID = 5,
-                              GameID = 1
-                          },
-                           new Stat
-                           {
-                               ID = 6,
-                               GamesPlayed = 45,
-                               PlayerAppearance = 40,
-                               Hits = 20,
-                               RunsScored = 12,
-                               StrikeOuts = 10,
-                               Walks = 8,
-                               RBI = 10,
-                               PlayerID = 1,
-                               InningID = 6,
-                               GameID = 1
-                           },
-                            new Stat
-                            {
-                                ID = 7,
-                                GamesPlayed = 45,
-                                PlayerAppearance = 40,
-                                Hits = 20,
-                                RunsScored = 12,
-                                StrikeOuts = 10,
-                                Walks = 8,
-                                RBI = 10,
-                                PlayerID = 1,
-                                InningID = 7,
-                                GameID = 1
-                            },
-                             new Stat
-                             {
-                                 ID = 8,
-                                 GamesPlayed = 45,
-                                 PlayerAppearance = 40,
-                                 Hits = 20,
-                                 RunsScored = 12,
-                                 StrikeOuts = 10,
-                                 Walks = 8,
-                                 RBI = 10,
-                                 PlayerID = 2,
-                                 InningID = 1,
-                                 GameID = 1
-                             },
-                              new Stat
-                              {
-                                  ID = 9,
-                                  GamesPlayed = 45,
-                                  PlayerAppearance = 40,
-                                  Hits = 20,
-                                  RunsScored = 12,
-                                  StrikeOuts = 10,
-                                  Walks = 8,
-                                  RBI = 10,
-                                  PlayerID = 2,
-                                  InningID = 2,
-                                  GameID = 1
-                              },
-                               new Stat
-                               {
-                                   ID = 10,
-                                   GamesPlayed = 45,
-                                   PlayerAppearance = 40,
-                                   Hits = 20,
-                                   RunsScored = 12,
-                                   StrikeOuts = 10,
-                                   Walks = 8,
-                                   RBI = 10,
-                                   PlayerID = 2,
-                                   InningID = 3,
-                                   GameID = 1
-                               },
-                                new Stat
-                                {
-                                    ID = 11,
-                                    GamesPlayed = 45,
-                                    PlayerAppearance = 40,
-                                    Hits = 20,
-                                    RunsScored = 12,
-                                    StrikeOuts = 10,
-                                    Walks = 8,
-                                    RBI = 10,
-                                    PlayerID = 2,
-                                    InningID = 4,
-                                    GameID = 1
-                                },
-                                 new Stat
-                                 {
-                                     ID = 12,
-                                     GamesPlayed = 45,
-                                     PlayerAppearance = 40,
-                                     Hits = 20,
-                                     RunsScored = 12,
-                                     StrikeOuts = 10,
-                                     Walks = 8,
-                                     RBI = 10,
-                                     PlayerID = 2,
-                                     InningID = 5,
-                                     GameID = 1
-                                 },
-                                  new Stat
-                                  {
-                                      ID = 13,
-                                      GamesPlayed = 45,
-                                      PlayerAppearance = 40,
-                                      Hits = 20,
-                                      RunsScored = 12,
-                                      StrikeOuts = 10,
-                                      Walks = 8,
-                                      RBI = 10,
-                                      PlayerID = 2,
-                                      InningID = 6,
-                                      GameID = 1
-                                  },
-                                   new Stat
-                                   {
-                                       ID = 14,
-                                       GamesPlayed = 45,
-                                       PlayerAppearance = 40,
-                                       Hits = 20,
-                                       RunsScored = 12,
-                                       StrikeOuts = 10,
-                                       Walks = 8,
-                                       RBI = 10,
-                                       PlayerID = 2,
-                                       InningID = 7,
-                                       GameID = 1
-                                   });
+                        });
+                    }
+
+                    // Seed scores for PlayerID = 2
+                    //for (int i = 8; i <= 14; i++)
+                    //{
+                    //    context.Scores.Add(new Score
+                    //    {
+                    //        Balls = rnd.Next(0, 4),
+                    //        FoulBalls = rnd.Next(0, 3),
+                    //        Strikes = rnd.Next(0, 3),
+                    //        Out = rnd.Next(0, 3),
+                    //        Runs = rnd.Next(0, 5),
+                    //        Hits = rnd.Next(0, 5),
+                    //        PlayerID = 2,
+                    //        InningID = i,
+                    //        GameID = 1
+                    //    });
+                    //}
+
                     context.SaveChanges();
                 }
             }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WMBA5.Data;
 
@@ -10,9 +11,11 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    partial class WMBAContextModelSnapshot : ModelSnapshot
+    [Migration("20240228183848_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.16");
@@ -124,8 +127,7 @@ namespace WMBA5.Data.WMBAMigrations
 
                     b.HasIndex("GameID");
 
-                    b.HasIndex("PlayerID", "GameID")
-                        .IsUnique();
+                    b.HasIndex("PlayerID");
 
                     b.ToTable("GamePlayers");
                 });
@@ -467,7 +469,7 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasOne("WMBA5.Models.Player", "Player")
                         .WithMany("GamePlayers")
                         .HasForeignKey("PlayerID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Game");

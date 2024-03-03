@@ -5,224 +5,54 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
-using WMBA5.Utilities;
-using WMBA5.ViewModels;
 
 namespace WMBA5.Controllers
 {
-    public class PlayerStatController : ElephantController
+    public class StatController : Controller
     {
         private readonly WMBAContext _context;
 
-        public PlayerStatController(WMBAContext context)
+        public StatController(WMBAContext context)
         {
             _context = context;
         }
 
         // GET: Stat
-        public async Task<IActionResult> Index(int? PlayerID, int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "PlayerAppearance")
+        public async Task<IActionResult> Index()
         {
-            //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
-            int numberFilters = 0;
-            //Then in each "test" for filtering, add to the count of Filters applied
-            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Player");
-            //List of sort options.
-            //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Player Appearances", "Hits", "Runs Scored", "Strike Outs", "Walks", "RBI" };
-
-            var Stats = _context.Stats
-            .Where(ps => ps.PlayerID == PlayerID)
-            .Include(p=>p.Inning)
-            .GroupBy(i => i.GameID)
-            .Select(g => new GameStatsVM
-            {
-                GameID = g.Key,
-                PlayerID = PlayerID.GetValueOrDefault(),
-                TotalPlayerAppearances = g.Sum(i => i.PlayerAppearance),
-                TotalGamesPlayed = g.Sum(i => i.GamesPlayed),
-                TotalHits = g.Sum(i => i.Hits),
-                TotalRBI = g.Sum(i => i.RBI),
-                TotalWalks = g.Sum(i => i.Walks),
-                TotalRunsScored = g.Sum(i => i.RunsScored),
-                TotalStrikeOuts = g.Sum(i => i.StrikeOuts)
-            }).ToList();
-
-
-            if (!PlayerID.HasValue)
-            {
-                //Go back to the proper return URL for the Player controller
-                return Redirect(ViewData["returnURL"].ToString());
-            }
-
-            //Give feedback about the state of the filters
-            if (numberFilters != 0)
-            {
-                //Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
-                //Show how many filters have been applied
-                ViewData["numberFilters"] = "(" + numberFilters.ToString()
-                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
-                //Keep the Bootstrap collapse open
-                //@ViewData["ShowFilter"] = " show";
-            }
-
-            //Before we sort, see if we have called for a change of filtering or sorting
-            if (!string.IsNullOrEmpty(actionButton)) //Form Submitted!
-            {
-                page = 1;//Reset page to start
-
-                if (sortOptions.Contains(actionButton))//Change of sort is requested
-                {
-                    if (actionButton == sortField) //Reverse order on same field
-                    {
-                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
-                    }
-                    sortField = actionButton;//Sort by the button clicked
-                }
-            }
-            //Now we know which field and direction to sort by
-            //if (sortField == "Player Appearances")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //            .OrderBy(p => p.TotalPlayerAppearance);
-            //            //.ThenBy(p => p.PlayerAppearance);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //            .OrderByDescending(p => p.PlayerAppearance);
-                       
-            //    }
-            //}
-            
-            //else if (sortField == "Hits")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //              .OrderBy(p => p.Hits);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //                 .OrderByDescending(p => p.Hits);
-            //    }
-            //}
-            //else if (sortField == "Runs Scored")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //              .OrderBy(p => p.RunsScored);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //                .OrderByDescending(p => p.RunsScored);
-
-            //    }
-            //}
-            //else if (sortField == "Walks")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //              .OrderBy(p => p.Walks);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //                    .OrderByDescending(p => p.Walks);
-            //    }
-            //}
-            //else if (sortField == "Strike Outs")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //               .OrderBy(p => p.StrikeOuts);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //                  .OrderByDescending(p => p.StrikeOuts);
-            //    }
-            //}
-            //else if (sortField == "RBI")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //                   .OrderBy(p => p.RBI);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //               .OrderByDescending(p => p.RBI);
-            //    }
-            //}
-            //Set sort for next time
-            ViewData["sortField"] = sortField;
-            ViewData["sortDirection"] = sortDirection;
-
-            Player player = await _context.Players
-            .Include(p => p.Team)
-            .Include( p => p.Status)
-            .Include(p => p.PlayerAtBats)
-            .Include(p => p.Stats)
-            .Include(p => p.Division)
-            .Where(t => t.ID == PlayerID.GetValueOrDefault())
-            .AsNoTracking()
-            .FirstOrDefaultAsync();
-
-            ViewBag.Player = player;
-
-            //Handle Paging
-            //int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-            //ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-            //var pagedData = await PaginatedList<GameStatsVM>.CreateAsync(Stats, page ?? 1, pageSize);
-
-            return View(Stats);
+            var wMBAContext = _context.Stats.Include(s => s.Game).Include(s => s.Inning).Include(s => s.Player);
+            return View(await wMBAContext.ToListAsync());
         }
-        public async Task<IActionResult> Details(int? PlayerID, int? GameID)
-        {
-            var stats = _context.Stats
-                .Include(s=>s.Inning)
-                .Include(s=>s.Game)
-                .Include(s=>s.Player)
-            .Where(ps => ps.PlayerID == PlayerID)
-            .Where(ps => ps.GameID == GameID)
-            .AsNoTracking();
 
-            Player player = await _context.Players
-         .Include(p => p.Team)
-         .Include(p => p.Status)
-         .Include(p => p.PlayerAtBats)
-         .Include(p => p.Stats)
-         .Include(p => p.Division)
-         .Where(t => t.ID == PlayerID.GetValueOrDefault())
-         .AsNoTracking()
-         .FirstOrDefaultAsync();
-            ViewData["GameSummary"] = _context.Games.Where(g => g.ID == GameID).FirstOrDefault().Summary;
-            ViewBag.Player = player;
-            if (player == null)
+        // GET: Stat/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.Stats == null)
             {
                 return NotFound();
             }
 
-            return View(stats);
+            var stat = await _context.Stats
+                .Include(s => s.Game)
+                .Include(s => s.Inning)
+                .Include(s => s.Player)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (stat == null)
+            {
+                return NotFound();
+            }
+
+            return View(stat);
         }
 
         // GET: Stat/Create
         public IActionResult Create()
         {
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName");
+            ViewData["GameID"] = new SelectList(_context.Games, "ID", "ID");
+            ViewData["InningID"] = new SelectList(_context.Innings, "ID", "ID");
+            ViewData["PlayerID"] = new SelectList(_context.Players, "ID", "FirstName");
             return View();
         }
 
@@ -231,33 +61,37 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,TeamID")] Player player)
+        public async Task<IActionResult> Create([Bind("ID,GamesPlayed,PlayerAppearance,Hits,RunsScored,StrikeOuts,Walks,RBI,PlayerID,InningID,GameID")] Stat stat)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(player);
+                _context.Add(stat);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-            return View(player);
+            ViewData["GameID"] = new SelectList(_context.Games, "ID", "ID", stat.GameID);
+            ViewData["InningID"] = new SelectList(_context.Innings, "ID", "ID", stat.InningID);
+            ViewData["PlayerID"] = new SelectList(_context.Players, "ID", "FirstName", stat.PlayerID);
+            return View(stat);
         }
 
         // GET: Stat/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Players == null)
+            if (id == null || _context.Stats == null)
             {
                 return NotFound();
             }
 
-            var player = await _context.Players.FindAsync(id);
-            if (player == null)
+            var stat = await _context.Stats.FindAsync(id);
+            if (stat == null)
             {
                 return NotFound();
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-            return View(player);
+            ViewData["GameID"] = new SelectList(_context.Games, "ID", "ID", stat.GameID);
+            ViewData["InningID"] = new SelectList(_context.Innings, "ID", "ID", stat.InningID);
+            ViewData["PlayerID"] = new SelectList(_context.Players, "ID", "FirstName", stat.PlayerID);
+            return View(stat);
         }
 
         // POST: Stat/Edit/5
@@ -265,9 +99,9 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,TeamID")] Player player)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,GamesPlayed,PlayerAppearance,Hits,RunsScored,StrikeOuts,Walks,RBI,PlayerID,InningID,GameID")] Stat stat)
         {
-            if (id != player.ID)
+            if (id != stat.ID)
             {
                 return NotFound();
             }
@@ -276,12 +110,12 @@ namespace WMBA5.Controllers
             {
                 try
                 {
-                    _context.Update(player);
+                    _context.Update(stat);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PlayerExists(player.ID))
+                    if (!StatExists(stat.ID))
                     {
                         return NotFound();
                     }
@@ -292,27 +126,31 @@ namespace WMBA5.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-            return View(player);
+            ViewData["GameID"] = new SelectList(_context.Games, "ID", "ID", stat.GameID);
+            ViewData["InningID"] = new SelectList(_context.Innings, "ID", "ID", stat.InningID);
+            ViewData["PlayerID"] = new SelectList(_context.Players, "ID", "FirstName", stat.PlayerID);
+            return View(stat);
         }
 
         // GET: Stat/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Players == null)
+            if (id == null || _context.Stats == null)
             {
                 return NotFound();
             }
 
-            var player = await _context.Players
-                .Include(p => p.Team)
+            var stat = await _context.Stats
+                .Include(s => s.Game)
+                .Include(s => s.Inning)
+                .Include(s => s.Player)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (player == null)
+            if (stat == null)
             {
                 return NotFound();
             }
 
-            return View(player);
+            return View(stat);
         }
 
         // POST: Stat/Delete/5
@@ -320,24 +158,23 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Players == null)
+            if (_context.Stats == null)
             {
-                return Problem("Entity set 'WMBAContext.Players'  is null.");
+                return Problem("Entity set 'WMBAContext.Stats'  is null.");
             }
-            var player = await _context.Players.FindAsync(id);
-            if (player != null)
+            var stat = await _context.Stats.FindAsync(id);
+            if (stat != null)
             {
-                _context.Players.Remove(player);
+                _context.Stats.Remove(stat);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PlayerExists(int id)
+        private bool StatExists(int id)
         {
-            return _context.Players.Any(e => e.ID == id);
+          return _context.Stats.Any(e => e.ID == id);
         }
     }
 }
-
