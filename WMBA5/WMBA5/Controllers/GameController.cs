@@ -391,7 +391,6 @@ namespace WMBA5.Controllers
                 .Include(g => g.PlayerAtBats)
                .Include(d => d.Division)
                .Include(g => g.Innings).ThenInclude(g => g.Scores)
-               .Include(g => g.Innings).ThenInclude(g => g.Stats)
                .FirstOrDefaultAsync(d => d.ID == id);
 
                 //Making a list of the Home Team players to display in the players Listbox following ideation

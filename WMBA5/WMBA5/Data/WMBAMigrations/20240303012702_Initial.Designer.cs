@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240228183848_Initial")]
+    [Migration("20240303012702_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -324,16 +324,10 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("GameID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("GamesPlayed")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Hits")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("InningID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PlayerAppearance")
@@ -355,10 +349,6 @@ namespace WMBA5.Data.WMBAMigrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("GameID");
-
-                    b.HasIndex("InningID");
 
                     b.HasIndex("PlayerID");
 
@@ -544,7 +534,7 @@ namespace WMBA5.Data.WMBAMigrations
             modelBuilder.Entity("WMBA5.Models.Score", b =>
                 {
                     b.HasOne("WMBA5.Models.Game", "Game")
-                        .WithMany()
+                        .WithMany("Scores")
                         .HasForeignKey("GameID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -570,27 +560,11 @@ namespace WMBA5.Data.WMBAMigrations
 
             modelBuilder.Entity("WMBA5.Models.Stat", b =>
                 {
-                    b.HasOne("WMBA5.Models.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WMBA5.Models.Inning", "Inning")
-                        .WithMany("Stats")
-                        .HasForeignKey("InningID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WMBA5.Models.Player", "Player")
                         .WithMany("Stats")
                         .HasForeignKey("PlayerID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("Inning");
 
                     b.Navigation("Player");
                 });
@@ -640,13 +614,13 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Navigation("Innings");
 
                     b.Navigation("PlayerAtBats");
+
+                    b.Navigation("Scores");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Inning", b =>
                 {
                     b.Navigation("Scores");
-
-                    b.Navigation("Stats");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Player", b =>

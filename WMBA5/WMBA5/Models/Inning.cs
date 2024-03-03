@@ -14,7 +14,6 @@ namespace WMBA5.Models
         public Game Game { get; set; }
 
 
-        public ICollection<Stat> Stats { get; set; } = new HashSet<Stat>();
         public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
 
 

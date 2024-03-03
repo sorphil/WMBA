@@ -1,153 +1,59 @@
-﻿@model IEnumerable<WMBA5.Models.Stat>
+﻿@model WMBA5.Models.Stat
+
 <figure class="row">
-    <figcaption class="col mt-3"><h4><text class="d-none d-sm-inline">Player Stats</text></h4></figcaption>
+    <figcaption class="col mt-3"><h4><text class="d-none d-sm-inline"></text>Stats</h4></figcaption>
 </figure>
-<form asp-action="Index" method="get">
-    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Inning Number
-                </th>
-                <th>
-                    Games Played
-                </th>
-                <th>
-                   Player Appearances
-                </th>
-                <th>
-                    Hits
-                </th>
-                <th>
-                    Runs Scored
-                </th>
-                <th>
-                    Strike Outs
-                </th>
-                <th>
-                    Walks
-                </th>
-                <th>
-                    RBI
-                </th>
-                <th>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+<div>
 
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Inning.InningNo)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.GamesPlayed)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PlayerAppearance)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Hits)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RunsScored)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StrikeOuts)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Walks)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RBI)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RBI)
-                    </td>
-                    <td>
-                        <div class="input-group-prepend">
-                            <button class="btn btn-outline-secondary" id="nowEditStat" data-bs-toggle="modal" data-bs-target="#editStatModal" type="button">Edit</button>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.GamesPlayed)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.GamesPlayed)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.PlayerAppearance)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.PlayerAppearance)
+                </dd>
 
-    @* <partial name="_PagingNavBar" /> *@
-</form>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.RunsScored)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.RunsScored)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.StrikeOuts)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.StrikeOuts)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.Walks)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Walks)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.RBI)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.RBI)
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+  
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    @* <script src="~/js/multiselect.js"></script> *@
-    @* <script src="~/js/refreshDDL.js"></script> *@
-
-    <script type="text/javascript">
-        $('#submitStatEdit').click(function (event) {
-            event.preventDefault();
-            ClearErrors();
-            var form = $('#editStatForm');
-            if (form.valid()) {
-                $.ajax({
-                    type: "POST",
-                    url: form.attr('action'),
-                    data: form.serialize(),
-                    success: function () {
-                        $('#editStatModal').modal('hide');
-                    },
-                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
-                        var errorMessages = [];
-                        switch (xhr.status) {
-                            case 401:
-                                errorMessages.push("You must be logged in first.");
-                                break;
-                            case 403:
-                                errorMessages.push("You are not authorized for this action.");
-                                break;
-                            default:
-                                //Messages coming from the Model State Errors
-                                //We split on the | delimeter and the .slice removes the last one
-                                errorMessages = xhr.responseText.split("|").slice(0, -1);
-                        }
-                        //This checks if there are any elements with some content
-                        //and if not then it provides a default feedback message.
-                        if (!errorMessages.some((str) => str !== "")) {
-                            errorMessages.push("Error: Unable to complete operation");
-                        }
-                        //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
-                        var ul = document.getElementById("ErrorList");
-                        for (var i = 0; i < errorMessages.length; i++) {
-                            var errorMessage = errorMessages[i];
-                            var li = document.createElement("li");
-                            li.innerHTML = errorMessage;
-                            ul.appendChild(li);
-                        }
-                    }
-                });
-            }
-            return false;
-        });
-        // $('#editStatModal').on('hide.bs.modal', function () {
-        //     document.getElementById("editStatForm").reset();//to clear the data in the popup form
-        //     ClearErrors();
-        //     var selectedOption = $('#StatID').val();//Return to the current selected value
-        //     // refreshDDL('StatID', '/Game/GetLocations/' + selectedOption, false, null, true, 'None', true);
-        // });
-        function ClearErrors() {
-            //Empty out the list of validation errors if there are any
-            var ul = document.getElementById("ErrorList");
-            while (ul.firstChild) {
-                ul.removeChild(ul.firstChild);
-            }
-        }
-    </script>
-
-}
 
 

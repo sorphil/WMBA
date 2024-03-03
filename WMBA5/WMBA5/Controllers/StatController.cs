@@ -22,7 +22,7 @@ namespace WMBA5.Controllers
         // GET: Stat
         public async Task<IActionResult> Index()
         {
-            var wMBAContext = _context.Stats.Include(s => s.Game).Include(s => s.Inning).Include(s => s.Player);
+            var wMBAContext = _context.Stats.Include(s => s.Player);
             return View(await wMBAContext.ToListAsync());
         }
 
@@ -35,8 +35,6 @@ namespace WMBA5.Controllers
             }
 
             var stat = await _context.Stats
-                .Include(s => s.Game)
-                .Include(s => s.Inning)
                 .Include(s => s.Player)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (stat == null)
@@ -69,8 +67,6 @@ namespace WMBA5.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GameID"] = new SelectList(_context.Games, "ID", "ID", stat.GameID);
-            ViewData["InningID"] = new SelectList(_context.Innings, "ID", "ID", stat.InningID);
             ViewData["PlayerID"] = new SelectList(_context.Players, "ID", "FirstName", stat.PlayerID);
             return View(stat);
         }
@@ -88,8 +84,7 @@ namespace WMBA5.Controllers
             {
                 return NotFound();
             }
-            ViewData["GameID"] = new SelectList(_context.Games, "ID", "ID", stat.GameID);
-            ViewData["InningID"] = new SelectList(_context.Innings, "ID", "ID", stat.InningID);
+         
             ViewData["PlayerID"] = new SelectList(_context.Players, "ID", "FirstName", stat.PlayerID);
             return View(stat);
         }
@@ -126,8 +121,7 @@ namespace WMBA5.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GameID"] = new SelectList(_context.Games, "ID", "ID", stat.GameID);
-            ViewData["InningID"] = new SelectList(_context.Innings, "ID", "ID", stat.InningID);
+
             ViewData["PlayerID"] = new SelectList(_context.Players, "ID", "FirstName", stat.PlayerID);
             return View(stat);
         }
@@ -141,8 +135,6 @@ namespace WMBA5.Controllers
             }
 
             var stat = await _context.Stats
-                .Include(s => s.Game)
-                .Include(s => s.Inning)
                 .Include(s => s.Player)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (stat == null)

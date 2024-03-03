@@ -25,14 +25,6 @@ namespace WMBA5.Controllers
         // GET: Stat
         public async Task<IActionResult> Index(int? PlayerID, int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "PlayerAppearance")
         {
-            //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
-            int numberFilters = 0;
-            //Then in each "test" for filtering, add to the count of Filters applied
-            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Player");
-            //List of sort options.
-            //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Player Appearances", "Hits", "Runs Scored", "Strike Outs", "Walks", "RBI" };
 
             Player player = await _context.Players
              .Include(p => p.Team)
@@ -48,8 +40,13 @@ namespace WMBA5.Controllers
             .Include(g=>g.AwayTeam)
             .Include(g=>g.HomeTeam)
             .Include(g=>g.Location)
-             .Where(g => (g.AwayTeamID == player.TeamID) || (g.HomeTeamID == player.TeamID))
-               .AsNoTracking();
+            .Where(g => (g.AwayTeamID == player.TeamID) || (g.HomeTeamID == player.TeamID))
+            .AsNoTracking();
+
+            var stats = _context.Stats
+                .Where(s=>s.PlayerID==PlayerID)
+                .AsNoTracking()
+                .FirstOrDefault();
 
 
             if (!PlayerID.HasValue)
@@ -58,122 +55,9 @@ namespace WMBA5.Controllers
                 return Redirect(ViewData["returnURL"].ToString());
             }
 
-            //Give feedback about the state of the filters
-            if (numberFilters != 0)
-            {
-                //Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
-                //Show how many filters have been applied
-                ViewData["numberFilters"] = "(" + numberFilters.ToString()
-                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
-                //Keep the Bootstrap collapse open
-                //@ViewData["ShowFilter"] = " show";
-            }
-
-            //Before we sort, see if we have called for a change of filtering or sorting
-            if (!string.IsNullOrEmpty(actionButton)) //Form Submitted!
-            {
-                page = 1;//Reset page to start
-
-                if (sortOptions.Contains(actionButton))//Change of sort is requested
-                {
-                    if (actionButton == sortField) //Reverse order on same field
-                    {
-                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
-                    }
-                    sortField = actionButton;//Sort by the button clicked
-                }
-            }
-            //Now we know which field and direction to sort by
-            //if (sortField == "Player Appearances")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //            .OrderBy(p => p.TotalPlayerAppearance);
-            //            //.ThenBy(p => p.PlayerAppearance);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //            .OrderByDescending(p => p.PlayerAppearance);
-                       
-            //    }
-            //}
-            
-            //else if (sortField == "Hits")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //              .OrderBy(p => p.Hits);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //                 .OrderByDescending(p => p.Hits);
-            //    }
-            //}
-            //else if (sortField == "Runs Scored")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //              .OrderBy(p => p.RunsScored);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //                .OrderByDescending(p => p.RunsScored);
-
-            //    }
-            //}
-            //else if (sortField == "Walks")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //              .OrderBy(p => p.Walks);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //                    .OrderByDescending(p => p.Walks);
-            //    }
-            //}
-            //else if (sortField == "Strike Outs")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //               .OrderBy(p => p.StrikeOuts);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //                  .OrderByDescending(p => p.StrikeOuts);
-            //    }
-            //}
-            //else if (sortField == "RBI")
-            //{
-            //    if (sortDirection == "asc")
-            //    {
-            //        Stats = Stats
-            //                   .OrderBy(p => p.RBI);
-            //    }
-            //    else
-            //    {
-            //        Stats = Stats
-            //               .OrderByDescending(p => p.RBI);
-            //    }
-            //}
-            //Set sort for next time
-            ViewData["sortField"] = sortField;
-            ViewData["sortDirection"] = sortDirection;
-
-         
 
             ViewBag.Player = player;
+            ViewBag.Stats = stats;
 
             //Handle Paging
             //int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
@@ -197,25 +81,22 @@ namespace WMBA5.Controllers
 
 
             var stats = _context.Stats
-                .Include(s=>s.Inning)
-                .Include(s=>s.Game)
-                .Include(s=>s.Player)
-            .Where(ps => ps.PlayerID == PlayerID)
-            .Where(ps => ps.GameID == GameID)
-            .AsNoTracking();
+             .Where(s => s.PlayerID == PlayerID)
+             .AsNoTracking()
+             .FirstOrDefault();
 
             var scores = _context.Scores
               .Include(s => s.Inning)
               .Include(s => s.Game)
               .Include(s => s.Player)
               .Where(ps => ps.PlayerID == PlayerID)
-              .Where(ps => ps.GameID == GameID)
               .AsNoTracking();
 
             ViewData["GameSummary"] = _context.Games.Where(g => g.ID == GameID)
                 .Include(g=>g.HomeTeam)
                 .Include(g=>g.AwayTeam)
                 .FirstOrDefault().Summary;
+
             ViewData["GameID"] = _context.Games.Where(g => g.ID == GameID)
              .Include(g => g.HomeTeam)
              .Include(g => g.AwayTeam)

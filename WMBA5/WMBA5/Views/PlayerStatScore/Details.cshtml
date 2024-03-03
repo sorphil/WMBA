@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WMBA5.Models.Stat>
+﻿
 @{
     WMBA5.Models.Player player = (WMBA5.Models.Player)ViewBag.Player;
     <partial name="_PlayerPartial" model="player" />
@@ -11,10 +11,6 @@
                                             role="button" data-bs-toggle="tooltip">
     <h3>   @ViewData["GameSummary"]</h3>
 </a>
-@* @{
-    IEnumerable<WMBA5.Models.Stat> stats = (IEnumerable<WMBA5.Models.Stat>)ViewBag.Stats;
-    <partial name="_StatPartial" model="stats" />
-} *@
 @{
     IEnumerable<WMBA5.Models.Score> scores = (IEnumerable<WMBA5.Models.Score>)ViewBag.Scores;
     <partial name="_ScorePartial" model="scores" />

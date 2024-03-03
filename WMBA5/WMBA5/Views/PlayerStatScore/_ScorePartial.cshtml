@@ -29,7 +29,6 @@
                 <th>
                     Hits
                 </th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -56,17 +55,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Hits)
-                    </td>
-                    <td>
-                        @*Disabled for the moment (we haven't linked stats to game yet')
-                        <a asp-controller="Game" asp-action="Details" asp-route-id="@item.GameID" class="btn btn-sm btn-outline-primary"
-                           role="button" data-bs-toggle="tooltip">
-                            Go to Game
-                        </a>
-                        <a asp-controller="PlayerStatScore" asp-action="Details" asp-route-PlayerID="@item.PlayerID" asp-route-GameID="@item.GameID" class="btn btn-sm btn-outline-primary"
-                           role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                            &#x1F50E; <small>Details</small>
-                        </a>*@
                     </td>
                 </tr>
             }
