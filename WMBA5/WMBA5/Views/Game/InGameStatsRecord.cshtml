@@ -1,0 +1,38 @@
+﻿@model WMBA5.Models.Game
+
+@{
+    ViewData["Title"] = "Record Game";
+}
+<partial name="_ViewHeading" />
+<h2>@ViewData["HomeTeamID"] vs @ViewData["AwayTeamID"] </h2>
+<hr />
+<form asp-action="InGameStatsRecord">
+
+    
+    
+    <button id="btnHit" name="btnHit">Hit</button>
+    <button id="btnHR" name="btnHR">HomeRun</button>
+
+    <label id="lblBall" for="btnBall">Balls: </label>
+    <button id="btnBall" name="btnBall">+</button>
+
+    <label id="lblStrike" for="btnStrike">Strikes: </label>
+    <button id="btnStrike" name="btnStrike">+</button>
+
+    <label id="lblOut"for="btnOut">Outs: </label>
+    <button id="btnOut" name="btnOut">+</button>
+    <br />
+
+    <label id="lblPlayer" for="pPlayer">Players</label>
+    <p id="pPlayer">Players will go here</p>
+    <br />
+    <label id="lblIning" for="pIning">Inings</label>
+    <p id="pIning">Inings info will go here</p>
+    <br />
+    <label id="lblTotal">Total:</label>
+    <br />
+    <button id="btnCancel"name="btnCancel">Cancel</button>
+
+    
+
+</form>
