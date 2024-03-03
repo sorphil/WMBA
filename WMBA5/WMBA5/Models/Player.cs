@@ -78,11 +78,12 @@ namespace WMBA5.Models
         //public Lineup Lineup { get; set; }
 
         public ICollection<Stat> Stats { get; set; } = new HashSet<Stat>();
+        //public ICollection<Game> Games { get; set; } 
         public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
         //public ICollection<InGameStats> InGameStats { get; set; } = new HashSet<InGameStats>();
        
-        public ICollection<GamePlayer> GamePlayers { get; set; } = new HashSet<GamePlayer>();
+        public ICollection<GamePlayer> GamePlayers { get; set; } 
         //Adding validation for the jersey number
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

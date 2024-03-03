@@ -124,7 +124,8 @@ namespace WMBA5.Data.WMBAMigrations
 
                     b.HasIndex("GameID");
 
-                    b.HasIndex("PlayerID");
+                    b.HasIndex("PlayerID", "GameID")
+                        .IsUnique();
 
                     b.ToTable("GamePlayers");
                 });
@@ -508,7 +509,7 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasOne("WMBA5.Models.Player", "Player")
                         .WithMany("GamePlayers")
                         .HasForeignKey("PlayerID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");

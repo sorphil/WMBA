@@ -134,11 +134,13 @@ namespace WMBA5.Controllers
             }
 
             var game = await _context.Games
-                .Include(g => g.Division)
+                .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
                 .Include(g => g.AwayTeam)
                 .Include(g => g.HomeTeam)
+                .Include(g => g.Division)
                 .Include(g=>g.Outcome)
                 .Include(g=>g.Location)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -427,7 +429,8 @@ namespace WMBA5.Controllers
 
                 //Adding functunality to the buttons
                 //pending....
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return View(game.HomeTeamID);
             }
 
             
