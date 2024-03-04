@@ -6,58 +6,83 @@
 @* <partial name="_ViewHeading" /> *@
 <h2>@Html.DisplayFor(model => model.HomeTeam.TeamName) vs @Html.DisplayFor(model => model.AwayTeam.TeamName)</h2>
 <hr />
-<div>
-
-    
-    
-    <button id="btnHit" name="btnHit">Hit</button>
-    <button id="btnHR" name="btnHR">HomeRun</button>
-
-    <label id="lblBall" for="btnBall">Balls: </label>
-    <button id="btnBall" name="btnBall">+</button>
-
-    <label id="lblStrike" for="btnStrike">Strikes: </label>
-    <button id="btnStrike" name="btnStrike">+</button>
-
-    <label id="lblOut"for="btnOut">Outs: </label>
-    <button id="btnOut" name="btnOut">+</button>
-    <br />
-    <table>
-        <tr class="col-sm-4">
-            <td>
-                @foreach (var item in Model.GamePlayers
-                .Where(gp => gp.TeamLineup == TeamLineup.Home)
-                .OrderBy(o => o.Player.LastName))
-                {
-                    @item.Player.FullName <br />
-                }
-            </td>
-        </tr>
-        <tr class="col-sm-4">
-            <h3>Inings</h3>
-            <td>
-                @foreach (var item in Model.Innings
-                .OrderBy(o => o.InningNo))
-                {
-                    @item.Scores <br />
-                }
-            </td>
-        </tr>
+<form asp-action="InGameStatsRecord">    
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <button id="btnHit" name="btnHit">Hit</button>
+                                    <br />
+                                    <label id="lblBall" for="btnBall">Balls: </label>
+                                    <br />
+                                    <button id="btnBall" name="btnBall">+</button>
+                                </td>
+                                <td>
+                                    <select class="form-control">
+                                        <option value="single">Single</option>
+                                        <option value="double">Double</option>
+                                        <option value="triple">Triple</option>
+                                        <option value="homeRun">HomeRun</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <label id="lblStrike" for="btnStrike">Strikes: </label>
+                                    <br />
+                                    <button id="btnStrike" name="btnStrike">+</button>
+                                    <br />
+                                    <label id="lblOut" for="btnOut">Outs: </label>
+                                    <br />
+                                    <button id="btnOut" name="btnOut">+</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button id="btnSave" name="btnSave">Save</button>
+                    <br />
+                    <button id="btnCancel" name="btnCancel">Cancel</button>
+                </td>
+                <td>
+                    <div>
+                        <label id="lblPlayer" for="pPlayer" class="fw-bold">Players</label>
+                        <br />
+                        <select Name="players" Size="10">
+                            <option> player 1 </option>
+                            <option> player 2 </option>
+                            <option> player 3 </option>
+                            <option> player 4 </option>
+                            <option> player 5 </option>
+                            <option> player 6 </option>
+                            <option> player 7 </option>
+                            <option> player 8 </option>
+                            <option> player 9 </option>
+                            <option> player 10 </option>
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <label id="lblIning" for="pIning" class="fw-bold">Inings</label>
+                        <br />
+                        <select Name="innings" Size="9">
+                            <option> Inning 1 </option>
+                            <option> Inning 2 </option>
+                            <option> Inning 3 </option>
+                            <option> Inning 4 </option>
+                            <option> Inning 5 </option>
+                            <option> Inning 6 </option>
+                            <option> Inning 7 </option>
+                            <option> Inning 8 </option>
+                            <option> Inning 9 </option>
+                        </select>
+                        <br />
+                        <label id="lblTotal">Total:</label>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
     </table>
-    
-    <dd class="col-sm-8">
-        @Html.DisplayFor(model => model.HomeTeam.Players)
-    </dd>
-
-    
-    <p id="pPlayer">@Html.DisplayFor(model => model.HomeTeam.Players)</p>
-    <br />
-    
-    <br />
-    <label id="lblTotal">Total:</label>
-    <br />
-    <button id="btnCancel"name="btnCancel">Cancel</button>
-
-    
-
-</div>
+</form>
