@@ -546,6 +546,217 @@ namespace WMBA5.Controllers
         //    return Redirect(ViewData["ReturnURL"].ToString());
         //}
 
+        //public async Task<IActionResult> InsertFromExcel(IFormFile TheExcel)
+        //{
+        //    ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
+        //    string feedBack = string.Empty;
+
+        //    if (TheExcel != null)
+        //    {
+        //        try
+        //        {
+        //            string mimeType = TheExcel.ContentType;
+        //            long fileLength = TheExcel.Length;
+
+        //            if (!(mimeType == "" || fileLength == 0)) // Looks like we have a file!!!
+        //            {
+        //                if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet") || mimeType.Contains("xlsx"))
+        //                {
+        //                    ExcelPackage excel;
+        //                    using (var memoryStream = new MemoryStream())
+        //                    {
+        //                        await TheExcel.CopyToAsync(memoryStream);
+        //                        excel = new ExcelPackage(memoryStream);
+        //                    }
+
+        //                    var workSheet = excel.Workbook.Worksheets[0];
+
+        //                    if (workSheet.Cells[1, 1].Text == "Team Name" &&
+        //                        workSheet.Cells[1, 2].Text == "Coach")
+        //                    {
+        //                        var start = workSheet.Dimension.Start;
+        //                        var end = workSheet.Dimension.End;
+        //                        List<Team> teams = new List<Team>();
+
+        //                        for (int row = start.Row + 1; row <= end.Row; row++)
+        //                        {
+        //                            var teamName = workSheet.Cells[row, 1].Text;
+        //                            var coachId = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 2].Text)?.ID;
+        //                            var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 3].Text)?.ID;
+
+        //                            if (coachId != null && divisionId != null)
+        //                            {
+        //                                // Check if the team with the same name already exists
+        //                                var existingTeam = _context.Teams.FirstOrDefault(t => t.TeamName == teamName);
+
+        //                                if (existingTeam == null)
+        //                                {
+        //                                    // Team does not exist, add it to the list
+        //                                    Team p = new Team
+        //                                    {
+        //                                        TeamName = teamName,
+        //                                        CoachID = coachId.Value,
+        //                                        DivisionID = divisionId.Value
+        //                                    };
+        //                                    teams.Add(p);
+        //                                }
+        //                                else
+        //                                {
+        //                                    // Team with the same name already exists, handle accordingly (skip, update, etc.)
+        //                                    feedBack = $"Error: Team with name '{teamName}' already exists.";
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                // Handle the case where Coach or Division was not found
+        //                                feedBack = "Error: Coach or Division not found for some records.";
+        //                            }
+        //                        }
+
+        //                        using (var transaction = _context.Database.BeginTransaction())
+        //                        {
+        //                            try
+        //                            {
+        //                                _context.Teams.AddRange(teams);
+        //                                _context.SaveChanges();
+        //                                transaction.Commit();
+        //                                if (feedBack == "")
+        //                                {
+        //                                    feedBack = "Teams added successfully.";
+        //                                }
+        //                                else if (teams.Count > 0)
+        //                                {
+        //                                    feedBack = "Teams have been added if they were not already in the database.";
+        //                                } 
+        //                                else
+        //                                {
+        //                                    feedBack = "Teams already exists in the database. No teams were added.";
+        //                                }
+        //                            }
+        //                            catch (Exception ex)
+        //                            {
+        //                                transaction.Rollback();
+        //                                feedBack = $"Error: An error occurred while saving data. {ex.Message}";
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        feedBack = "Error: You may have selected the wrong file to upload.";
+        //                    }
+        //                }
+        //                else if (mimeType.Contains("text/csv"))
+        //                {
+        //                    using (var reader = new StreamReader(TheExcel.OpenReadStream()))
+        //                    using (var csvParser = new TextFieldParser(reader))
+        //                    {
+        //                        csvParser.SetDelimiters(",");
+
+        //                        // Skip header row
+        //                        if (!csvParser.EndOfData)
+        //                        {
+        //                            csvParser.ReadLine();
+        //                        }
+
+        //                        List<Team> teams = new List<Team>();
+
+        //                        while (!csvParser.EndOfData)
+        //                        {
+        //                            string[] fields = csvParser.ReadFields();
+
+        //                            if (fields.Length >= 3) // Ensure there are at least 3 fields (Team Name, Coach, Division)
+        //                            {
+        //                                var teamName = fields[0];
+        //                                var coachId = _context.Coaches.FirstOrDefault(c => c.CoachName == fields[1])?.ID;
+        //                                var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == fields[2])?.ID;
+
+        //                                if (coachId != null && divisionId != null)
+        //                                {
+        //                                    // Check if the team with the same name already exists
+        //                                    var existingTeam = _context.Teams.FirstOrDefault(t => t.TeamName == teamName);
+
+        //                                    if (existingTeam == null)
+        //                                    {
+        //                                        // Team does not exist, add it to the list
+        //                                        Team p = new Team
+        //                                        {
+        //                                            TeamName = teamName,
+        //                                            CoachID = coachId.Value,
+        //                                            DivisionID = divisionId.Value
+        //                                        };
+        //                                        teams.Add(p);
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        // Team with the same name already exists, handle accordingly (skip, update, etc.)
+        //                                        feedBack = $"Error: Team with name '{teamName}' already exists.";
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    // Handle the case where Coach or Division was not found
+        //                                    feedBack = "Error: Coach or Division not found for some records.";
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                feedBack = "Error: CSV file does not have the required columns.";
+        //                                break; // Exit the loop as the CSV structure is not as expected
+        //                            }
+        //                        }
+
+        //                        using (var transaction = _context.Database.BeginTransaction())
+        //                        {
+        //                            try
+        //                            {
+        //                                _context.Teams.AddRange(teams);
+        //                                _context.SaveChanges();
+        //                                transaction.Commit();
+        //                                if (feedBack == "")
+        //                                {
+        //                                    feedBack = "Teams added successfully.";
+        //                                }
+        //                                else if  (teams.Count > 0)
+        //                                {
+        //                                    feedBack = "Teams have been added if they were not already in the database.";
+        //                                }
+        //                                else
+        //                                {
+        //                                    feedBack = "Teams already exists in the database. No teams were added.";
+        //                                }
+        //                            }
+        //                            catch (Exception ex)
+        //                            {
+        //                                transaction.Rollback();
+        //                                feedBack = $"Error: An error occurred while saving data. {ex.Message}";
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    feedBack = "Error: That file is not an Excel spreadsheet.";
+        //                }
+        //            }
+        //            else
+        //            {
+        //                feedBack = "Error: File appears to be empty.";
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
+        //                $"Please try again or contact support.";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        feedBack = "Error: No file uploaded.";
+        //    }
+
+        //    TempData["Feedback"] = feedBack;
+        //    return Redirect(ViewData["ReturnURL"].ToString());
+        //}
         public async Task<IActionResult> InsertFromExcel(IFormFile TheExcel)
         {
             ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
@@ -571,8 +782,9 @@ namespace WMBA5.Controllers
 
                             var workSheet = excel.Workbook.Worksheets[0];
 
-                            if (workSheet.Cells[1, 1].Text == "Team Name" &&
-                                workSheet.Cells[1, 2].Text == "Coach")
+                            if (workSheet.Cells[1, 8].Text == "Team" &&
+                                workSheet.Cells[1, 6].Text == "Division" &&
+                                workSheet.Cells[2, 5].Text == DateTime.Now.Year.ToString())
                             {
                                 var start = workSheet.Dimension.Start;
                                 var end = workSheet.Dimension.End;
@@ -580,11 +792,11 @@ namespace WMBA5.Controllers
 
                                 for (int row = start.Row + 1; row <= end.Row; row++)
                                 {
-                                    var teamName = workSheet.Cells[row, 1].Text;
-                                    var coachId = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 2].Text)?.ID;
-                                    var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 3].Text)?.ID;
+                                    var teamName = workSheet.Cells[row, 8].Text.Trim(' ', 'U', '1', '3', '5', '8', '9');
+                                    var coachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 9].Text)?.ID;
+                                    var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text)?.ID;
 
-                                    if (coachId != null && divisionId != null)
+                                    if (divisionId != null)
                                     {
                                         // Check if the team with the same name already exists
                                         var existingTeam = _context.Teams.FirstOrDefault(t => t.TeamName == teamName);
@@ -595,7 +807,7 @@ namespace WMBA5.Controllers
                                             Team p = new Team
                                             {
                                                 TeamName = teamName,
-                                                CoachID = coachId.Value,
+                                                CoachID = coachID.Value,
                                                 DivisionID = divisionId.Value
                                             };
                                             teams.Add(p);
@@ -627,7 +839,7 @@ namespace WMBA5.Controllers
                                         else if (teams.Count > 0)
                                         {
                                             feedBack = "Teams have been added if they were not already in the database.";
-                                        } 
+                                        }
                                         else
                                         {
                                             feedBack = "Teams already exists in the database. No teams were added.";
@@ -664,13 +876,13 @@ namespace WMBA5.Controllers
                                 {
                                     string[] fields = csvParser.ReadFields();
 
-                                    if (fields.Length >= 3) // Ensure there are at least 3 fields (Team Name, Coach, Division)
+                                    if (fields.Length >= 3 &&
+                                        fields[4] == DateTime.Now.Year.ToString()) // Ensure there are at least 3 fields (Team Name, Coach, Division)
                                     {
-                                        var teamName = fields[0];
-                                        var coachId = _context.Coaches.FirstOrDefault(c => c.CoachName == fields[1])?.ID;
-                                        var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == fields[2])?.ID;
+                                        var teamName = fields[7].TrimStart(' ', 'U', '1', '3', '5', '8', '9');
+                                        var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == fields[5])?.ID;
 
-                                        if (coachId != null && divisionId != null)
+                                        if (divisionId != null)
                                         {
                                             // Check if the team with the same name already exists
                                             var existingTeam = _context.Teams.FirstOrDefault(t => t.TeamName == teamName);
@@ -678,13 +890,12 @@ namespace WMBA5.Controllers
                                             if (existingTeam == null)
                                             {
                                                 // Team does not exist, add it to the list
-                                                Team p = new Team
+                                                Team t = new Team
                                                 {
                                                     TeamName = teamName,
-                                                    CoachID = coachId.Value,
                                                     DivisionID = divisionId.Value
                                                 };
-                                                teams.Add(p);
+                                                teams.Add(t);
                                             }
                                             else
                                             {
@@ -694,13 +905,13 @@ namespace WMBA5.Controllers
                                         }
                                         else
                                         {
-                                            // Handle the case where Coach or Division was not found
-                                            feedBack = "Error: Coach or Division not found for some records.";
+                                            // Handle the case where Division was not found
+                                            feedBack = "Error: Division not found for some records.";
                                         }
                                     }
                                     else
                                     {
-                                        feedBack = "Error: CSV file does not have the required columns.";
+                                        feedBack = "Error: CSV file does not have the required columns or is and outdated version.";
                                         break; // Exit the loop as the CSV structure is not as expected
                                     }
                                 }
@@ -716,13 +927,13 @@ namespace WMBA5.Controllers
                                         {
                                             feedBack = "Teams added successfully.";
                                         }
-                                        else if  (teams.Count > 0)
+                                        else if (teams.Count > 0)
                                         {
                                             feedBack = "Teams have been added if they were not already in the database.";
                                         }
                                         else
                                         {
-                                            feedBack = "Teams already exists in the database. No teams were added.";
+                                            feedBack = "Teams already exists in the database or is and outdated version of the file. No teams were added.";
                                         }
                                     }
                                     catch (Exception ex)

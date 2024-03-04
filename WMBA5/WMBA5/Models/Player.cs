@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using WMBA5.Data;
 
 namespace WMBA5.Models
@@ -58,9 +59,8 @@ namespace WMBA5.Models
 
         //Status: Active or Inactive
         [Display(Name = "Status")]
-        [Required(ErrorMessage = "You cannot leave the Status Blank")]
-        public int StatusID { get; set; }
-        [Display(Name ="Status")]
+        [DefaultValue("Active")]
+        public int? StatusID { get; set; }
         public Status Status { get; set; }
 
         //Foreign key
@@ -70,6 +70,7 @@ namespace WMBA5.Models
         public Division Division { get; set; }
 
         [Display(Name = "Team Name")]
+        [DefaultValue("")]
         public int? TeamID { get; set; }
         public Team Team { get; set; }
 

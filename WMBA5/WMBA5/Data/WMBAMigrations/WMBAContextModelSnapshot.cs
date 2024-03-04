@@ -207,7 +207,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("StatusID")
+                    b.Property<int?>("StatusID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("TeamID")
@@ -373,7 +373,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CoachID")
+                    b.Property<int?>("CoachID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DivisionID")
@@ -486,9 +486,7 @@ namespace WMBA5.Data.WMBAMigrations
 
                     b.HasOne("WMBA5.Models.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusID");
 
                     b.HasOne("WMBA5.Models.Team", "Team")
                         .WithMany("Players")
@@ -572,8 +570,7 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasOne("WMBA5.Models.Coach", "Coach")
                         .WithMany("Teams")
                         .HasForeignKey("CoachID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("WMBA5.Models.Division", "Division")
                         .WithMany("Teams")

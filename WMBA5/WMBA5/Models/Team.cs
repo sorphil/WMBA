@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WMBA5.Models
@@ -24,8 +25,8 @@ namespace WMBA5.Models
         //Foreign keys
         //CoachID
         [Display(Name = "Coach Name")]
-        [Required(ErrorMessage = "You must select a Coach")]
-        public int CoachID { get; set; }
+        [DefaultValue("")]
+        public int? CoachID { get; set; }
         public Coach Coach { get; set; }
         //DivisionID
         [Display(Name = "Division Name")]
