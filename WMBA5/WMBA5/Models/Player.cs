@@ -86,7 +86,7 @@ namespace WMBA5.Models
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
         //public ICollection<InGameStats> InGameStats { get; set; } = new HashSet<InGameStats>();
        
-        public ICollection<GamePlayer> GamePlayers { get; set; } 
+        public ICollection<GamePlayer> GamePlayers { get; set; } = new HashSet<GamePlayer>();
         //Adding validation for the jersey number
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
