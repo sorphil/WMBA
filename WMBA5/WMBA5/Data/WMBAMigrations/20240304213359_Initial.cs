@@ -116,7 +116,7 @@ namespace WMBA5.Data.WMBAMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TeamName = table.Column<string>(type: "TEXT", nullable: false),
-                    CoachID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CoachID = table.Column<int>(type: "INTEGER", nullable: true),
                     DivisionID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -195,7 +195,7 @@ namespace WMBA5.Data.WMBAMigrations
                     Nickname = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     JerseyNumber = table.Column<int>(type: "INTEGER", nullable: true),
-                    StatusID = table.Column<int>(type: "INTEGER", nullable: false),
+                    StatusID = table.Column<int>(type: "INTEGER", nullable: true),
                     DivisionID = table.Column<int>(type: "INTEGER", nullable: false),
                     TeamID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -212,8 +212,7 @@ namespace WMBA5.Data.WMBAMigrations
                         name: "FK_Players_Statuses_StatusID",
                         column: x => x.StatusID,
                         principalTable: "Statuses",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_Players_Teams_TeamID",
                         column: x => x.TeamID,
