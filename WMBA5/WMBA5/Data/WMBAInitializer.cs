@@ -203,8 +203,7 @@ namespace WMBA5.Data
                     context.SaveChanges();
                 }
 
-                int[] teamIDs = context.Teams.Select(d => d.ID).ToArray();
-                int teamIDCount = teamIDs.Length;
+                
 
                 
                 
@@ -362,7 +361,7 @@ namespace WMBA5.Data
                             LastName = "Larusso",
                             MemberID = "02dc3bfa",
                             JerseyNumber = 2,
-                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Iron Birds").ID,
+                            TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Bananas").ID,
                             StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
                         },
@@ -507,21 +506,84 @@ namespace WMBA5.Data
                             JerseyNumber = 5,
                             TeamID = context.Teams.FirstOrDefault(c => c.TeamName == "Whitecaps").ID,
                             StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
                         }
                     );
+
+                    //Adding more players with random values, so we have more players in more Teams
+                    string[] firstNames = new string[] { "Lyric", "Antoinette", "Kendal", "Vivian", "Ruth", "Jamison", "Emilia", "Natalee", "Yadiel", "Jakayla", "Lukas", "Moses", "Kyler", "Karla" };
+                    string[] lastNames = new string[] { "Watts", "Randall", "Arias", "Weber", "Stone", "Carlson", "Robles", "Frederick", "Parker"};
+                    int[] teamIDs = context.Teams.Select(d => d.ID).ToArray();
+                    int teamIDCount = teamIDs.Length;
+                    //Loop through names and add more
+                    foreach (string lastName in lastNames)
+                    {
+                        foreach (string firstname in firstNames)
+                        {
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(11111111,99999999).ToString(),
+                                JerseyNumber = random.Next(0,99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = teamIDs[random.Next(teamIDCount)],
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                            };
+                            context.Players.Add(a);
+                        }
+                    }
                     context.SaveChanges();
-                }
+                    context.SaveChanges();
+                }//End adding the players for Bananas and IronBirds (Hardcoded and random numbers)
+
+                
+                //Adding Games
                 if (!context.Games.Any())
                 {
 
                     context.Games.AddRange(
                          new Game
                          {
-                             ID = 1,
                              StartTime = DateTime.Parse("2024-02-01 14:00:00"),
                              HomeTeamID = 1,
                              AwayTeamID = 2,
+                             LocationID = 1,
+                             OutcomeID = 1,
+                             DivisionID = 3
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-04-07 14:00:00"),
+                             HomeTeamID = 4,
+                             AwayTeamID = 5,
+                             LocationID = 3,
+                             OutcomeID = 1,
+                             DivisionID = 4
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-04-06 14:00:00"),
+                             HomeTeamID = 5,
+                             AwayTeamID = 6,
+                             LocationID = 2,
+                             OutcomeID = 1,
+                             DivisionID = 4
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-05-06 14:00:00"),
+                             HomeTeamID = 1,
+                             AwayTeamID = 3,
+                             LocationID = 2,
+                             OutcomeID = 1,
+                             DivisionID = 3
+                         }, new Game
+                         {
+                             StartTime = DateTime.Parse("2024-03-04 14:00:00"),
+                             HomeTeamID = 2,
+                             AwayTeamID = 3,
                              LocationID = 1,
                              OutcomeID = 1,
                              DivisionID = 3
