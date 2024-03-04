@@ -526,59 +526,8 @@ namespace WMBA5.Data
                              OutcomeID = 1,
                              DivisionID = 3
                          });
-                    //new Game
-                    //{
-                    //    ID = 2,
-                    //    StartTime = DateTime.Parse("2024-02-05 15:30:00"),
-                    //    LocationID = 2,
-                    //    OutcomeID = 1,
-                    //    DivisionID = 2
-                    //},
-                    //new Game
-                    //{
-                    //    ID = 3,
-                    //    StartTime = DateTime.Parse("2024-02-10 13:45:00"),
-                    //    LocationID = 3,
-                    //    OutcomeID = 1,
-                    //    DivisionID = 1
-                    //},
-                    //new Game
-                    //{
-                    //    ID = 4,
-                    //    StartTime = DateTime.Parse("2024-02-15 16:00:00"),
-                    //    LocationID = 1,
-                    //    OutcomeID = 1,
-                    //    DivisionID = 2
-                    //},
-                    //new Game
-                    //{
-                    //    ID = 5,
-                    //    StartTime = DateTime.Parse("2024-02-20 14:15:00"),
-                    //    LocationID = 4,
-                    //    OutcomeID = 1,
-                    //    DivisionID = 1
-                    //}
+                    context.SaveChanges();
 
-
-                    //Can be used in the future for games creation
-
-                    //for (int i = 0; i < 3; i++)
-                    //{
-                    //    Game g = new Game();
-                    //    g.StartTime = DateTime.Today.AddDays(random.Next(100));
-                    //    g.HomeTeamID = teamIDs[random.Next(teamIDCount)];
-                    //    g.AwayTeamID = teamIDs[random.Next(teamIDCount)];
-                    //    g.LocationID = 1;
-                    //    g.OutcomeID = 1;
-                    //    g.DivisionID = 3;
-                    //    //make sure they are not matched against themselves
-                    //    while (g.HomeTeamID == g.AwayTeamID)
-                    //    {
-                    //        g.AwayTeamID = teamIDs[random.Next(teamIDCount)];
-                    //    }
-                    //    context.Games.Add(g);
-                    //}
-                    //context.SaveChanges();
 
                     //Create initial lineups to match team membership
                     foreach (Game game in context.Games)
