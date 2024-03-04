@@ -394,54 +394,17 @@ namespace WMBA5.Controllers
                 .Include(g => g.Division)
                 .Include(g => g.Outcome)
                 .Include(g => g.Location)
+                .Include(g => g.Innings).ThenInclude(g=> g.Scores)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (ModelState.IsValid)
             {
                 
 
-                //Making a list of the Home Team players to display in the players Listbox following ideation
-                //This is thinking that the coach from the home team is the one that will record the stats from his team
-                //we should add some logic that will allow us to determine if we are recording stats from home or away team
-                var playerListHome = await _context.Games.Include(g => g.HomeTeam)
-                    .ThenInclude(g => g.Players).ToListAsync();
-                //The same but the difference here is that the user records the stats of the Away Team
-                var playerListAway = await _context.Games.Include(g => g.AwayTeam)
-                   .ThenInclude(g => g.Players).ToListAsync();
-
-                //Displaying the result of the inning, i think that for the moment is not possible to show a real-time
-                //result but me can figure it out that in the future, for the moment this list will fill the ListBox for
-                //"Innings" following the Ideation, it will display how much runs the team has score for each inning
-                var inningRuns = await _context.Games.Include(g => g.Innings)
-                    .ThenInclude(g => g.Scores).ThenInclude(g => g.Runs).ToListAsync();
-
-                //Storing the rest of the important stats for the inning: Hits, balls, strikes, outs
-                //For Home Runs we will store them laer on when we add the "Home run" button, if we click it it take in
-                //consideration if there are any player on base and using that info will add the number of runs that the
-                //home run makes
-                var inningHits = await _context.Games.Include(g => g.Innings)
-                    .ThenInclude(g => g.Scores).ThenInclude(g => g.Hits).ToListAsync();
-
-                var inningStrikes = await _context.Games.Include(g => g.Innings)
-                    .ThenInclude(g => g.Scores).ThenInclude(g => g.Strikes).ToListAsync();
-
-                var inningOuts = await _context.Games.Include(g => g.Innings)
-                    .ThenInclude(g => g.Scores).ThenInclude(g => g.Out).ToListAsync();
-
-                var inningBalls = await _context.Games.Include(g => g.Innings)
-                    .ThenInclude(g => g.Scores).ThenInclude(g => g.Balls).ToListAsync();
-
-                //Adding functunality to the buttons
-                //pending....
-                //return RedirectToAction(nameof(Index));
                 
             }
 
-            
-
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
-            ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "Name");
-            ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "Name");
+         
 
             return View(gameStats);
         }
