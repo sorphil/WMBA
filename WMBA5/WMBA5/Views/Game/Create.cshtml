@@ -8,49 +8,49 @@
 <partial name="_addLocationModal" />
 <div class="row">
 
-	<div class="col-md-4">
-		<form asp-action="Create">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="StartTime" class="control-label"></label>
-				<input asp-for="StartTime" class="form-control" />
-				<span asp-validation-for="StartTime" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="DivisionID" class="control-label"></label>
-				<select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
-			</div>
-			<div class="form-group">
-				<label class="control-label">Home Team</label>
-				@Html.DropDownList("HomeTeamID", (SelectList)ViewBag.Teams, "Select a Home Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
-				<span asp-validation-for="HomeTeamID" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label class="control-label">Away Team</label>
-				@Html.DropDownList("AwayTeamID", (SelectList)ViewBag.Teams, "Select an Away Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
-				<span asp-validation-for="AwayTeamID" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="LocationID" class="control-label"></label>
-				<div class="input-group mb-3">
-					<div class="input-group-prepend">
-						<button class="btn btn-outline-secondary" id="nowAddLocation" data-bs-toggle="modal" data-bs-target="#addLocationModal" type="button">&#x2795;</button>
-					</div>
-					<select asp-for="LocationID" class="form-control" asp-items="ViewBag.LocationID">
-						<option value="">None</option>
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
-				<label asp-for="OutcomeID" class="control-label"></label>
-				<select asp-for="OutcomeID" class="form-control" asp-items="ViewBag.OutcomeID"></select>
-				<span asp-validation-for="OutcomeID" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<input type="submit" value="Create" class="btn btn-primary" />
-			</div>
-		</form>
-	</div>
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StartTime" class="control-label"></label>
+                <input asp-for="StartTime" class="form-control" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DivisionID" class="control-label"></label>
+                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Home Team</label>
+                @Html.DropDownList("HomeTeamID", (SelectList)ViewBag.Teams, "Select a Home Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
+                <span asp-validation-for="HomeTeamID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Away Team</label>
+                @Html.DropDownList("AwayTeamID", (SelectList)ViewBag.Teams, "Select an Away Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
+                <span asp-validation-for="AwayTeamID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocationID" class="control-label"></label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-outline-secondary" id="nowAddLocation" data-bs-toggle="modal" data-bs-target="#addLocationModal" type="button">&#x2795;</button>
+                    </div>
+                    <select asp-for="LocationID" class="form-control" asp-items="ViewBag.LocationID">
+                        <option value="">None</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="OutcomeID" class="control-label"></label>
+                <select asp-for="OutcomeID" class="form-control" asp-items="ViewBag.OutcomeID"></select>
+                <span asp-validation-for="OutcomeID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 
 </div>
 
@@ -59,7 +59,7 @@
 </div>
 
 
-@section Scripts{
+@* @section Scripts{
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
@@ -71,9 +71,9 @@
 			refreshDDL('TeamID', URL, true, 'Select a Division with teams first', false, null, true);
 		});
 	</script>
-}
+} *@
 
-       
+
 
 @section Scripts {
     @{
@@ -140,6 +140,28 @@
                 ul.removeChild(ul.firstChild);
             }
         }
+        $('#DivisionID').change(function () {
+            var selectedDivision = $("#DivisionID").val();
+            var URL = "/Game/GetGame/?DivisionID=" + selectedDivision;
+            refreshDDL('TeamID', URL, true, 'Select a Division with teams first', false, null, true);
+        });
+        $(document).ready(function () {
+            $("#createGameForm").submit(function (e) {
+                var selectedDivisionID = $("#DivisionID").val();
+                var selectedHomeTeamID = $("#HomeTeamID").val();
+                var selectedAwayTeamID = $("#AwayTeamID").val();
+
+                // Fetch division IDs for selected teams via AJAX or use hidden fields populated on the server-side
+                var homeTeamDivisionID; // Set this based on your AJAX response or hidden field value
+                var awayTeamDivisionID; // Set this based on your AJAX response or hidden field value
+
+                if (selectedDivisionID !== homeTeamDivisionID || selectedDivisionID !== awayTeamDivisionID) {
+                    e.preventDefault(); // Prevent form submission
+                    alert("The selected teams must belong to the selected game's division.");
+                }
+            });
+        });
+
     </script>
 
 }
