@@ -206,156 +206,8 @@ namespace WMBA5.Data
                 int[] teamIDs = context.Teams.Select(d => d.ID).ToArray();
                 int teamIDCount = teamIDs.Length;
 
-                if (!context.Games.Any())
-                {
-
-                    context.Games.AddRange(
-                         new Game
-                         {
-                             ID = 1,
-                             StartTime = DateTime.Parse("2024-02-01 14:00:00"),
-                             HomeTeamID = 1,
-                             AwayTeamID = 2,
-                             LocationID = 1,
-                             OutcomeID = 1,
-                             DivisionID = 3
-                         });
-                    //new Game
-                    //{
-                    //    ID = 2,
-                    //    StartTime = DateTime.Parse("2024-02-05 15:30:00"),
-                    //    LocationID = 2,
-                    //    OutcomeID = 1,
-                    //    DivisionID = 2
-                    //},
-                    //new Game
-                    //{
-                    //    ID = 3,
-                    //    StartTime = DateTime.Parse("2024-02-10 13:45:00"),
-                    //    LocationID = 3,
-                    //    OutcomeID = 1,
-                    //    DivisionID = 1
-                    //},
-                    //new Game
-                    //{
-                    //    ID = 4,
-                    //    StartTime = DateTime.Parse("2024-02-15 16:00:00"),
-                    //    LocationID = 1,
-                    //    OutcomeID = 1,
-                    //    DivisionID = 2
-                    //},
-                    //new Game
-                    //{
-                    //    ID = 5,
-                    //    StartTime = DateTime.Parse("2024-02-20 14:15:00"),
-                    //    LocationID = 4,
-                    //    OutcomeID = 1,
-                    //    DivisionID = 1
-                    //}
-
-
-                    //Can be used in the future for games creation
-
-                    //for (int i = 0; i < 3; i++)
-                    //{
-                    //    Game g = new Game();
-                    //    g.StartTime = DateTime.Today.AddDays(random.Next(100));
-                    //    g.HomeTeamID = teamIDs[random.Next(teamIDCount)];
-                    //    g.AwayTeamID = teamIDs[random.Next(teamIDCount)];
-                    //    g.LocationID = 1;
-                    //    g.OutcomeID = 1;
-                    //    g.DivisionID = 3;
-                    //    //make sure they are not matched against themselves
-                    //    while (g.HomeTeamID == g.AwayTeamID)
-                    //    {
-                    //        g.AwayTeamID = teamIDs[random.Next(teamIDCount)];
-                    //    }
-                    //    context.Games.Add(g);
-                    //}
-                    //context.SaveChanges();
-
-                    //Create initial lineups to match team membership
-                    foreach (Game game in context.Games)
-                    {
-
-                        //Add the players from the teams to each one
-                        Team homeTeam = context.Teams.Include(t => t.Players).FirstOrDefault(t => t.ID == game.HomeTeamID);
-                        foreach (Player p in homeTeam.Players)
-                        {
-                            game.GamePlayers.Add(new GamePlayer()
-                            {
-                                PlayerID = p.ID,
-                                GameID = game.ID,
-                                TeamLineup = TeamLineup.Home
-                            });
-                        }
-
-                        Team awayTeam = context.Teams.Include(t => t.Players).FirstOrDefault(t => t.ID == game.AwayTeamID);
-                        foreach (Player p in awayTeam.Players)
-                        {
-                            game.GamePlayers.Add(new GamePlayer()
-                            {
-                                PlayerID = p.ID,
-                                GameID = game.ID,
-                                TeamLineup = TeamLineup.Away
-                            });
-                        }
-                        context.SaveChanges();
-                    }
-                    
-
-
-
-
-                }
-                if (!context.Innings.Any())
-                {
-                    context.Innings.AddRange(
-                        new Inning
-                        {
-                            ID = 1,
-                            InningNo = "Inning One",
-                            GameID = 1
-                        },
-                           new Inning
-                           {
-                               ID = 2,
-                               InningNo = "Inning Two",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 3,
-                               InningNo = "Inning Three",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 4,
-                               InningNo = "Inning Four",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 5,
-                               InningNo = "Inning Five",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 6,
-                               InningNo = "Inning Six",
-                               GameID = 1
-                           },
-                                new Inning
-                                {
-                                    ID = 7,
-                                    InningNo = "Inning Seven",
-                                    GameID = 1
-                                }
-                        );
-                    context.SaveChanges();
-                }
+                
+                
                 //if (!context.TeamGames.Any())
                 //{
                 //    context.TeamGames.AddRange(
@@ -398,7 +250,6 @@ namespace WMBA5.Data
                     context.Players.AddRange(
                         new Player
                         {
-                            ID= 1,
                             FirstName = "Lance",
                             LastName = "Glaus",
                             MemberID = "FE9113FF",
@@ -409,7 +260,6 @@ namespace WMBA5.Data
                         },
                         new Player
                         {
-                            ID = 2,
                             FirstName = "Brad",
                             LastName = "Lyon",
                             MemberID = "2C5E0779",
@@ -659,10 +509,154 @@ namespace WMBA5.Data
                             StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                         }
-                );
+                    );
                     context.SaveChanges();
                 }
-               
+                if (!context.Games.Any())
+                {
+
+                    context.Games.AddRange(
+                         new Game
+                         {
+                             ID = 1,
+                             StartTime = DateTime.Parse("2024-02-01 14:00:00"),
+                             HomeTeamID = 1,
+                             AwayTeamID = 2,
+                             LocationID = 1,
+                             OutcomeID = 1,
+                             DivisionID = 3
+                         });
+                    //new Game
+                    //{
+                    //    ID = 2,
+                    //    StartTime = DateTime.Parse("2024-02-05 15:30:00"),
+                    //    LocationID = 2,
+                    //    OutcomeID = 1,
+                    //    DivisionID = 2
+                    //},
+                    //new Game
+                    //{
+                    //    ID = 3,
+                    //    StartTime = DateTime.Parse("2024-02-10 13:45:00"),
+                    //    LocationID = 3,
+                    //    OutcomeID = 1,
+                    //    DivisionID = 1
+                    //},
+                    //new Game
+                    //{
+                    //    ID = 4,
+                    //    StartTime = DateTime.Parse("2024-02-15 16:00:00"),
+                    //    LocationID = 1,
+                    //    OutcomeID = 1,
+                    //    DivisionID = 2
+                    //},
+                    //new Game
+                    //{
+                    //    ID = 5,
+                    //    StartTime = DateTime.Parse("2024-02-20 14:15:00"),
+                    //    LocationID = 4,
+                    //    OutcomeID = 1,
+                    //    DivisionID = 1
+                    //}
+
+
+                    //Can be used in the future for games creation
+
+                    //for (int i = 0; i < 3; i++)
+                    //{
+                    //    Game g = new Game();
+                    //    g.StartTime = DateTime.Today.AddDays(random.Next(100));
+                    //    g.HomeTeamID = teamIDs[random.Next(teamIDCount)];
+                    //    g.AwayTeamID = teamIDs[random.Next(teamIDCount)];
+                    //    g.LocationID = 1;
+                    //    g.OutcomeID = 1;
+                    //    g.DivisionID = 3;
+                    //    //make sure they are not matched against themselves
+                    //    while (g.HomeTeamID == g.AwayTeamID)
+                    //    {
+                    //        g.AwayTeamID = teamIDs[random.Next(teamIDCount)];
+                    //    }
+                    //    context.Games.Add(g);
+                    //}
+                    //context.SaveChanges();
+
+                    //Create initial lineups to match team membership
+                    foreach (Game game in context.Games)
+                    {
+
+                        //Add the players from the teams to each one
+                        Team homeTeam = context.Teams.Include(t => t.Players).FirstOrDefault(t => t.ID == game.HomeTeamID);
+                        foreach (Player p in homeTeam.Players)
+                        {
+                            game.GamePlayers.Add(new GamePlayer()
+                            {
+                                PlayerID = p.ID,
+                                GameID = game.ID,
+                                TeamLineup = TeamLineup.Home
+                            });
+                        }
+
+                        Team awayTeam = context.Teams.Include(t => t.Players).FirstOrDefault(t => t.ID == game.AwayTeamID);
+                        foreach (Player p in awayTeam.Players)
+                        {
+                            game.GamePlayers.Add(new GamePlayer()
+                            {
+                                PlayerID = p.ID,
+                                GameID = game.ID,
+                                TeamLineup = TeamLineup.Away
+                            });
+                        }
+                        context.SaveChanges();
+                    }
+                }//end seed data for games
+                if (!context.Innings.Any())
+                {
+                    context.Innings.AddRange(
+                        new Inning
+                        {
+                            ID = 1,
+                            InningNo = "Inning One",
+                            GameID = 1
+                        },
+                           new Inning
+                           {
+                               ID = 2,
+                               InningNo = "Inning Two",
+                               GameID = 1
+                           },
+                           new Inning
+                           {
+                               ID = 3,
+                               InningNo = "Inning Three",
+                               GameID = 1
+                           },
+                           new Inning
+                           {
+                               ID = 4,
+                               InningNo = "Inning Four",
+                               GameID = 1
+                           },
+                           new Inning
+                           {
+                               ID = 5,
+                               InningNo = "Inning Five",
+                               GameID = 1
+                           },
+                           new Inning
+                           {
+                               ID = 6,
+                               InningNo = "Inning Six",
+                               GameID = 1
+                           },
+                                new Inning
+                                {
+                                    ID = 7,
+                                    InningNo = "Inning Seven",
+                                    GameID = 1
+                                }
+                        );
+                    context.SaveChanges();
+                }
                 //Adding Stats
                 if (!context.Stats.Any())
                 {

@@ -22,25 +22,37 @@
     <label id="lblOut"for="btnOut">Outs: </label>
     <button id="btnOut" name="btnOut">+</button>
     <br />
-    <tr class="col-sm-4">
-        <td>
-            @foreach (var item in Model.GamePlayers
-            .Where(gp => gp.TeamLineup == TeamLineup.Home)
-            .OrderBy(o => o.Player.LastName))
-            {
-                @item.Player.FullName <br />
-            }
-        </td>
-    </tr>
+    <table>
+        <tr class="col-sm-4">
+            <td>
+                @foreach (var item in Model.GamePlayers
+                .Where(gp => gp.TeamLineup == TeamLineup.Home)
+                .OrderBy(o => o.Player.LastName))
+                {
+                    @item.Player.FullName <br />
+                }
+            </td>
+        </tr>
+        <tr class="col-sm-4">
+            <h3>Inings</h3>
+            <td>
+                @foreach (var item in Model.Innings
+                .OrderBy(o => o.InningNo))
+                {
+                    @item.Scores <br />
+                }
+            </td>
+        </tr>
+    </table>
+    
     <dd class="col-sm-8">
         @Html.DisplayFor(model => model.HomeTeam.Players)
     </dd>
 
-    <label id="lblPlayer" for="pPlayer">Players</label>
+    
     <p id="pPlayer">@Html.DisplayFor(model => model.HomeTeam.Players)</p>
     <br />
-    <label id="lblIning" for="pIning">Inings</label>
-    <p id="pIning">Inings info will go here</p>
+    
     <br />
     <label id="lblTotal">Total:</label>
     <br />
