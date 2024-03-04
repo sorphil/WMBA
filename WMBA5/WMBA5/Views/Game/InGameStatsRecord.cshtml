@@ -50,16 +50,13 @@
                         <label id="lblPlayer" for="pPlayer" class="fw-bold">Players</label>
                         <br />
                         <select Name="players" Size="10">
-                            <option> player 1 </option>
-                            <option> player 2 </option>
-                            <option> player 3 </option>
-                            <option> player 4 </option>
-                            <option> player 5 </option>
-                            <option> player 6 </option>
-                            <option> player 7 </option>
-                            <option> player 8 </option>
-                            <option> player 9 </option>
-                            <option> player 10 </option>
+                            @foreach (var item in Model.GamePlayers
+                            .Where(gp => gp.TeamLineup == TeamLineup.Home)
+                            .OrderBy(o => o.Player.LastName))
+                            {
+                                <option>@item.Player.FullName</option>
+                                <br />
+                            }
                         </select>
                     </div>
                 </td>
