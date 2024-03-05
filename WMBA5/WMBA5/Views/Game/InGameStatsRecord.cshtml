@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Record Game";
 }
+<link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
 @* <partial name="_ViewHeading" /> *@
 <h2>@Html.DisplayFor(model => model.HomeTeam.TeamName) vs @Html.DisplayFor(model => model.AwayTeam.TeamName)</h2>
 <hr />
@@ -11,41 +12,42 @@
     <table class="table">
         <tbody>
             <tr>
-                <td>
+                <td class="score-table">
                     <table>
                         <tbody>
-                            <tr>
+                            <tr class="score-cont">
                                 <td>
-                                    <label id="lblSelectedPlayer">Player: </label>
-                                    <button id="btnHit" name="btnHit" > Hit </button>
+                                    <label id="lblSelectedPlayer" class="player-atbat">Player: </label>
                                     <br />
-
-                                    <button id="btnRun" name="btnRun"> Run </button>
+                                    <button id="btnHit" name="btnHit" class="score-btn"> Hit </button>
                                     <br />
-                                    <button id="btnHomeRun" name="btnRun"> Home Run </button>
+                                    <button id="btnRun" name="btnRun" class="score-btn"> Run </button>
                                     <br />
-                                    <label id="lblBall" for="btnBall">Balls: @ViewBag.TotalBalls</label>
-
+                                    <button id="btnHomeRun" name="btnRun" class="score-btn"> Home Run </button>
                                     <br />
-                                    <button id="btnBall" name="btnBall">+</button>
                                 </td>
-                                <td>
-                                    <select id="selectRuns"class="form-control">
+                                <td class="score-center-col">
+                                    <select id="selectRuns"class="form-control score-ddl">
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4">4</option>
                                     </select>
                                 </td>
-                                <td>
-                                    <label id="lblStrike" name="lblStrike" for="btnStrike">Strikes: </label>
-                                    
-                                    <br />
-                                    <button id="btnStrike" name="btnStrike">+</button>
-                                    <br />
-                                    <label id="lblOut" for="btnOut">Outs: </label>
-                                    <br />
-                                    <button id="btnOut" name="btnOut">+</button>
+                                <td class="score-left-col">
+                                    <div class="score-plus-btn-ctn">
+                                        <label id="lblStrike" name="lblStrike" class="fw-bold" for="btnStrike">Strikes: </label>
+                                        <br />
+                                        <button id="btnStrike" name="btnStrike" class="score-plus-btn">+</button>
+                                        <br />
+                                        <label id="lblBall" for="btnBall" class="fw-bold">Balls: @ViewBag.TotalBalls</label>
+                                        <br />
+                                        <button id="btnBall" name="btnBall" class="score-plus-btn">+</button>
+                                        <br />
+                                        <label id="lblOut" for="btnOut" class="fw-bold">Outs: </label>
+                                        <br />
+                                        <button id="btnOut" name="btnOut" class="score-plus-btn">+</button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -53,19 +55,23 @@
                    @*  <button id="btnSave" name="btnSave">Save</button>
                     <br />
                     <button id="btnCancel" name="btnCancel">Cancel</button> *@
-
-                    <div>Hits: <span id="playerHits"></span></div>
-                      <div>Balls: <span id="playerBalls"></span></div>
-                        <div>Runs: <span id="playerRuns"></span></div>
-                    <div>Strikes: <span id="playerStrikes"></span></div>
-                    <div>Foul Balls: <span id="playerFoulBalls"></span></div>
-
                 </td>
-                <td>
+                <td class="score-stats">
                     <div>
-                        <label id="lblPlayer" for="selectPlayer" class="fw-bold">Players</label>
+                        <label id="lblTotal" style="font-size:25px">Total Score: @ViewBag.TotalRuns</label>
                         <br />
-                        <select id="selectPlayer" Name="players" Size="10">
+                        <div>Hits: <span id="playerHits"></span></div>
+                        <div>Balls: <span id="playerBalls"></span></div>
+                        <div>Runs: <span id="playerRuns"></span></div>
+                        <div>Strikes: <span id="playerStrikes"></span></div>
+                        <div>Foul Balls: <span id="playerFoulBalls"></span></div>
+                    </div>
+                </td>
+                <td class="score-players">
+                    <div>
+                        <label id="lblPlayer" for="selectPlayer" class="fw-bold score-lists">Players</label>
+                        <br />
+                        <select id="selectPlayer" Name="players" Size="10" class="score-slc-players">
                             @foreach (var item in Model.GamePlayers
                             .Where(gp => gp.TeamLineup == TeamLineup.Home)
                             .OrderBy(o => o.Player.LastName))
@@ -76,19 +82,17 @@
                         </select>
                     </div>
                 </td>
-                <td>
+                <td class="score-innings">
                     <div>
-                        <label id="lblInning" for="selectInning" class="fw-bold">Innings</label>
-                      
-                        <select id="selectInning" Name="innings" Size="9">
+                        <label id="lblInning" for="selectInning" class="fw-bold score-lists">Innings</label>
+                        <br />
+                        <select id="selectInning" Name="innings" Size="9" class="score-slc-innings">
                             @foreach (var item in ViewBag.Innings)
                             {
                                 <option value="@item.ID">@item.InningNo</option>
                                 <br />
                             }
                         </select>
-                        <br />
-                        <label id="lblTotal">Total: @ViewBag.TotalRuns</label>
                     </div>
                 </td>
             </tr>
