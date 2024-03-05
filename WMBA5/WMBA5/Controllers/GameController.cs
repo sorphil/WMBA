@@ -484,6 +484,18 @@ namespace WMBA5.Controllers
                 case "Hits":
                     score.Hits++;
                     break;
+                case "Balls":
+                    score.Balls++;
+                    break;
+                case "Strikes":
+                    score.Strikes++;
+                    break;
+                case "Outs":
+                    score.Out++;
+                    break;
+                case "Runs":
+                    score.Runs++;
+                    break;
 
             }
             // Save changes to the database
