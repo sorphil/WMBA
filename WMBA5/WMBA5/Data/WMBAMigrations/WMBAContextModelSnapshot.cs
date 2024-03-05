@@ -183,7 +183,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("DivisionID")
+                    b.Property<int?>("DivisionID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
@@ -480,9 +480,7 @@ namespace WMBA5.Data.WMBAMigrations
                 {
                     b.HasOne("WMBA5.Models.Division", "Division")
                         .WithMany("Players")
-                        .HasForeignKey("DivisionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DivisionID");
 
                     b.HasOne("WMBA5.Models.Status", "Status")
                         .WithMany()

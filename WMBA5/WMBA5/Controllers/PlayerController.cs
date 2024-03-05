@@ -714,8 +714,8 @@ namespace WMBA5.Controllers
 
             if (ExcelPlayer != null)
             {
-                try
-                {
+                //try
+                //{
                     string mimeType = ExcelPlayer.ContentType;
                     long fileLength = ExcelPlayer.Length;
 
@@ -838,23 +838,25 @@ namespace WMBA5.Controllers
                                         var memberID = fields[3];
                                         var teamID = _context.Teams.FirstOrDefault(c => c.TeamName == fields[7].TrimStart(' ', 'U', '1', '3', '5', '8', '9'))?.ID;
                                         var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == fields[5])?.ID;
+                                        var statusID = _context.Statuses.FirstOrDefault(s => s.StatusName == "Active")?.ID;
 
 
                                         if (firstName != null && lastName != null)
                                         {
-                                            // Check if the team with the same name already exists
-                                            var existingPlayer = _context.Players.FirstOrDefault(t => t.FirstName == firstName);
+                                        // Check if the player with the same name already exists
+                                        var existingPlayer = _context.Players.FirstOrDefault(t => t.MemberID == memberID);
 
                                             if (existingPlayer == null)
                                             {
-                                                // Team does not exist, add it to the list
+                                            // Player does not exist, add it to the list
                                                 Player p = new Player
                                                 {
-                                                    FirstName = firstName,
-                                                    LastName = lastName,
-                                                    MemberID = memberID,
-                                                    TeamID = teamID.Value,
-                                                    DivisionID = divisionId.Value,
+                                                FirstName = firstName,
+                                                LastName = lastName,
+                                                MemberID = memberID,
+                                                TeamID = teamID,
+                                                DivisionID = divisionId,
+                                                StatusID = statusID
                                                 };
                                                 players.Add(p);
                                             }
@@ -892,10 +894,10 @@ namespace WMBA5.Controllers
                                         {
                                             feedBack = "Players have been added if they were not already in the database.";
                                         }
-                                        else
-                                        {
-                                            feedBack = "Players already exists in the database or is and outdated version of the file. No teams were added.";
-                                        }
+                                        //else
+                                        //{
+                                        //    feedBack = "Players already exists in the database or is and outdated version of the file. No players were added.";
+                                        //}
                                     }
                                     catch (Exception ex)
                                     {
@@ -914,12 +916,12 @@ namespace WMBA5.Controllers
                     {
                         feedBack = "Error: File appears to be empty.";
                     }
-                }
-                catch (Exception ex)
-                {
-                    feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
-                        $"Please try again or contact support.";
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
+                //        $"Please try again or contact support.";
+                //}
             }
             else
             {

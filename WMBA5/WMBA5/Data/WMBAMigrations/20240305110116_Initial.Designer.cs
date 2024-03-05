@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240305004249_Initial")]
+    [Migration("20240305110116_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -186,7 +186,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("DivisionID")
+                    b.Property<int?>("DivisionID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
@@ -483,9 +483,7 @@ namespace WMBA5.Data.WMBAMigrations
                 {
                     b.HasOne("WMBA5.Models.Division", "Division")
                         .WithMany("Players")
-                        .HasForeignKey("DivisionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DivisionID");
 
                     b.HasOne("WMBA5.Models.Status", "Status")
                         .WithMany()

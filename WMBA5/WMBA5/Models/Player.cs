@@ -59,14 +59,14 @@ namespace WMBA5.Models
 
         //Status: Active or Inactive
         [Display(Name = "Status")]
-        [DefaultValue("Active")]
+        [DefaultValue("")]
         public int? StatusID { get; set; }
         public Status Status { get; set; }
 
         //Foreign key
         [Display(Name ="Division")]
-        [Required(ErrorMessage = "You cannot leave the Division blank.")]
-        public int DivisionID { get; set; }
+        [DefaultValue("")]
+        public int? DivisionID { get; set; }
         public Division Division { get; set; }
 
         [Display(Name = "Team Name")]
