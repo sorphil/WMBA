@@ -11,11 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-<<<<<<<< HEAD:WMBA5/WMBA5/Data/WMBAMigrations/20240304221436_Initial.Designer.cs
-    [Migration("20240304221436_Initial")]
-========
-    [Migration("20240304213359_Initial")]
->>>>>>>> 11e7f781d8cc9aac329319b52f774dec28b0b99e:WMBA5/WMBA5/Data/WMBAMigrations/20240304213359_Initial.Designer.cs
+    [Migration("20240305004249_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
