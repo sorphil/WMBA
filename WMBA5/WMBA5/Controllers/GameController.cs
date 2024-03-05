@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
+using WMBA5.ViewModels;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace WMBA5.Controllers
 {
@@ -384,7 +386,7 @@ namespace WMBA5.Controllers
         }
 
         //Creating the action to record the in-game Stats for futher creation of the view
-        public async Task<IActionResult> InGameStatsRecord(Game game, int? id)
+        public async Task<IActionResult> InGameStatsRecord(Game game, int? id, int?PlayerID, int?InningID)
         {
             var gameStats = await _context.Games
                 .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
@@ -401,7 +403,24 @@ namespace WMBA5.Controllers
 
 
             var innings = _context.Innings.Where(i => i.GameID == game.ID).ToList();
+
+            var teamScores = _context.Scores.Include(s=>s.Player).ThenInclude(p=>p.Team)
+             .GroupBy(s => new {TeamID =  s.Player.TeamID, s.GameID })
+             .Select(g => new TeamScoreVM
+             {
+                 TeamID = g.Key.TeamID.GetValueOrDefault(),
+                 GameID = g.Key.GameID,
+                 TotalRuns = g.Sum(s => s.Runs)
+             }).FirstOrDefault();
+
+
+         
+
+            ViewBag.TotalRuns = teamScores.TotalRuns;
+
             ViewBag.Innings = innings;
+
+            
             if (ModelState.IsValid)
             {
                 
@@ -412,6 +431,35 @@ namespace WMBA5.Controllers
             return View(gameStats);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetPlayerScore(int? GameID, int? PlayerID, int? InningID)
+        {
+            var playerScore = await _context.Scores
+                .FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
+
+
+            if (playerScore == null)
+            {
+                // Create a new score object if it doesn't exist
+                var score = new Score
+                {
+                    PlayerID = (int)PlayerID,
+                    InningID = (int)InningID,
+                    GameID = (int)GameID,
+                    Balls = 0,
+                    Runs=0,
+                    FoulBalls =0,
+                    Hits = 0,
+                    Strikes = 0,
+                    Out = 0
+                    };
+                    _context.Scores.Add(score);
+                await _context.SaveChangesAsync();
+                return Json(score);
+            }
+
+            return Json(playerScore);
+        }
         [HttpPost]
         public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int homeRunsScore)
         {

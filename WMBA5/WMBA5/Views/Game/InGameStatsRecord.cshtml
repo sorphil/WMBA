@@ -18,11 +18,13 @@
                                 <td>
                                     <button id="btnHit" name="btnHit" > Hit </button>
                                     <br />
+
                                     <button id="btnRun" name="btnRun"> Run </button>
                                     <br />
                                     <button id="btnHomeRun" name="btnRun"> Home Run </button>
                                     <br />
-                                    <label id="lblBall" for="btnBall">Balls: </label>
+                                    <label id="lblBall" for="btnBall">Balls: @ViewBag.TotalBalls</label>
+
                                     <br />
                                     <button id="btnBall" name="btnBall">+</button>
                                 </td>
@@ -47,9 +49,16 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button id="btnSave" name="btnSave">Save</button>
+                   @*  <button id="btnSave" name="btnSave">Save</button>
                     <br />
-                    <button id="btnCancel" name="btnCancel">Cancel</button>
+                    <button id="btnCancel" name="btnCancel">Cancel</button> *@
+
+                    <div>Hits: <span id="playerHits"></span></div>
+                      <div>Balls: <span id="playerBalls"></span></div>
+                        <div>Runs: <span id="playerRuns"></span></div>
+                    <div>Strikes: <span id="playerStrikes"></span></div>
+                    <div>Foul Balls: <span id="playerFoulBalls"></span></div>
+
                 </td>
                 <td>
                     <div>
@@ -78,7 +87,7 @@
                             }
                         </select>
                         <br />
-                        <label id="lblTotal">Total:</label>
+                        <label id="lblTotal">Total: @ViewBag.TotalRuns</label>
                     </div>
                 </td>
             </tr>
@@ -180,6 +189,7 @@
             // $("#dialog").dialog();
             return false;
         });
+
         $("#btnBall").click(function (event) {
             event.preventDefault();
             // ClearErrors();
@@ -328,6 +338,32 @@
                     data: data,
                     success: function () {
                         console.log(data)
+
+        
+        $("#selectPlayer, #selectInning").change(function () {
+            // Get the selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            // Check if both player and inning are selected
+            if (selectedPlayerID !== "" && selectedInningID !== "") {
+                // Send the GET request for total runs
+              
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID }
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetPlayerScore", "Game")",
+                    data: data,
+                    success: function (data) {
+                        console.log((typeof data))
+                        document.querySelector("#playerHits").innerHTML = response[0].Hits;
+                        document.querySelector("#playerBalls").innerHTML = result["Balls"]
+                        document.querySelector("#playerRuns").innerHTML = result["Runs"]
+                        document.querySelector("#playerStrikes").innerHTML = result["Strikes"]
+                        // document.querySelector("#playerHits").innerHTML = data["Hits"]
+                        console.log(JSON.parse(result))
+                        console.log()
+                        
+
                     },
                     error: function (xhr) { //Note: xhr is the XMLHttpRequest
                         var errorMessages = [];
@@ -344,12 +380,12 @@
                                 //We split on the | delimeter and the .slice removes the last one
                                 errorMessages = xhr.responseText.split("|").slice(0, -1);
                         }
+
                     }
                 });
             }
             return false;
         });
-
 
     </script>
 
