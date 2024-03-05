@@ -116,10 +116,10 @@
         let btnRun = document.querySelector("#btnRun")
         let btnHomeRun = document.querySelector("#btnHomeRun")
         let gameID = document.querySelector("#gameID").value;
-        $('select[name="players"]').change(function () {
-            var name = ($(this).select.dataset.name());
+        document.querySelector("#selectPlayer").onchange = function (event) {
+            var name = event.target.options[event.target.selectedIndex].dataset.name;
             document.getElementById("lblSelectedPlayer").innerHTML = name;
-        });
+        };
         $("#btnHit").click(function (event) {
             event.preventDefault();
             // ClearErrors();
@@ -345,7 +345,11 @@
                     success: function () {
                         console.log(data)
 
-        
+                    }
+                });
+            }
+               return false;
+        });
         $("#selectPlayer, #selectInning").change(function () {
             // Get the selected player and inning IDs
             let selectedPlayerID = selectPlayer.value;
