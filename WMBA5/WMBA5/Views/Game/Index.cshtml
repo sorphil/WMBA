@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Games Index";
 }
-
+<style>
+    th input[type="submit"] {
+        margin-left: 0;
+        padding-left: 0;
+    }
+</style>
 <partial name="_ViewHeading" />
 <hr />
 <form asp-action="Index" method="get">

@@ -16,22 +16,30 @@
                         <tbody>
                             <tr>
                                 <td>
+                                    <label id="lblSelectedPlayer">Player: </label>
                                     <button id="btnHit" name="btnHit" > Hit </button>
                                     <br />
-                                    <label id="lblBall" for="btnBall">Balls: @ViewBag.TotalBalls </label>
+
+                                    <button id="btnRun" name="btnRun"> Run </button>
+                                    <br />
+                                    <button id="btnHomeRun" name="btnRun"> Home Run </button>
+                                    <br />
+                                    <label id="lblBall" for="btnBall">Balls: @ViewBag.TotalBalls</label>
+
                                     <br />
                                     <button id="btnBall" name="btnBall">+</button>
                                 </td>
                                 <td>
-                                    <select class="form-control">
-                                        <option value="single">Single</option>
-                                        <option value="double">Double</option>
-                                        <option value="triple">Triple</option>
-                                        <option value="homeRun">HomeRun</option>
+                                    <select id="selectRuns"class="form-control">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <label id="lblStrike" for="btnStrike">Strikes: </label>
+                                    <label id="lblStrike" name="lblStrike" for="btnStrike">Strikes: </label>
+                                    
                                     <br />
                                     <button id="btnStrike" name="btnStrike">+</button>
                                     <br />
@@ -62,7 +70,7 @@
                             .Where(gp => gp.TeamLineup == TeamLineup.Home)
                             .OrderBy(o => o.Player.LastName))
                             {
-                                <option value = "@item.PlayerID">@item.Player.FullName</option>
+                                <option value="@item.PlayerID" data-name="@item.Player.FullName">@item.Player.FullName</option>
                                 <br />
                             }
                         </select>
@@ -97,12 +105,21 @@
         
         let selectInning = document.querySelector("#selectInning")
         let selectPlayer = document.querySelector("#selectPlayer")
+        
 
-
+        let selectRuns = document.querySelector("#selectRuns")
 
         let btnHit = document.querySelector("#btnHit")
         let btnBall = document.querySelector("#btnBall")
+        let btnStrike = document.querySelector("#btnStrike")
+        let btnOut = document.querySelector("#btnOut")
+        let btnRun = document.querySelector("#btnRun")
+        let btnHomeRun = document.querySelector("#btnHomeRun")
         let gameID = document.querySelector("#gameID").value;
+        $('select[name="players"]').change(function () {
+            var name = ($(this).select.dataset.name());
+            document.getElementById("lblSelectedPlayer").innerHTML = name;
+        });
         $("#btnHit").click(function (event) {
             event.preventDefault();
             // ClearErrors();
@@ -157,6 +174,177 @@
             }
             return false;
         });
+        $('#selectRuns').hide();
+        $("#btnHomeRun").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            let selectedRunsID = selectRuns.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+                let runs = prompt("Please enter the number of runs scored with this home run", "");
+                return runs;
+            }
+            // $("#dialog").show();
+            // $("#dialog").dialog();
+            return false;
+        });
+
+        $("#btnBall").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Balls" }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function () {
+                        console.log(data)
+                    },
+                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                        var errorMessages = [];
+                        console.log(data)
+                        switch (xhr.status) {
+                            case 401:
+                                errorMessages.push("You must be logged in first.");
+                                break;
+                            case 403:
+                                errorMessages.push("You are not authorized for this action.");
+                                break;
+                            default:
+                                //Messages coming from the Model State Errors
+                                //We split on the | delimeter and the .slice removes the last one
+                                errorMessages = xhr.responseText.split("|").slice(0, -1);
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+        $("#btnStrike").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Strikes" }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function () {
+                        console.log(data)
+                    },
+                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                        var errorMessages = [];
+                        console.log(data)
+                        switch (xhr.status) {
+                            case 401:
+                                errorMessages.push("You must be logged in first.");
+                                break;
+                            case 403:
+                                errorMessages.push("You are not authorized for this action.");
+                                break;
+                            default:
+                                //Messages coming from the Model State Errors
+                                //We split on the | delimeter and the .slice removes the last one
+                                errorMessages = xhr.responseText.split("|").slice(0, -1);
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+        $("#btnOut").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            let outs = btnOut.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else if (outs == 3) {
+                alert("You archieve the limit of outs, please change to the next inning.");
+                return;
+            }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Outs" }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function () {
+                        console.log(data)
+                    },
+                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                        var errorMessages = [];
+                        console.log(data)
+                        switch (xhr.status) {
+                            case 401:
+                                errorMessages.push("You must be logged in first.");
+                                break;
+                            case 403:
+                                errorMessages.push("You are not authorized for this action.");
+                                break;
+                            default:
+                                //Messages coming from the Model State Errors
+                                //We split on the | delimeter and the .slice removes the last one
+                                errorMessages = xhr.responseText.split("|").slice(0, -1);
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+        $("#btnRun").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Runs" }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function () {
+                        console.log(data)
+
         
         $("#selectPlayer, #selectInning").change(function () {
             // Get the selected player and inning IDs
@@ -180,6 +368,7 @@
                         document.querySelector("#playerFoulBalls").innerHTML = data["foulBalls"]
                         // document.querySelector("#playerHits").innerHTML = data["Hits"]
                         
+
                     },
                     error: function (xhr) { //Note: xhr is the XMLHttpRequest
                         var errorMessages = [];
@@ -196,19 +385,7 @@
                                 //We split on the | delimeter and the .slice removes the last one
                                 errorMessages = xhr.responseText.split("|").slice(0, -1);
                         }
-                        //This checks if there are any elements with some content
-                        //and if not then it provides a default feedback message.
-                        // if (!errorMessages.some((str) => str !== "")) {
-                        //     errorMessages.push("Error: Unable to complete operation");
-                        // }
-                        // //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
-                        // var ul = document.getElementById("ErrorList");
-                        // for (var i = 0; i < errorMessages.length; i++) {
-                        //     var errorMessage = errorMessages[i];
-                        //     var li = document.createElement("li");
-                        //     li.innerHTML = errorMessage;
-                        //     ul.appendChild(li);
-                        // }
+
                     }
                 });
             }
