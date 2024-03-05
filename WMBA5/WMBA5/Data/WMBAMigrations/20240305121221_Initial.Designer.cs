@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240305110116_Initial")]
+    [Migration("20240305121221_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
