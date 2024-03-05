@@ -413,21 +413,36 @@ namespace WMBA5.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> InGameStatsRecord(int id, [Bind("ID,Balls,FoulBalls,Strikes,Out,Runs,Hits")] Score score, int? PlayerID, int? InningName, string? IncrementField)
+        public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField)
         {
             int gameID = ViewBag.GameID;
-            var gameStats = await _context.Games
-                .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
-                .Include(g => g.AwayTeam)
-                .Include(g => g.HomeTeam)
-                .Include(g => g.Division)
-                .Include(g => g.Outcome)
-                .Include(g => g.Location)
-                .Include(g => g.Innings).ThenInclude(g => g.Scores)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == gameID);
+            // Find or create the score object for the player, inning, and game
+            var score = await _context.Scores.FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
 
-            return View(gameStats);
+            if (score == null)
+            {
+                // Create a new score object if it doesn't exist
+                score = new Score
+                {
+                    PlayerID = (int)PlayerID,
+                    InningID = (int)InningID,
+                    GameID = (int)GameID
+                };
+                _context.Scores.Add(score);
+            }
+            // Increment the appropriate field based on the IncrementField parameter
+            switch (IncrementField)
+            {
+                case "Hits":
+                    score.Hits++;
+                    break;
+
+            }
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            // Redirect to appropriate action or view
+            return RedirectToAction(nameof(InGameStatsRecord));
         }
 
         // GET: Game/Delete/5

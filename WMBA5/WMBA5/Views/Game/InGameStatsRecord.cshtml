@@ -95,6 +95,7 @@
 
         let btnHit = document.querySelector("#btnHit")
         let btnBall = document.querySelector("#btnBall")
+        let gameID = document.querySelector("#gameID").value;
         $("#btnHit").click(function (event) {
             event.preventDefault();
             // ClearErrors();
@@ -107,10 +108,11 @@
                 return;
             }
             else {
-                let data = { gameId: @ViewBag.GameID, playerID: selectedPlayerID, inningID: selectedInningID, incrementField: "Hits" }
+                
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Hits" }
                 $.ajax({
                     type: "POST",
-                    url: "@Url.Action("InGameStatsRecord", "Game")", // Adjust
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
                     data: data ,
                     success: function () {
                        console.log(data)
