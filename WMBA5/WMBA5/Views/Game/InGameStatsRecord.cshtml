@@ -20,20 +20,23 @@
                                     <br />
                                     <button id="btnRun" name="btnRun"> Run </button>
                                     <br />
+                                    <button id="btnHomeRun" name="btnRun"> Home Run </button>
+                                    <br />
                                     <label id="lblBall" for="btnBall">Balls: </label>
                                     <br />
                                     <button id="btnBall" name="btnBall">+</button>
                                 </td>
                                 <td>
-                                    <select class="form-control">
-                                        <option value="single">Single</option>
-                                        <option value="double">Double</option>
-                                        <option value="triple">Triple</option>
-                                        <option value="homeRun">HomeRun</option>
+                                    <select id="selectRuns"class="form-control">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
                                     </select>
                                 </td>
                                 <td>
                                     <label id="lblStrike" name="lblStrike" for="btnStrike">Strikes: </label>
+                                    
                                     <br />
                                     <button id="btnStrike" name="btnStrike">+</button>
                                     <br />
@@ -93,13 +96,14 @@
         let selectInning = document.querySelector("#selectInning")
         let selectPlayer = document.querySelector("#selectPlayer")
 
-
+        let selectRuns = document.querySelector("#selectRuns")
 
         let btnHit = document.querySelector("#btnHit")
         let btnBall = document.querySelector("#btnBall")
         let btnStrike = document.querySelector("#btnStrike")
         let btnOut = document.querySelector("#btnOut")
         let btnRun = document.querySelector("#btnRun")
+        let btnHomeRun = document.querySelector("#btnHomeRun")
         let gameID = document.querySelector("#gameID").value;
         $("#btnHit").click(function (event) {
             event.preventDefault();
@@ -153,6 +157,27 @@
                     }
                 });
             }
+            return false;
+        });
+        $('#selectRuns').hide();
+        $("#btnHomeRun").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            let selectedRunsID = selectRuns.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+                let runs = prompt("Please enter the number of runs scored with this home run", "");
+                return runs;
+            }
+            // $("#dialog").show();
+            // $("#dialog").dialog();
             return false;
         });
         $("#btnBall").click(function (event) {
