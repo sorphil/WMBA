@@ -18,7 +18,7 @@
                                 <td>
                                     <button id="btnHit" name="btnHit" > Hit </button>
                                     <br />
-                                    <label id="lblBall" for="btnBall">Balls: </label>
+                                    <label id="lblBall" for="btnBall">Balls: @ViewBag.TotalBalls </label>
                                     <br />
                                     <button id="btnBall" name="btnBall">+</button>
                                 </td>
@@ -42,9 +42,16 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button id="btnSave" name="btnSave">Save</button>
+                   @*  <button id="btnSave" name="btnSave">Save</button>
                     <br />
-                    <button id="btnCancel" name="btnCancel">Cancel</button>
+                    <button id="btnCancel" name="btnCancel">Cancel</button> *@
+
+                    <div>Hits: <span id="playerHits"></span></div>
+                      <div>Balls: <span id="playerBalls"></span></div>
+                        <div>Runs: <span id="playerRuns"></span></div>
+                    <div>Strikes: <span id="playerStrikes"></span></div>
+                    <div>Foul Balls: <span id="playerFoulBalls"></span></div>
+
                 </td>
                 <td>
                     <div>
@@ -73,7 +80,7 @@
                             }
                         </select>
                         <br />
-                        <label id="lblTotal">Total:</label>
+                        <label id="lblTotal">Total: @ViewBag.TotalRuns</label>
                     </div>
                 </td>
             </tr>
@@ -150,7 +157,64 @@
             }
             return false;
         });
-
+        
+        $("#selectPlayer, #selectInning").change(function () {
+            // Get the selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            // Check if both player and inning are selected
+            if (selectedPlayerID !== "" && selectedInningID !== "") {
+                // Send the GET request for total runs
+              
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID }
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetPlayerScore", "Game")",
+                    data: data,
+                    success: function (data) {
+                        console.log((typeof data))
+                        document.querySelector("#playerHits").innerHTML = response[0].Hits;
+                        document.querySelector("#playerBalls").innerHTML = result["Balls"]
+                        document.querySelector("#playerRuns").innerHTML = result["Runs"]
+                        document.querySelector("#playerStrikes").innerHTML = result["Strikes"]
+                        // document.querySelector("#playerHits").innerHTML = data["Hits"]
+                        console.log(JSON.parse(result))
+                        console.log()
+                        
+                    },
+                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                        var errorMessages = [];
+                        console.log(data)
+                        switch (xhr.status) {
+                            case 401:
+                                errorMessages.push("You must be logged in first.");
+                                break;
+                            case 403:
+                                errorMessages.push("You are not authorized for this action.");
+                                break;
+                            default:
+                                //Messages coming from the Model State Errors
+                                //We split on the | delimeter and the .slice removes the last one
+                                errorMessages = xhr.responseText.split("|").slice(0, -1);
+                        }
+                        //This checks if there are any elements with some content
+                        //and if not then it provides a default feedback message.
+                        // if (!errorMessages.some((str) => str !== "")) {
+                        //     errorMessages.push("Error: Unable to complete operation");
+                        // }
+                        // //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
+                        // var ul = document.getElementById("ErrorList");
+                        // for (var i = 0; i < errorMessages.length; i++) {
+                        //     var errorMessage = errorMessages[i];
+                        //     var li = document.createElement("li");
+                        //     li.innerHTML = errorMessage;
+                        //     ul.appendChild(li);
+                        // }
+                    }
+                });
+            }
+            return false;
+        });
 
     </script>
 
