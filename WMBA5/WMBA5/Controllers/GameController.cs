@@ -415,7 +415,7 @@ namespace WMBA5.Controllers
         [HttpPost]
         public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField)
         {
-            int gameID = ViewBag.GameID;
+            int? gameID = ViewBag.GameID;
             // Find or create the score object for the player, inning, and game
             var score = await _context.Scores.FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
 
@@ -442,7 +442,7 @@ namespace WMBA5.Controllers
             await _context.SaveChangesAsync();
 
             // Redirect to appropriate action or view
-            return RedirectToAction(nameof(InGameStatsRecord));
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Game/Delete/5
