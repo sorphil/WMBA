@@ -496,7 +496,6 @@ namespace WMBA5.Controllers
                 case "Runs":
                     score.Runs++;
                     break;
-
             }
             // Save changes to the database
             await _context.SaveChangesAsync();
