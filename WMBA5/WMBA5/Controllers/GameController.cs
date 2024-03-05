@@ -141,7 +141,7 @@ namespace WMBA5.Controllers
                 .Include(g=>g.Outcome)
                 .Include(g=>g.Location)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID == id); 
 
 
             if (game == null)
@@ -396,12 +396,36 @@ namespace WMBA5.Controllers
                 .Include(g => g.Innings).ThenInclude(g=> g.Scores)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
+
+            ViewBag.GameID = id;
+
+
+            var innings = _context.Innings.Where(i => i.GameID == game.ID).ToList();
+            ViewBag.Innings = innings;
             if (ModelState.IsValid)
             {
                 
 
                 
             }   
+
+            return View(gameStats);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InGameStatsRecord(int id, [Bind("ID,Balls,FoulBalls,Strikes,Out,Runs,Hits")] Score score, int? PlayerID, int? InningName, string? IncrementField)
+        {
+            int gameID = ViewBag.GameID;
+            var gameStats = await _context.Games
+                .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
+                .Include(g => g.AwayTeam)
+                .Include(g => g.HomeTeam)
+                .Include(g => g.Division)
+                .Include(g => g.Outcome)
+                .Include(g => g.Location)
+                .Include(g => g.Innings).ThenInclude(g => g.Scores)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == gameID);
 
             return View(gameStats);
         }

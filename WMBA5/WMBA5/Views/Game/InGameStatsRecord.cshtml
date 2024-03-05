@@ -6,7 +6,8 @@
 @* <partial name="_ViewHeading" /> *@
 <h2>@Html.DisplayFor(model => model.HomeTeam.TeamName) vs @Html.DisplayFor(model => model.AwayTeam.TeamName)</h2>
 <hr />
-<form asp-action="InGameStatsRecord">    
+<form asp-action="InGameStatsRecord"  >  
+    <input type="hidden" value="@ViewBag.GameID" id="gameID" />
     <table class="table">
         <tbody>
             <tr>
@@ -15,7 +16,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <button id="btnHit" name="btnHit">Hit</button>
+                                    <button id="btnHit" name="btnHit" > Hit </button>
                                     <br />
                                     <label id="lblBall" for="btnBall">Balls: </label>
                                     <br />
@@ -47,14 +48,14 @@
                 </td>
                 <td>
                     <div>
-                        <label id="lblPlayer" for="pPlayer" class="fw-bold">Players</label>
+                        <label id="lblPlayer" for="selectPlayer" class="fw-bold">Players</label>
                         <br />
-                        <select Name="players" Size="10">
+                        <select id="selectPlayer" Name="players" Size="10">
                             @foreach (var item in Model.GamePlayers
                             .Where(gp => gp.TeamLineup == TeamLineup.Home)
                             .OrderBy(o => o.Player.LastName))
                             {
-                                <option>@item.Player.FullName</option>
+                                <option value = "@item.PlayerID">@item.Player.FullName</option>
                                 <br />
                             }
                         </select>
@@ -62,18 +63,14 @@
                 </td>
                 <td>
                     <div>
-                        <label id="lblIning" for="pIning" class="fw-bold">Inings</label>
-                        <br />
-                        <select Name="innings" Size="9">
-                            <option> Inning 1 </option>
-                            <option> Inning 2 </option>
-                            <option> Inning 3 </option>
-                            <option> Inning 4 </option>
-                            <option> Inning 5 </option>
-                            <option> Inning 6 </option>
-                            <option> Inning 7 </option>
-                            <option> Inning 8 </option>
-                            <option> Inning 9 </option>
+                        <label id="lblInning" for="selectInning" class="fw-bold">Innings</label>
+                      
+                        <select id="selectInning" Name="innings" Size="9">
+                            @foreach (var item in ViewBag.Innings)
+                            {
+                                <option value="@item.ID">@item.InningNo</option>
+                                <br />
+                            }
                         </select>
                         <br />
                         <label id="lblTotal">Total:</label>
@@ -83,3 +80,79 @@
         </tbody>
     </table>
 </form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script type="text/javascript">
+        
+        let selectInning = document.querySelector("#selectInning")
+        let selectPlayer = document.querySelector("#selectPlayer")
+
+
+
+        let btnHit = document.querySelector("#btnHit")
+        let btnBall = document.querySelector("#btnBall")
+        $("#btnHit").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+                let data = { gameId: @ViewBag.GameID, playerID: selectedPlayerID, inningID: selectedInningID, incrementField: "Hits" }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")", // Adjust
+                    data: data ,
+                    success: function () {
+                       console.log(data)
+                    },
+                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                        var errorMessages = [];
+                        console.log(data)
+                        switch (xhr.status) {
+                            case 401:
+                                errorMessages.push("You must be logged in first.");
+                                break;
+                            case 403:
+                                errorMessages.push("You are not authorized for this action.");
+                                break;
+                            default:
+                                //Messages coming from the Model State Errors
+                                //We split on the | delimeter and the .slice removes the last one
+                                errorMessages = xhr.responseText.split("|").slice(0, -1);
+                        }
+                        //This checks if there are any elements with some content
+                        //and if not then it provides a default feedback message.
+                        // if (!errorMessages.some((str) => str !== "")) {
+                        //     errorMessages.push("Error: Unable to complete operation");
+                        // }
+                        // //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
+                        // var ul = document.getElementById("ErrorList");
+                        // for (var i = 0; i < errorMessages.length; i++) {
+                        //     var errorMessage = errorMessages[i];
+                        //     var li = document.createElement("li");
+                        //     li.innerHTML = errorMessage;
+                        //     ul.appendChild(li);
+                        // }
+                    }
+                });
+            }
+            return false;
+        });
+
+
+    </script>
+
+}
+
+
+

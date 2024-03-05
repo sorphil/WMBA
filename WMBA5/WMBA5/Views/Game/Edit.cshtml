@@ -95,7 +95,7 @@
                     data: form.serialize(),
                     success: function () {
                         $('#addLocationModal').modal('hide');
-                    },
+                    }, 
                     error: function (xhr) { //Note: xhr is the XMLHttpRequest
                         var errorMessages = [];
                         switch (xhr.status) {

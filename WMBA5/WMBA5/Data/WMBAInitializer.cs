@@ -622,50 +622,35 @@ namespace WMBA5.Data
                 }//end seed data for games
                 if (!context.Innings.Any())
                 {
-                    context.Innings.AddRange(
-                        new Inning
+                    for (int i = 1; i <= 7; i++)
+                    {
+                        context.Innings.Add(new Inning
                         {
-                            ID = 1,
-                            InningNo = "Inning One",
+                            InningNo = $"Inning {i}",
                             GameID = 1
-                        },
-                           new Inning
-                           {
-                               ID = 2,
-                               InningNo = "Inning Two",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 3,
-                               InningNo = "Inning Three",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 4,
-                               InningNo = "Inning Four",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 5,
-                               InningNo = "Inning Five",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 6,
-                               InningNo = "Inning Six",
-                               GameID = 1
-                           },
-                                new Inning
-                                {
-                                    ID = 7,
-                                    InningNo = "Inning Seven",
-                                    GameID = 1
-                                }
-                        );
+                        });
+                        context.Innings.Add(new Inning
+                        {
+                            InningNo = $"Inning {i}",
+                            GameID = 2
+                        });
+                        context.Innings.Add(new Inning
+                        {
+                            InningNo = $"Inning {i}",
+                            GameID = 3
+                        });
+                        context.Innings.Add(new Inning
+                        {
+                            InningNo = $"Inning {i}",
+                            GameID = 4
+                        });
+                        context.Innings.Add(new Inning
+                        {
+                            InningNo = $"Inning {i}",
+                            GameID = 5
+                        });
+                    }
+
                     context.SaveChanges();
                 }
                 //Adding Stats
