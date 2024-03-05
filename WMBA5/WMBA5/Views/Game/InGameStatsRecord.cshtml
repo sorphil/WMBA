@@ -172,14 +172,13 @@
                     url: "@Url.Action("GetPlayerScore", "Game")",
                     data: data,
                     success: function (data) {
-                        console.log((typeof data))
-                        document.querySelector("#playerHits").innerHTML = response[0].Hits;
-                        document.querySelector("#playerBalls").innerHTML = result["Balls"]
-                        document.querySelector("#playerRuns").innerHTML = result["Runs"]
-                        document.querySelector("#playerStrikes").innerHTML = result["Strikes"]
+                        console.log(Object.keys(data))
+                        document.querySelector("#playerHits").innerHTML = data["hits"];
+                        document.querySelector("#playerBalls").innerHTML = data["balls"]
+                        document.querySelector("#playerRuns").innerHTML = data["runs"]
+                        document.querySelector("#playerStrikes").innerHTML = data["strikes"]
+                        document.querySelector("#playerFoulBalls").innerHTML = data["foulBalls"]
                         // document.querySelector("#playerHits").innerHTML = data["Hits"]
-                        console.log(JSON.parse(result))
-                        console.log()
                         
                     },
                     error: function (xhr) { //Note: xhr is the XMLHttpRequest
