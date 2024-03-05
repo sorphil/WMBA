@@ -196,7 +196,7 @@ namespace WMBA5.Data.WMBAMigrations
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     JerseyNumber = table.Column<int>(type: "INTEGER", nullable: true),
                     StatusID = table.Column<int>(type: "INTEGER", nullable: true),
-                    DivisionID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DivisionID = table.Column<int>(type: "INTEGER", nullable: true),
                     TeamID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -206,8 +206,7 @@ namespace WMBA5.Data.WMBAMigrations
                         name: "FK_Players_Divisions_DivisionID",
                         column: x => x.DivisionID,
                         principalTable: "Divisions",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_Players_Statuses_StatusID",
                         column: x => x.StatusID,
