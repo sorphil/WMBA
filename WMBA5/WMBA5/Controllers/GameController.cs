@@ -461,7 +461,7 @@ namespace WMBA5.Controllers
             return Json(playerScore);
         }
         [HttpPost]
-        public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int homeRunsScore)
+        public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int? homeRunsScore)
         {
             int? gameID = ViewBag.GameID;
             // Find or create the score object for the player, inning, and game
@@ -494,7 +494,15 @@ namespace WMBA5.Controllers
                     score.Out++;
                     break;
                 case "Runs":
-                    score.Runs++;
+                    if(homeRunsScore.GetValueOrDefault()!=null|| homeRunsScore.GetValueOrDefault() != 0)
+                    {
+                        score.Runs += homeRunsScore.GetValueOrDefault();
+                    }
+                    else
+                    {
+                        score.Runs++;
+                    }
+                   
                     break;
             }
             // Save changes to the database

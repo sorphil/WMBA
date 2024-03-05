@@ -126,7 +126,6 @@
         };
         $("#btnHit").click(function (event) {
             event.preventDefault();
-            // ClearErrors();
             // Getting selected player and inning IDs
             let selectedPlayerID = selectPlayer.value;
             let selectedInningID = selectInning.value;
@@ -143,36 +142,10 @@
                     url: "@Url.Action("InGameStatsRecord", "Game")",
                     data: data ,
                     success: function () {
-                       console.log(data)
-                    },
-                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
-                        var errorMessages = [];
-                        console.log(data)
-                        switch (xhr.status) {
-                            case 401:
-                                errorMessages.push("You must be logged in first.");
-                                break;
-                            case 403:
-                                errorMessages.push("You are not authorized for this action.");
-                                break;
-                            default:
-                                //Messages coming from the Model State Errors
-                                //We split on the | delimeter and the .slice removes the last one
-                                errorMessages = xhr.responseText.split("|").slice(0, -1);
-                        }
-                        //This checks if there are any elements with some content
-                        //and if not then it provides a default feedback message.
-                        // if (!errorMessages.some((str) => str !== "")) {
-                        //     errorMessages.push("Error: Unable to complete operation");
-                        // }
-                        // //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
-                        // var ul = document.getElementById("ErrorList");
-                        // for (var i = 0; i < errorMessages.length; i++) {
-                        //     var errorMessage = errorMessages[i];
-                        //     var li = document.createElement("li");
-                        //     li.innerHTML = errorMessage;
-                        //     ul.appendChild(li);
-                        // }
+                       let hits = document.querySelector("#playerHits").innerHTML
+                        let hitsInt = parseInt(hits);
+                        hitsInt++;
+                        document.querySelector("#playerHits").innerHTML = hitsInt;
                     }
                 });
             }
@@ -192,11 +165,30 @@
                 return;
             }
             else {
-                let runs = prompt("Please enter the number of runs scored with this home run", "");
-                return runs;
+                let runs = 0
+                while (runs > 4 || runs < 1) 
+                {
+                    runs = prompt("Please enter the number of runs (between 1 and 4) scored with this home run", "");
+                }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Runs", homeRunsScore: runs }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function () {
+                        let runsDiv = document.querySelector("#playerRuns").innerHTML
+                        let totalRuns = document.querySelector("#lblTotal").innerHTML.slice(13)
+                        let homeRunsInt = parseInt(runs);
+                        let totalInt = parseInt(totalRuns)
+                        let runsInt = parseInt(runsDiv);
+                        totalInt += homeRunsInt;
+                        runsInt += homeRunsInt;
+                        document.querySelector("#playerRuns").innerHTML = runsInt;
+                        document.querySelector("#lblTotal").innerHTML = `Total Score: ${totalInt}`;;
+                    }
+
+                });
             }
-            // $("#dialog").show();
-            // $("#dialog").dialog();
             return false;
         });
 
@@ -219,24 +211,12 @@
                     url: "@Url.Action("InGameStatsRecord", "Game")",
                     data: data,
                     success: function () {
-                        console.log(data)
-                    },
-                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
-                        var errorMessages = [];
-                        console.log(data)
-                        switch (xhr.status) {
-                            case 401:
-                                errorMessages.push("You must be logged in first.");
-                                break;
-                            case 403:
-                                errorMessages.push("You are not authorized for this action.");
-                                break;
-                            default:
-                                //Messages coming from the Model State Errors
-                                //We split on the | delimeter and the .slice removes the last one
-                                errorMessages = xhr.responseText.split("|").slice(0, -1);
-                        }
+                        let balls = document.querySelector("#playerBalls").innerHTML
+                        let ballsInt = parseInt(balls);
+                        ballsInt++;
+                        document.querySelector("#playerBalls").innerHTML = ballsInt;
                     }
+                   
                 });
             }
             return false;
@@ -260,23 +240,10 @@
                     url: "@Url.Action("InGameStatsRecord", "Game")",
                     data: data,
                     success: function () {
-                        console.log(data)
-                    },
-                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
-                        var errorMessages = [];
-                        console.log(data)
-                        switch (xhr.status) {
-                            case 401:
-                                errorMessages.push("You must be logged in first.");
-                                break;
-                            case 403:
-                                errorMessages.push("You are not authorized for this action.");
-                                break;
-                            default:
-                                //Messages coming from the Model State Errors
-                                //We split on the | delimeter and the .slice removes the last one
-                                errorMessages = xhr.responseText.split("|").slice(0, -1);
-                        }
+                        let strikes = document.querySelector("#playerStrikes").innerHTML
+                        let strikesInt = parseInt(strikes);
+                        strikesInt++;
+                        document.querySelector("#playerStrikes").innerHTML = strikesInt;
                     }
                 });
             }
@@ -306,23 +273,10 @@
                     url: "@Url.Action("InGameStatsRecord", "Game")",
                     data: data,
                     success: function () {
-                        console.log(data)
-                    },
-                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
-                        var errorMessages = [];
-                        console.log(data)
-                        switch (xhr.status) {
-                            case 401:
-                                errorMessages.push("You must be logged in first.");
-                                break;
-                            case 403:
-                                errorMessages.push("You are not authorized for this action.");
-                                break;
-                            default:
-                                //Messages coming from the Model State Errors
-                                //We split on the | delimeter and the .slice removes the last one
-                                errorMessages = xhr.responseText.split("|").slice(0, -1);
-                        }
+                        let outs = document.querySelector("#playerOuts").innerHTML
+                        let outsInt = parseInt(outs);
+                        outsInt++;
+                        document.querySelector("#playerOuts").innerHTML = outsInt;
                     }
                 });
             }
@@ -347,7 +301,15 @@
                     url: "@Url.Action("InGameStatsRecord", "Game")",
                     data: data,
                     success: function () {
-                        console.log(data)
+                        let runs = document.querySelector("#playerRuns").innerHTML
+                        let totalRuns = document.querySelector("#lblTotal").innerHTML.slice(13)
+                        let runsInt = parseInt(runs);
+                        let totalInt = parseInt(totalRuns)
+
+                        runsInt++;
+                        totalInt++;
+                        document.querySelector("#playerRuns").innerHTML = runsInt;
+                        document.querySelector("#lblTotal").innerHTML = `Total Score: ${totalInt}`;
 
                     }
                 });
@@ -374,7 +336,7 @@
                         document.querySelector("#playerRuns").innerHTML = data["runs"]
                         document.querySelector("#playerStrikes").innerHTML = data["strikes"]
                         document.querySelector("#playerFoulBalls").innerHTML = data["foulBalls"]
-                        // document.querySelector("#playerHits").innerHTML = data["Hits"]
+                        // document.querySelector("#playerOuts").innerHTML = data["Outs"]
                         
 
                     },
