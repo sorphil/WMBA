@@ -16,6 +16,7 @@
                         <tbody>
                             <tr>
                                 <td>
+                                    <label id="lblSelectedPlayer">Player: </label>
                                     <button id="btnHit" name="btnHit" > Hit </button>
                                     <br />
                                     <button id="btnRun" name="btnRun"> Run </button>
@@ -60,7 +61,7 @@
                             .Where(gp => gp.TeamLineup == TeamLineup.Home)
                             .OrderBy(o => o.Player.LastName))
                             {
-                                <option value = "@item.PlayerID">@item.Player.FullName</option>
+                                <option value="@item.PlayerID" data-name="@item.Player.FullName">@item.Player.FullName</option>
                                 <br />
                             }
                         </select>
@@ -95,6 +96,7 @@
         
         let selectInning = document.querySelector("#selectInning")
         let selectPlayer = document.querySelector("#selectPlayer")
+        
 
         let selectRuns = document.querySelector("#selectRuns")
 
@@ -105,6 +107,10 @@
         let btnRun = document.querySelector("#btnRun")
         let btnHomeRun = document.querySelector("#btnHomeRun")
         let gameID = document.querySelector("#gameID").value;
+        $('select[name="players"]').change(function () {
+            var name = ($(this).select.dataset.name());
+            document.getElementById("lblSelectedPlayer").innerHTML = name;
+        });
         $("#btnHit").click(function (event) {
             event.preventDefault();
             // ClearErrors();
