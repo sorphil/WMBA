@@ -714,8 +714,8 @@ namespace WMBA5.Controllers
 
             if (ExcelPlayer != null)
             {
-                //try
-                //{
+                try
+                {
                     string mimeType = ExcelPlayer.ContentType;
                     long fileLength = ExcelPlayer.Length;
 
@@ -874,7 +874,7 @@ namespace WMBA5.Controllers
                                     }
                                     else
                                     {
-                                        feedBack = "Error: CSV file does not have the required columns.";
+                                        feedBack = "Error: CSV file does not have the required columns or is outdated.";
                                         break; // Exit the loop as the CSV structure is not as expected
                                     }
                                 }
@@ -916,13 +916,13 @@ namespace WMBA5.Controllers
                     {
                         feedBack = "Error: File appears to be empty.";
                     }
-                //}
-                //catch (Exception ex)
-                //{
-                //    feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
-                //        $"Please try again or contact support.";
-                //}
             }
+                catch (Exception ex)
+                {
+                feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
+                    $"Please try again or contact support.";
+            }
+        }
             else
             {
                 feedBack = "Error: No file uploaded.";
