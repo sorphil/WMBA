@@ -759,6 +759,8 @@ namespace WMBA5.Controllers
         //}
         public async Task<IActionResult> InsertFromExcel(IFormFile TheExcel)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
             string feedBack = string.Empty;
 
