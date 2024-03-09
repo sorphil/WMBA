@@ -7,8 +7,8 @@
 <partial name="_ViewHeading" />
 <hr />
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
-<div class="row">
-    <div class="col-md-4">
+    <div class="row">
+        <div class="col-md-4">
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -29,46 +29,75 @@
                 <select asp-for="StatusID" class="form-control" asp-items="ViewBag.StatusID"></select>
                 <span asp-validation-for="StatusID" class="text-danger"></span>
             </div>
-    </div>
+        </div>
         <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
                 <label asp-for="MemberID" class="control-label"></label>
-                <input asp-for="MemberID" class="form-control"  />
+                <input asp-for="MemberID" class="form-control" disabled />
                 <span asp-validation-for="MemberID" class="text-danger"></span>
             </div>
-           
+
             <div class="form-group">
                 <label asp-for="JerseyNumber" class="control-label"></label>
                 <input asp-for="JerseyNumber" class="form-control" min="0" max="99" />
                 <span asp-validation-for="JerseyNumber" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="TeamID" class="control-label"></label>
-                <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
-                    <option value="">No Team</option>
-                </select>
-                <span asp-validation-for="TeamID" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <label asp-for="DivisionID" class="control-label"></label>
                 <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
                 <span asp-validation-for="DivisionID" class="text-danger"></span>
             </div>
-      
- 
+
+            <div class="form-group">
+                <label asp-for="TeamID" class="control-label"></label>
+                <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID"></select>
+                <span asp-validation-for="TeamID" class="text-danger"></span>
+            </div>
+
+
+        </div>
     </div>
-</div>
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary" />
     </div>
-    </form>
+</form>
 <div>
     <partial name="_BackToList" />
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('#DivisionID').change(function () {
+                var divisionId = $(this).val();
+
+                $.ajax({
+                    url: '@Url.Action("GetTeamsByDivision", "Player")',
+                    type: 'GET',
+                    data: { divisionId: divisionId },
+                    success: function (data) {
+                        $('#TeamID').empty();
+
+                        if (data.length === 0) {
+                            $('#TeamID').prop('disabled', true).append($('<option></option>').text('No teams available'));
+                        } else {
+                            $('#TeamID').prop('disabled', false);
+                            // Add default option
+                            $('#TeamID').append($('<option></option>').text('Select a Team').attr('value', ''));
+                            // Populate dropdown with teams
+                            $.each(data, function (index, team) {
+                                $('#TeamID').append($('<option></option>').val(team.value).text(team.text));
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 }

@@ -42,12 +42,12 @@ namespace WMBA5.Controllers
 
             PopulateDropDownLists();
 
-            var players = _context.Players 
-                .Include(p=>p.Team)
-                .Include(p=>p.Status)
+            var players = _context.Players
+                .Include(p => p.Team)
+                .Include(p => p.Status)
                 .Include(p => p.PlayerAtBats)
                 .Include(p => p.Stats)
-                .Include(p=>p.Division)
+                .Include(p => p.Division)
                 .AsNoTracking();
 
             //Add as many filters as needed
@@ -107,7 +107,7 @@ namespace WMBA5.Controllers
                 {
                     players = players
                         .OrderBy(p => p.LastName)
-                        .ThenBy(p=>p.FirstName);
+                        .ThenBy(p => p.FirstName);
                 }
                 else
                 {
@@ -189,8 +189,8 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-         public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
-         {
+        public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
+        {
             try
             {
                 if (ModelState.IsValid)
@@ -224,7 +224,7 @@ namespace WMBA5.Controllers
             }
             PopulateDropDownLists();
             return View(player);
-         }
+        }
 
         // GET: Player/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -242,10 +242,12 @@ namespace WMBA5.Controllers
             {
                 return NotFound();
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
-			ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
-			ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", player.StatusID);
-			return View(player);
+            //         ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+            //ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
+            //ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", player.StatusID);
+
+            PopulateDropDownLists(player);
+            return View(player);
         }
 
         // POST: Player/Edit/5
@@ -255,27 +257,27 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id) //, [Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
         {
-			//Go get the player to update
-			var playerToUpdate = await _context.Players
-				.Include(p => p.Status)
-				.Include(p => p.Team).ThenInclude(p => p.Division)
+            //Go get the player to update
+            var playerToUpdate = await _context.Players
+                .Include(p => p.Status)
+                .Include(p => p.Team).ThenInclude(p => p.Division)
                 .FirstOrDefaultAsync(p => p.ID == id);
-            
+
             if (playerToUpdate == null)
             {
                 return NotFound();
             }
 
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
-				p => p.MemberID, p => p.FirstName, p => p.LastName, p => p.Nickname,
-				p => p.JerseyNumber, p => p.StatusID, p => p.DivisionID, p => p.TeamID))
+                p => p.MemberID, p => p.FirstName, p => p.LastName, p => p.Nickname,
+                p => p.JerseyNumber, p => p.StatusID, p => p.DivisionID, p => p.TeamID))
             {
                 try
                 {
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
-					return RedirectToAction(nameof(Index));
-				}
+                    return RedirectToAction(nameof(Index));
+                }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PlayerExists(playerToUpdate.ID))
@@ -287,15 +289,15 @@ namespace WMBA5.Controllers
                         throw;
                     }
                 }
-                
+
             }
             //ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
             PopulateDropDownLists(playerToUpdate);
-			ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
-			ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", playerToUpdate.DivisionID);
-			ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", playerToUpdate.StatusID);
+            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
+            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", playerToUpdate.DivisionID);
+            ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", playerToUpdate.StatusID);
 
-			return View(playerToUpdate);
+            return View(playerToUpdate);
         }
 
         // GET: Player/Delete/5
@@ -327,7 +329,7 @@ namespace WMBA5.Controllers
                 return Problem("No Player to Delete.");
             }
             var player = await _context.Players
-                .Include (p=>p.Team)
+                .Include(p => p.Team)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             try
@@ -350,20 +352,43 @@ namespace WMBA5.Controllers
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
             }
-            
+
             return View(player);
         }
-        private SelectList TeamSelectionList(int? selectedId)
+        private SelectList TeamSelectionList(int? divisionID, int? selectedTeamId) //int? selectedId
         {
-            return new SelectList(_context
-                .Teams
-                .OrderBy(m => m.TeamName), "ID", "TeamName", selectedId);
+            if (divisionID.HasValue)
+            {
+                var teams = _context.Teams
+                    .Where(t => t.DivisionID == divisionID)
+                    .OrderBy(t => t.TeamName)
+                    .ToList();
+
+                if (teams.Any())
+                {
+                    return new SelectList(teams, "ID", "TeamName", selectedTeamId);
+                }
+                else
+                {
+                    return new SelectList(new List<Team> { new Team { ID = 0, TeamName = "Select a team" } }, "ID", "TeamName", selectedTeamId);
+                }
+
+            }
+            else
+            {
+                return new SelectList(new List<Team>(), "ID", "TeamName", null);
+            }
+            //return new SelectList(_context
+            //    .Teams
+            //    .OrderBy(m => m.TeamName), "ID", "TeamName", selectedId);
         }
-        private SelectList DivisionSelectionList(int? selectedId)
+        private SelectList DivisionSelectionList(int? selectedDivisionId)
         {
-            return new SelectList(_context
-                .Divisions
-                .OrderBy(m => m.DivisionName), "ID", "DivisionName", selectedId);
+            var divisions = _context.Divisions
+                .OrderBy(d => d.DivisionName)
+                .ToList();
+
+            return new SelectList(divisions, "ID", "DivisionName", selectedDivisionId);
         }
         private SelectList StatusSelectionList(int? selectedId)
         {
@@ -373,14 +398,35 @@ namespace WMBA5.Controllers
         }
         private void PopulateDropDownLists(Player player = null)
         {
-            ViewData["TeamID"] = TeamSelectionList(player?.TeamID);
             ViewData["DivisionID"] = DivisionSelectionList(player?.DivisionID);
             ViewData["StatusID"] = StatusSelectionList(player?.StatusID);
+
+            if (player?.DivisionID != null)
+            {
+                ViewData["TeamID"] = TeamSelectionList(player?.DivisionID, player?.TeamID);
+            }
+            else
+            {
+                ViewData["TeamID"] = TeamSelectionList(null, null);
+            }
         }
         private bool PlayerExists(int id)
         {
-          return _context.Players.Any(e => e.ID == id);
+            return _context.Players.Any(e => e.ID == id);
         }
+
+        // GET: Player/GetTeamsByDivision
+        public IActionResult GetTeamsByDivision(int divisionId)
+        {
+            var teams = _context.Teams
+                .Where(t => t.DivisionID == divisionId)
+                .OrderBy(t => t.TeamName)
+                .Select(t => new { value = t.ID, text = t.TeamName })
+                .ToList();
+
+            return Json(teams);
+        }
+
         //public async Task<IActionResult> InsertFromExcel(IFormFile ExcelPlayer)
         //{
         //    ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Player");
@@ -838,25 +884,23 @@ namespace WMBA5.Controllers
                                         var memberID = fields[3];
                                         var teamID = _context.Teams.FirstOrDefault(c => c.TeamName == fields[7].TrimStart(' ', 'U', '1', '3', '5', '8', '9'))?.ID;
                                         var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == fields[5])?.ID;
-                                        var statusID = _context.Statuses.FirstOrDefault(s => s.StatusName == "Active")?.ID;
 
 
                                         if (firstName != null && lastName != null)
                                         {
-                                        // Check if the player with the same name already exists
-                                        var existingPlayer = _context.Players.FirstOrDefault(t => t.MemberID == memberID);
+                                            // Check if the team with the same name already exists
+                                            var existingPlayer = _context.Players.FirstOrDefault(t => t.FirstName == firstName);
 
                                             if (existingPlayer == null)
                                             {
-                                            // Player does not exist, add it to the list
+                                                // Team does not exist, add it to the list
                                                 Player p = new Player
                                                 {
-                                                FirstName = firstName,
-                                                LastName = lastName,
-                                                MemberID = memberID,
-                                                TeamID = teamID,
-                                                DivisionID = divisionId,
-                                                StatusID = statusID
+                                                    FirstName = firstName,
+                                                    LastName = lastName,
+                                                    MemberID = memberID,
+                                                    TeamID = teamID.Value,
+                                                    DivisionID = divisionId.Value,
                                                 };
                                                 players.Add(p);
                                             }
@@ -874,7 +918,7 @@ namespace WMBA5.Controllers
                                     }
                                     else
                                     {
-                                        feedBack = "Error: CSV file does not have the required columns or is outdated.";
+                                        feedBack = "Error: CSV file does not have the required columns.";
                                         break; // Exit the loop as the CSV structure is not as expected
                                     }
                                 }
@@ -894,10 +938,10 @@ namespace WMBA5.Controllers
                                         {
                                             feedBack = "Players have been added if they were not already in the database.";
                                         }
-                                        //else
-                                        //{
-                                        //    feedBack = "Players already exists in the database or is and outdated version of the file. No players were added.";
-                                        //}
+                                        else
+                                        {
+                                            feedBack = "Players already exists in the database or is and outdated version of the file. No teams were added.";
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -916,13 +960,13 @@ namespace WMBA5.Controllers
                     {
                         feedBack = "Error: File appears to be empty.";
                     }
-            }
+                }
                 catch (Exception ex)
                 {
-                feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
-                    $"Please try again or contact support.";
+                    feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
+                        $"Please try again or contact support.";
+                }
             }
-        }
             else
             {
                 feedBack = "Error: No file uploaded.";
