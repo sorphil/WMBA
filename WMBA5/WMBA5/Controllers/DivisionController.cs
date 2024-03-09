@@ -166,7 +166,8 @@ namespace WMBA5.Controllers
             {
                 return Problem("No Division to Delete.");
             }
-            var division = await _context.Divisions.FindAsync(id);
+            var division = await _context.Divisions
+                .Include(d => d.Club).FirstOrDefaultAsync(m => m.ID == id);
             try
             {
                 if (division != null)
@@ -181,7 +182,7 @@ namespace WMBA5.Controllers
             {
                 if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
                 {
-                    ModelState.AddModelError("", "Unable to Delete Division. You cannot delete a Division if it has team in it.");
+                    ModelState.AddModelError("", "Unable to Delete Division. You cannot delete a Division if it has team or players in it.");
                 }
                 else
                 {

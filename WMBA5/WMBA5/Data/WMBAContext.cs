@@ -56,6 +56,12 @@ namespace WMBA5.Data
                 .WithOne(c => c.Division)
                 .HasForeignKey(c => c.DivisionID)
                 .OnDelete(DeleteBehavior.Restrict);
+            //Division to Player
+            modelBuilder.Entity<Division>()
+                .HasMany<Player>(c => c.Players)
+                .WithOne(c => c.Division)
+                .HasForeignKey(c => c.DivisionID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Team to Player
             modelBuilder.Entity<Team>()

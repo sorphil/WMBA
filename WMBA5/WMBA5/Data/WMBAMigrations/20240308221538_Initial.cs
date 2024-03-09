@@ -206,7 +206,8 @@ namespace WMBA5.Data.WMBAMigrations
                         name: "FK_Players_Divisions_DivisionID",
                         column: x => x.DivisionID,
                         principalTable: "Divisions",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Players_Statuses_StatusID",
                         column: x => x.StatusID,

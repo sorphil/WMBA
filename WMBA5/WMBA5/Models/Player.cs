@@ -97,7 +97,7 @@ namespace WMBA5.Models
             var dbContext = (WMBAContext)validationContext.GetService(typeof(WMBAContext));
             {
                 var teamPlayerWithSameJersey = dbContext.Players
-                    .Where(p => p.TeamID == TeamID && p.JerseyNumber == JerseyNumber && p.ID != ID)
+                    .Where(p => p.TeamID == TeamID && p.JerseyNumber == JerseyNumber && p.ID != ID && p.JerseyNumber!= null)
                     .FirstOrDefault();
 
                 if (teamPlayerWithSameJersey != null)
