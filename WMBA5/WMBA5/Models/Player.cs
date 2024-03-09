@@ -35,8 +35,8 @@ namespace WMBA5.Models
         //Unique ID to identify the player by their Member ID
         [Display(Name = "Member ID")]
         [Required(ErrorMessage = "You cannot leave the Member ID blank.")]
-        [RegularExpression("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", ErrorMessage = "The Member ID must be at least 8 characters long, " +
-            "it must have a combination of numbers and letters and it cant have symbols or special chracters(!,@,#,$,%,^,&,*)")]
+        [RegularExpression("^[A-Za-z0-9]{8,}$", ErrorMessage = "The Member ID must be at least 8 characters long, " +
+            "it must have a combination of numbers and/or letters and it cant have symbols or special chracters(!,@,#,$,%,^,&,*,_,-)")]
         public string MemberID { get; set; }
 
         [Display(Name = "First Name")]
