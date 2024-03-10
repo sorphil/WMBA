@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240305121221_Initial")]
+    [Migration("20240308221538_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -483,7 +483,8 @@ namespace WMBA5.Data.WMBAMigrations
                 {
                     b.HasOne("WMBA5.Models.Division", "Division")
                         .WithMany("Players")
-                        .HasForeignKey("DivisionID");
+                        .HasForeignKey("DivisionID")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("WMBA5.Models.Status", "Status")
                         .WithMany()

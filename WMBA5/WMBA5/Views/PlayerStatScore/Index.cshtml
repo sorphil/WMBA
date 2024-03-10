@@ -57,5 +57,5 @@
 </form>
 <div>
     <a asp-action="Edit" asp-controller="Player" asp-route-id="@player.ID">Edit @player.FullName</a> |
-    <a href='@ViewData["returnURL"]'>Back to Player List</a>
+    <a asp-action="Index" asp-controller="Player" >Back to Player List</a>
 </div>

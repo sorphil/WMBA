@@ -480,7 +480,8 @@ namespace WMBA5.Data.WMBAMigrations
                 {
                     b.HasOne("WMBA5.Models.Division", "Division")
                         .WithMany("Players")
-                        .HasForeignKey("DivisionID");
+                        .HasForeignKey("DivisionID")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("WMBA5.Models.Status", "Status")
                         .WithMany()
