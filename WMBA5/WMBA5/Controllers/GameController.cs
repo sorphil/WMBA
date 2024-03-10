@@ -193,40 +193,43 @@ namespace WMBA5.Controllers
                 var homeTeam = await _context.Teams.Include(t => t.Division).FirstOrDefaultAsync(t => t.ID == HomeTeamID);
                 var awayTeam = await _context.Teams.Include(t => t.Division).FirstOrDefaultAsync(t => t.ID == AwayTeamID);
 
-                if (homeTeam.DivisionID != game.DivisionID || awayTeam.DivisionID != game.DivisionID)
+                if (homeTeam == null || awayTeam == null)
                 {
-                    ModelState.AddModelError("", "The selected teams must belong to the selected game's division.");
+                    ModelState.AddModelError("", "Please select a valid team.");
                 }
 
-                if (ModelState.IsValid)
+                if (homeTeam != null && awayTeam != null)
                 {
-                    _context.Add(game);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
+                    if (homeTeam.DivisionID != game.DivisionID || awayTeam.DivisionID != game.DivisionID)
+                    {
+                        ModelState.AddModelError("", "The selected teams must belong to the selected game's division.");
+                    }
 
-                PopulateDropDownLists(game);
+                    if (homeTeam.DivisionID != awayTeam.DivisionID)
+                    {
+                        ModelState.AddModelError("", "Home Team and Away Team must belong to the same division.");
+                    }
+                    if(homeTeam == awayTeam)
+                    {
+                        ModelState.AddModelError("", "Home and Away Teams must be different.");
+                    }
+                }
 
                 if (HomeTeamID == 0 || AwayTeamID == 0)
                 {
-                    ModelState.AddModelError("", "Home Team and Away Team are required.");
-                    PopulateDropDownLists(game);
-                    ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
-                    ViewData["Teams"] = new SelectList(teamList, "Value", "Text");
-                    return View(game);
-                }
-
-                if (homeTeam.DivisionID != awayTeam.DivisionID)
-                {
-                    ModelState.AddModelError("", "Home Team and Away Team must belong to the same division.");
-                    PopulateDropDownLists(game);
-                    ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
-                    ViewData["Teams"] = new SelectList(teamList, "Value", "Text");
-                    return View(game);
+                    ModelState.AddModelError("TeamRequired", "Home Team and Away Team are required.");
                 }
 
                 if (ModelState.IsValid)
                 {
+                    if (HomeTeamID == 0 || AwayTeamID == 0)
+                    {
+                        PopulateDropDownLists(game);
+                        ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
+                        ViewData["Teams"] = new SelectList(teamList, "Value", "Text");
+                        return View(game);
+                    }
+
                     //Load all of the Teams with Players into the game object first
                     game.HomeTeam = _context.Teams.Include(t => t.Players).FirstOrDefault(t => t.ID == game.HomeTeamID);
                     game.AwayTeam = _context.Teams.Include(t => t.Players).FirstOrDefault(t => t.ID == game.AwayTeamID);
@@ -238,6 +241,54 @@ namespace WMBA5.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index", new { id = game.ID });
                 }
+
+                //if (homeTeam.DivisionID != game.DivisionID || awayTeam.DivisionID != game.DivisionID)
+                //{
+                //    ModelState.AddModelError("", "The selected teams must belong to the selected game's division.");
+                //}
+
+                //if (ModelState.IsValid)
+                //{
+                //    _context.Add(game);
+                //    await _context.SaveChangesAsync();
+                //    return RedirectToAction(nameof(Index));
+                //}
+
+                //PopulateDropDownLists(game);
+
+                //if (HomeTeamID == 0 || AwayTeamID == 0)
+                //{
+                //    ModelState.AddModelError("", "Home Team and Away Team are required.");
+                //    PopulateDropDownLists(game);
+                //    ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
+                //    ViewData["Teams"] = new SelectList(teamList, "Value", "Text");
+                //    return View(game);
+                //}
+
+                //if (homeTeam.DivisionID != awayTeam.DivisionID)
+                //{
+                //    ModelState.AddModelError("", "Home Team and Away Team must belong to the same division.");
+                //    PopulateDropDownLists(game);
+                //    ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
+                //    ViewData["Teams"] = new SelectList(teamList, "Value", "Text");
+                //    return View(game);
+                //}
+
+                //if (ModelState.IsValid)
+                //{
+                //    //Load all of the Teams with Players into the game object first
+                //    game.HomeTeam = _context.Teams.Include(t => t.Players).FirstOrDefault(t => t.ID == game.HomeTeamID);
+                //    game.AwayTeam = _context.Teams.Include(t => t.Players).FirstOrDefault(t => t.ID == game.AwayTeamID);
+
+                //    //Set the initial lineups with all team members
+                //    FillLineupsWithTeams(game);
+
+                //    _context.Add(game);
+                //    await _context.SaveChangesAsync();
+                //    return RedirectToAction("Index", new { id = game.ID });
+                //}
+
+                PopulateDropDownLists(game);
                 ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName");
                 ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "TeamName");
                 ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "TeamName");
@@ -248,7 +299,7 @@ namespace WMBA5.Controllers
 
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                ModelState.AddModelError("", "CatchException:" + ex.Message);
 
             }
 
@@ -601,6 +652,27 @@ namespace WMBA5.Controllers
         {
             return Json(LocationSelectionList(id));
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetTeamsByDivision(int? divisionId)
+        {
+            if (divisionId == null)
+            {
+                return Json(new List<SelectListItem>());
+            }
+
+            var teams = await _context.Teams
+                .Where(t => t.DivisionID == divisionId)
+                .Select(t => new SelectListItem
+                {
+                    Value = t.ID.ToString(),
+                    Text = $"{t.Division.DivisionName} - {t.TeamName}"
+                })
+                .ToListAsync();
+
+            return Json(teams);
+        }
+
         private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
     }
 }
