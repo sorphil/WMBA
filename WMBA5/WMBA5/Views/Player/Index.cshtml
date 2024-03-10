@@ -3,6 +3,7 @@
 
 <partial name="_ViewHeading" /> 
 <hr />
+<label class="alert-danger">@TempData["FeedBack"]</label>
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
@@ -97,28 +98,6 @@
     </tbody>
 </table>
     <partial name="_PagingNavBar" />
-</form>
-<form asp-action="InsertFromExcel" asp-controller="Player" method="post" enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-md-7">
-            <label class="fw-bold h4">Import Players:</label>
-            <p>
-                Please upload an excel or CVS file in this format:<br />
-                ID | First Name | Last Name | Member ID | Season | Division | Team | Club | Team<br />
-                Note: If adding new teams, is recommended to upload the file in the teams page first.
-            </p>
-            <div class="form-group col-md-7">
-                <label class="control-label custome-file-label">Upload File:</label>
-                <div class="input-group mb-3">
-                    <input type="file" class="form-control" name="ExcelPlayer" id="ExcelPlayer" />
-                </div>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Upload Data" class="btn btn-primary" />
-            </div>
-            <label class="alert-danger">@TempData["FeedBack"]</label>
-        </div>
-    </div>
 </form>
 
 
