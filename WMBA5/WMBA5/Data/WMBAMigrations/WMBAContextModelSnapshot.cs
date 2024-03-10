@@ -392,6 +392,37 @@ namespace WMBA5.Data.WMBAMigrations
                     b.ToTable("Teams");
                 });
 
+            modelBuilder.Entity("WMBA5.ViewModels.ImportReport", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Club")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Division")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("First_Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Last_Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Member_ID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Season")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Team")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ImportReport");
+                });
+
             modelBuilder.Entity("WMBA5.Models.Division", b =>
                 {
                     b.HasOne("WMBA5.Models.Club", "Club")

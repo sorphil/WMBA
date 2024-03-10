@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240308221538_Initial")]
+    [Migration("20240310173920_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -393,6 +393,37 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasIndex("DivisionID");
 
                     b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("WMBA5.ViewModels.ImportReport", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Club")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Division")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("First_Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Last_Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Member_ID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Season")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Team")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ImportReport");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Division", b =>
