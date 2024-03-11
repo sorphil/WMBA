@@ -38,6 +38,24 @@ namespace WMBA5.Data.WMBAMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImportReport",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "TEXT", nullable: false),
+                    First_Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Last_Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Member_ID = table.Column<string>(type: "TEXT", nullable: true),
+                    Season = table.Column<string>(type: "TEXT", nullable: true),
+                    Division = table.Column<string>(type: "TEXT", nullable: true),
+                    Club = table.Column<string>(type: "TEXT", nullable: true),
+                    Team = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImportReport", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
                 {
@@ -485,6 +503,9 @@ namespace WMBA5.Data.WMBAMigrations
         {
             migrationBuilder.DropTable(
                 name: "GamePlayers");
+
+            migrationBuilder.DropTable(
+                name: "ImportReport");
 
             migrationBuilder.DropTable(
                 name: "PlayerAtBat");

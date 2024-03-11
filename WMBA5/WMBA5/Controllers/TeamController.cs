@@ -757,216 +757,218 @@ namespace WMBA5.Controllers
         //    TempData["Feedback"] = feedBack;
         //    return Redirect(ViewData["ReturnURL"].ToString());
         //}
-        public async Task<IActionResult> InsertFromExcel(IFormFile TheExcel)
-        {
-            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
-            string feedBack = string.Empty;
+        //public async Task<IActionResult> InsertFromExcel(IFormFile TheExcel)
+        //{
+        //    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            if (TheExcel != null)
-            {
-                try
-                {
-                    string mimeType = TheExcel.ContentType;
-                    long fileLength = TheExcel.Length;
+        //    ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
+        //    string feedBack = string.Empty;
 
-                    if (!(mimeType == "" || fileLength == 0)) // Looks like we have a file!!!
-                    {
-                        if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet") || mimeType.Contains("xlsx"))
-                        {
-                            ExcelPackage excel;
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                await TheExcel.CopyToAsync(memoryStream);
-                                excel = new ExcelPackage(memoryStream);
-                            }
+        //    if (TheExcel != null)
+        //    {
+        //        try
+        //        {
+        //            string mimeType = TheExcel.ContentType;
+        //            long fileLength = TheExcel.Length;
 
-                            var workSheet = excel.Workbook.Worksheets[0];
+        //            if (!(mimeType == "" || fileLength == 0)) // Looks like we have a file!!!
+        //            {
+        //                if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet") || mimeType.Contains("xlsx"))
+        //                {
+        //                    ExcelPackage excel;
+        //                    using (var memoryStream = new MemoryStream())
+        //                    {
+        //                        await TheExcel.CopyToAsync(memoryStream);
+        //                        excel = new ExcelPackage(memoryStream);
+        //                    }
 
-                            if (workSheet.Cells[1, 8].Text == "Team" &&
-                                workSheet.Cells[1, 6].Text == "Division" &&
-                                workSheet.Cells[2, 5].Text == DateTime.Now.Year.ToString())
-                            {
-                                var start = workSheet.Dimension.Start;
-                                var end = workSheet.Dimension.End;
-                                List<Team> teams = new List<Team>();
+        //                    var workSheet = excel.Workbook.Worksheets[0];
 
-                                for (int row = start.Row + 1; row <= end.Row; row++)
-                                {
-                                    var teamName = workSheet.Cells[row, 8].Text.Trim(' ', 'U', '1', '3', '5', '8', '9');
-                                    var coachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 9].Text)?.ID;
-                                    var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text)?.ID;
+        //                    if (workSheet.Cells[1, 8].Text == "Team" &&
+        //                        workSheet.Cells[1, 6].Text == "Division" &&
+        //                        workSheet.Cells[2, 5].Text == DateTime.Now.Year.ToString())
+        //                    {
+        //                        var start = workSheet.Dimension.Start;
+        //                        var end = workSheet.Dimension.End;
+        //                        List<Team> teams = new List<Team>();
 
-                                    if (divisionId != null)
-                                    {
-                                        // Check if the team with the same name already exists
-                                        var existingTeam = _context.Teams.FirstOrDefault(t => t.TeamName == teamName);
+        //                        for (int row = start.Row + 1; row <= end.Row; row++)
+        //                        {
+        //                            var teamName = workSheet.Cells[row, 8].Text.Trim(' ', 'U', '1', '3', '5', '8', '9');
+        //                            var coachID = _context.Coaches.FirstOrDefault(c => c.CoachName == workSheet.Cells[row, 9].Text)?.ID;
+        //                            var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == workSheet.Cells[row, 6].Text)?.ID;
 
-                                        if (existingTeam == null)
-                                        {
-                                            // Team does not exist, add it to the list
-                                            Team p = new Team
-                                            {
-                                                TeamName = teamName,
-                                                CoachID = coachID.Value,
-                                                DivisionID = divisionId.Value
-                                            };
-                                            teams.Add(p);
-                                        }
-                                        else
-                                        {
-                                            // Team with the same name already exists, handle accordingly (skip, update, etc.)
-                                            feedBack = $"Error: Team with name '{teamName}' already exists.";
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Handle the case where Coach or Division was not found
-                                        feedBack = "Error: Coach or Division not found for some records.";
-                                    }
-                                }
+        //                            if (divisionId != null)
+        //                            {
+        //                                // Check if the team with the same name already exists
+        //                                var existingTeam = _context.Teams.FirstOrDefault(t => t.TeamName == teamName);
 
-                                using (var transaction = _context.Database.BeginTransaction())
-                                {
-                                    try
-                                    {
-                                        _context.Teams.AddRange(teams);
-                                        _context.SaveChanges();
-                                        transaction.Commit();
-                                        if (feedBack == "")
-                                        {
-                                            feedBack = "Teams added successfully.";
-                                        }
-                                        else if (teams.Count > 0)
-                                        {
-                                            feedBack = "Teams have been added if they were not already in the database.";
-                                        }
-                                        else
-                                        {
-                                            feedBack = "Teams already exists in the database. No teams were added.";
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        transaction.Rollback();
-                                        feedBack = $"Error: An error occurred while saving data. {ex.Message}";
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                feedBack = "Error: You may have selected the wrong file to upload.";
-                            }
-                        }
-                        else if (mimeType.Contains("text/csv"))
-                        {
-                            using (var reader = new StreamReader(TheExcel.OpenReadStream()))
-                            using (var csvParser = new TextFieldParser(reader))
-                            {
-                                csvParser.SetDelimiters(",");
+        //                                if (existingTeam == null)
+        //                                {
+        //                                    // Team does not exist, add it to the list
+        //                                    Team p = new Team
+        //                                    {
+        //                                        TeamName = teamName,
+        //                                        CoachID = coachID.Value,
+        //                                        DivisionID = divisionId.Value
+        //                                    };
+        //                                    teams.Add(p);
+        //                                }
+        //                                else
+        //                                {
+        //                                    // Team with the same name already exists, handle accordingly (skip, update, etc.)
+        //                                    feedBack = $"Error: Team with name '{teamName}' already exists.";
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                // Handle the case where Coach or Division was not found
+        //                                feedBack = "Error: Coach or Division not found for some records.";
+        //                            }
+        //                        }
 
-                                // Skip header row
-                                if (!csvParser.EndOfData)
-                                {
-                                    csvParser.ReadLine();
-                                }
+        //                        using (var transaction = _context.Database.BeginTransaction())
+        //                        {
+        //                            try
+        //                            {
+        //                                _context.Teams.AddRange(teams);
+        //                                _context.SaveChanges();
+        //                                transaction.Commit();
+        //                                if (feedBack == "")
+        //                                {
+        //                                    feedBack = "Teams added successfully.";
+        //                                }
+        //                                else if (teams.Count > 0)
+        //                                {
+        //                                    feedBack = "Teams have been added if they were not already in the database.";
+        //                                }
+        //                                else
+        //                                {
+        //                                    feedBack = "Teams already exists in the database. No teams were added.";
+        //                                }
+        //                            }
+        //                            catch (Exception ex)
+        //                            {
+        //                                transaction.Rollback();
+        //                                feedBack = $"Error: An error occurred while saving data. {ex.Message}";
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        feedBack = "Error: You may have selected the wrong file to upload.";
+        //                    }
+        //                }
+        //                else if (mimeType.Contains("text/csv"))
+        //                {
+        //                    using (var reader = new StreamReader(TheExcel.OpenReadStream()))
+        //                    using (var csvParser = new TextFieldParser(reader))
+        //                    {
+        //                        csvParser.SetDelimiters(",");
 
-                                List<Team> teams = new List<Team>();
+        //                        // Skip header row
+        //                        if (!csvParser.EndOfData)
+        //                        {
+        //                            csvParser.ReadLine();
+        //                        }
 
-                                while (!csvParser.EndOfData)
-                                {
-                                    string[] fields = csvParser.ReadFields();
+        //                        List<Team> teams = new List<Team>();
 
-                                    if (fields.Length >= 3 &&
-                                        fields[4] == DateTime.Now.Year.ToString()) // Ensure there are at least 3 fields (Team Name, Coach, Division)
-                                    {
-                                        var teamName = fields[7].TrimStart(' ', 'U', '1', '3', '5', '8', '9');
-                                        var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == fields[5])?.ID;
+        //                        while (!csvParser.EndOfData)
+        //                        {
+        //                            string[] fields = csvParser.ReadFields();
 
-                                        if (divisionId != null)
-                                        {
-                                            // Check if the team with the same name already exists
-                                            var existingTeam = _context.Teams.FirstOrDefault(t => t.TeamName == teamName);
+        //                            if (fields.Length >= 3 &&
+        //                                fields[4] == DateTime.Now.Year.ToString()) // Ensure there are at least 3 fields (Team Name, Coach, Division)
+        //                            {
+        //                                var teamName = fields[7].TrimStart(' ', 'U', '1', '3', '5', '8', '9');
+        //                                var divisionId = _context.Divisions.FirstOrDefault(c => c.DivisionName == fields[5])?.ID;
 
-                                            if (existingTeam == null)
-                                            {
-                                                // Team does not exist, add it to the list
-                                                Team t = new Team
-                                                {
-                                                    TeamName = teamName,
-                                                    DivisionID = divisionId.Value
-                                                };
-                                                teams.Add(t);
-                                            }
-                                            else
-                                            {
-                                                // Team with the same name already exists, handle accordingly (skip, update, etc.)
-                                                feedBack = $"Error: Team with name '{teamName}' already exists.";
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // Handle the case where Division was not found
-                                            feedBack = "Error: Division not found for some records.";
-                                        }
-                                    }
-                                    else
-                                    {
-                                        feedBack = "Error: CSV file does not have the required columns or is and outdated version.";
-                                        break; // Exit the loop as the CSV structure is not as expected
-                                    }
-                                }
+        //                                if (divisionId != null)
+        //                                {
+        //                                    // Check if the team with the same name already exists
+        //                                    var existingTeam = _context.Teams.FirstOrDefault(t => t.TeamName == teamName);
 
-                                using (var transaction = _context.Database.BeginTransaction())
-                                {
-                                    try
-                                    {
-                                        _context.Teams.AddRange(teams);
-                                        _context.SaveChanges();
-                                        transaction.Commit();
-                                        if (feedBack == "")
-                                        {
-                                            feedBack = "Teams added successfully.";
-                                        }
-                                        else if (teams.Count > 0)
-                                        {
-                                            feedBack = "Teams have been added if they were not already in the database.";
-                                        }
-                                        else
-                                        {
-                                            feedBack = "Teams already exists in the database or is and outdated version of the file. No teams were added.";
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        transaction.Rollback();
-                                        feedBack = $"Error: An error occurred while saving data. {ex.Message}";
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            feedBack = "Error: That file is not an Excel spreadsheet.";
-                        }
-                    }
-                    else
-                    {
-                        feedBack = "Error: File appears to be empty.";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
-                        $"Please try again or contact support.";
-                }
-            }
-            else
-            {
-                feedBack = "Error: No file uploaded.";
-            }
+        //                                    if (existingTeam == null)
+        //                                    {
+        //                                        // Team does not exist, add it to the list
+        //                                        Team t = new Team
+        //                                        {
+        //                                            TeamName = teamName,
+        //                                            DivisionID = divisionId.Value
+        //                                        };
+        //                                        teams.Add(t);
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        // Team with the same name already exists, handle accordingly (skip, update, etc.)
+        //                                        feedBack = $"Error: Team with name '{teamName}' already exists.";
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    // Handle the case where Division was not found
+        //                                    feedBack = "Error: Division not found for some records.";
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                feedBack = "Error: CSV file does not have the required columns or is and outdated version.";
+        //                                break; // Exit the loop as the CSV structure is not as expected
+        //                            }
+        //                        }
 
-            TempData["Feedback"] = feedBack;
-            return Redirect(ViewData["ReturnURL"].ToString());
-        }
+        //                        using (var transaction = _context.Database.BeginTransaction())
+        //                        {
+        //                            try
+        //                            {
+        //                                _context.Teams.AddRange(teams);
+        //                                _context.SaveChanges();
+        //                                transaction.Commit();
+        //                                if (feedBack == "")
+        //                                {
+        //                                    feedBack = "Teams added successfully.";
+        //                                }
+        //                                else if (teams.Count > 0)
+        //                                {
+        //                                    feedBack = "Teams have been added if they were not already in the database.";
+        //                                }
+        //                                else
+        //                                {
+        //                                    feedBack = "Teams already exists in the database or is and outdated version of the file. No teams were added.";
+        //                                }
+        //                            }
+        //                            catch (Exception ex)
+        //                            {
+        //                                transaction.Rollback();
+        //                                feedBack = $"Error: An error occurred while saving data. {ex.Message}";
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    feedBack = "Error: That file is not an Excel spreadsheet.";
+        //                }
+        //            }
+        //            else
+        //            {
+        //                feedBack = "Error: File appears to be empty.";
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
+        //                $"Please try again or contact support.";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        feedBack = "Error: No file uploaded.";
+        //    }
+
+        //    TempData["Feedback"] = feedBack;
+        //    return Redirect(ViewData["ReturnURL"].ToString());
+        //}
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
 using WMBA5.Models;
+using WMBA5.ViewModels;
 
 namespace WMBA5.Data
 {
@@ -230,5 +231,12 @@ namespace WMBA5.Data
 
 
         public DbSet<WMBA5.Models.Score> Score { get; set; }
+
+
+        //public DbSet<TeamLineup> TeamLineups { get; set; } // this is a enum not a class Dbset is not required for this.
+
+
+
+        public DbSet<WMBA5.ViewModels.ImportReport> ImportReport { get; set; }
     }
 }
