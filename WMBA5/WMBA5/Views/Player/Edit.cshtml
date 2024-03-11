@@ -7,6 +7,7 @@
 <partial name="_ViewHeading" />
 <hr />
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" id="SavedTeamID" value="@Model.TeamID" />
 <div class="row">
     <div class="col-md-4">
             <div class="form-group">
@@ -35,7 +36,7 @@
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
                 <label asp-for="MemberID" class="control-label"></label>
-                <input asp-for="MemberID" class="form-control"  />
+                <input asp-for="MemberID" class="form-control" disabled />
                 <span asp-validation-for="MemberID" class="text-danger"></span>
             </div>
            
@@ -74,28 +75,47 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function () {
+            // Variable to store the initially selected team
+            var savedTeamID = $('#SavedTeamID').val();
+
+            // Fetch teams based on the selected division
             $('#DivisionID').change(function () {
                 var divisionId = $(this).val();
-                $.ajax({
-                    url: '@Url.Action("GetTeamsByDivision", "Player")',
-                    type: 'GET',
-                    data: { divisionId: divisionId },
-                    success: function (data) {
-                        $('#TeamID').empty();
-                        if (data.length === 0) {
-                            $('#TeamID').prop('disabled', true).append($('<option></option>').text('No teams available'));
-                        } else {
-                            $('#TeamID').prop('disabled', false);
-                            // Add default option
-                            $('#TeamID').append($('<option></option>').text('Select a Team').attr('value', ''));
-                            // Populate dropdown with teams
+                if (divisionId) {
+                    $.ajax({
+                        url: '/Player/GetTeamsByDivision',
+                        type: 'GET',
+                        data: { divisionId: divisionId },
+                        success: function (data) {
+                            var teamDropdown = $('#TeamID');
+                            var selectedTeam = teamDropdown.val(); // Store the currently selected team
+                            // Update Team dropdown options
+                            teamDropdown.empty();
+                            // Add "Select a team" option
+                            teamDropdown.append($('<option>').val("").text("Select a team"));
                             $.each(data, function (index, team) {
-                                $('#TeamID').append($('<option></option>').val(team.value).text(team.text));
+                                teamDropdown.append($('<option>').val(team.value).text(team.text));
                             });
+                            // Restore the selected team, if available
+                            if (selectedTeam && teamDropdown.find('option[value="' + selectedTeam + '"]').length) {
+                                teamDropdown.val(selectedTeam);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    // Clear Team dropdown if no division selected
+                    var teamDropdown = $('#TeamID');
+                    teamDropdown.empty();
+                    // Add "Select a team" option
+                    teamDropdown.append($('<option>').val("").text("Select a team"));
+                }
             });
+
+            // Trigger change event on Division dropdown if DivisionID is already set (for editing)
+            var savedDivisionID = $('#DivisionID').val();
+            if (savedDivisionID) {
+                $('#DivisionID').trigger('change');
+            }
         });
     </script>
 }
