@@ -46,16 +46,17 @@
             </div>
             
             <div class="form-group">
+                <label asp-for="DivisionID" class="control-label"></label>
+                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
+                <span asp-validation-for="DivisionID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="TeamID" class="control-label"></label>
                 <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
                     <option value="">No Team</option>
                 </select>
                 <span asp-validation-for="TeamID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DivisionID" class="control-label"></label>
-                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
-                <span asp-validation-for="DivisionID" class="text-danger"></span>
             </div>
       
  
@@ -71,4 +72,30 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('#DivisionID').change(function () {
+                var divisionId = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetTeamsByDivision", "Player")',
+                    type: 'GET',
+                    data: { divisionId: divisionId },
+                    success: function (data) {
+                        $('#TeamID').empty();
+                        if (data.length === 0) {
+                            $('#TeamID').prop('disabled', true).append($('<option></option>').text('No teams available'));
+                        } else {
+                            $('#TeamID').prop('disabled', false);
+                            // Add default option
+                            $('#TeamID').append($('<option></option>').text('Select a Team').attr('value', ''));
+                            // Populate dropdown with teams
+                            $.each(data, function (index, team) {
+                                $('#TeamID').append($('<option></option>').val(team.value).text(team.text));
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 }
