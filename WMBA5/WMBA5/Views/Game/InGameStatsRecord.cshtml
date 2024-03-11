@@ -67,7 +67,7 @@
                         <div>Foul Balls: <span id="playerFoulBalls"></span></div>
                     </div>
                 </td>
-                <td class="score-players">
+                @*<td class="score-players">
                     <div>
                         <label id="lblPlayer" for="selectPlayer" class="fw-bold score-lists">Players</label>
                         <br />
@@ -93,6 +93,41 @@
                                 <br />
                             }
                         </select>
+                    </div>
+                </td>*@
+                <!-- Players list box with Next and Back buttons -->
+                <td class="score-players">
+                    <div>
+                        <label id="lblPlayer" for="selectPlayer" class="fw-bold score-lists">Players</label>
+                        <br />
+                        <select id="selectPlayer" Name="players" Size="10" class="score-slc-players">
+                            @foreach (var item in Model.GamePlayers
+                            .Where(gp => gp.TeamLineup == TeamLineup.Home)
+                            .OrderBy(o => o.Player.LastName))
+                            {
+                                <option value="@item.PlayerID" data-name="@item.Player.FullName">@item.Player.FullName</option>
+                                <br />
+                            }
+                        </select>
+                        <button type="button" id="prevPlayer" onclick="changePlayer(-1)">Back</button>
+                        <button type="button" id="nextPlayer" onclick="changePlayer(1)">Next</button>
+                    </div>
+                </td>
+
+                <!-- Innings list box with Next and Back buttons -->
+                <td class="score-innings">
+                    <div>
+                        <label id="lblInning" for="selectInning" class="fw-bold score-lists">Innings</label>
+                        <br />
+                        <select id="selectInning" Name="innings" Size="9" class="score-slc-innings">
+                            @foreach (var item in ViewBag.Innings)
+                            {
+                                <option value="@item.ID">@item.InningNo</option>
+                                <br />
+                            }
+                        </select>
+                        <button type="button" id="prevInning" onclick="changeInning(-1)">Back</button>
+                        <button type="button" id="nextInning" onclick="changeInning(1)">Next</button>
                     </div>
                 </td>
             </tr>
@@ -362,6 +397,53 @@
             return false;
         });
 
+        // SCRIPT ADDED BY RISHI , FOR PHILIP'S REFERENCE
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Disable mouse and keyboard interactions for the players list box
+            var selectPlayer = document.getElementById('selectPlayer');
+            selectPlayer.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+            }, false);
+            selectPlayer.addEventListener('keydown', function (e) {
+                // Prevent scrolling with arrow keys
+                if (e.keyCode === 38 || e.keyCode === 40) {
+                    e.preventDefault();
+                }
+            }, false);
+
+            // Disable mouse and keyboard interactions for the innings list box
+            var selectInning = document.getElementById('selectInning');
+            selectInning.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+            }, false);
+            selectInning.addEventListener('keydown', function (e) {
+                // Prevent scrolling with arrow keys
+                if (e.keyCode === 38 || e.keyCode === 40) {
+                    e.preventDefault();
+                }
+            }, false);
+        });
+        
+        //Above code was taken from AI to lock the listboxes , PHILIP - CORRECT IT IF IT'S WRONG
+
+        function changePlayer(step) {
+            var select = document.getElementById('selectPlayer');
+            var newIndex = select.selectedIndex + step;
+            if (newIndex < 0) newIndex = 0;
+            if (newIndex >= select.options.length) newIndex = select.options.length - 1;
+            select.selectedIndex = newIndex;
+            select.dispatchEvent(new Event('change')); // Trigger change event to update dependent data
+        }
+
+        function changeInning(step) {
+            var select = document.getElementById('selectInning');
+            var newIndex = select.selectedIndex + step;
+            if (newIndex < 0) newIndex = 0;
+            if (newIndex >= select.options.length) newIndex = select.options.length - 1;
+            select.selectedIndex = newIndex;
+            select.dispatchEvent(new Event('change')); // Trigger change event to update dependent data
+        }
     </script>
 
 }
