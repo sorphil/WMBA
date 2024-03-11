@@ -215,7 +215,8 @@ namespace WMBA5.Data.WMBAMigrations
                     JerseyNumber = table.Column<int>(type: "INTEGER", nullable: true),
                     StatusID = table.Column<int>(type: "INTEGER", nullable: true),
                     DivisionID = table.Column<int>(type: "INTEGER", nullable: true),
-                    TeamID = table.Column<int>(type: "INTEGER", nullable: true)
+                    TeamID = table.Column<int>(type: "INTEGER", nullable: true),
+                    BattingOrder = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -267,7 +268,8 @@ namespace WMBA5.Data.WMBAMigrations
                         .Annotation("Sqlite:Autoincrement", true),
                     TeamLineup = table.Column<int>(type: "INTEGER", nullable: false),
                     GameID = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false)
+                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    BattingOrder = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

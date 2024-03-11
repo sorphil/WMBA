@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240310173920_Initial")]
+    [Migration("20240311193631_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -114,6 +114,9 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BattingOrder")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("GameID")
                         .HasColumnType("INTEGER");
 
@@ -184,6 +187,9 @@ namespace WMBA5.Data.WMBAMigrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BattingOrder")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("DivisionID")

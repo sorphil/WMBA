@@ -14,6 +14,7 @@ using WMBA5.Data;
 using WMBA5.Models;
 using WMBA5.ViewModels;
 using static System.Formats.Asn1.AsnWriter;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace WMBA5.Controllers
 {
@@ -548,6 +549,143 @@ namespace WMBA5.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Game/EditLineup/5
+        public async Task<IActionResult> EditLineup(int id, string Lineup)
+        {
+            //Convert back to the Enum for Lineup
+            Enum.TryParse(Lineup, out TeamLineup lineup);
+
+            var game = await _context.Games
+                .Include(g => g.GamePlayers).ThenInclude(p => p.Player).ThenInclude(t => t.Team)
+                .Include(g => g.AwayTeam)
+                .Include(g => g.HomeTeam)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            PopulateAssignedLineupData(game, lineup);
+            ViewData["Lineup"] = lineup.ToString();
+            return View(game);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditLineup(int? id, string[] selectedOptions, string Lineup)
+        {
+            //Convert back to the Enum for Lineup
+            Enum.TryParse(Lineup, out TeamLineup lineup);
+
+            if (id == null || _context.Games == null)
+            {
+                return NotFound();
+            }
+
+            var game = await _context.Games
+                .Include(g => g.GamePlayers).ThenInclude(p => p.Player).ThenInclude(t => t.Team)
+                .Include(g => g.AwayTeam)
+                .Include(g => g.HomeTeam)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            //Remove the one Lineup from the game
+            foreach (GamePlayer gp in game.GamePlayers)
+            {
+                if (gp.TeamLineup == lineup)
+                {
+                    game.GamePlayers.Remove(gp);
+                }
+            }
+            //Add them back but in order they were in the listbox
+            int i = 1;
+            foreach (string selected in selectedOptions)
+            {
+                game.GamePlayers.Add(new GamePlayer()
+                {
+                    PlayerID = int.Parse(selected),
+                    GameID = game.ID,
+                    BattingOrder = i,
+                    TeamLineup = lineup
+                });
+                i++;
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", new { game.ID });
+            }
+            catch (RetryLimitExceededException /* dex */)
+            {
+                ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+
+            return View(game);
+        }
+
+        
+        private void PopulateAssignedLineupData(Game game, TeamLineup lineup)
+        {
+            //For this to work, you must have Included the child collection in the parent object
+            //List of IDs of all players in the game
+            List<int> playersInGame = game.GamePlayers.Select(x => x.PlayerID).ToList();
+            //Now we can get all of the other players
+            var allOptions = _context.Players
+                .Include(p => p.Team)
+                .Where(p => !playersInGame.Contains(p.ID))
+                .OrderBy(p => p.LastName).ThenBy(p => p.FirstName);
+
+            //Current players on the lineup
+            var currentLineup = game.GamePlayers
+                .Where(gp => gp.TeamLineup == lineup)
+                .OrderBy(gp => gp.BattingOrder)
+                .ThenBy(gp => gp.Player.FullName);
+
+            //Instead of one list with a boolean, we will make two lists
+            var selected = new List<ListOptionVM>();
+            foreach (var lineupPlayer in currentLineup)
+            {
+                selected.Add(new ListOptionVM
+                {
+                    ID = lineupPlayer.PlayerID,
+                    DisplayText = lineupPlayer.BattingOrder.ToString() + " - " + lineupPlayer.Player.Summary
+                });
+            }
+            var available = new List<ListOptionVM>();
+            foreach (var player in allOptions)
+            {
+                available.Add(new ListOptionVM
+                {
+                    ID = player.ID,
+                    DisplayText = player.Summary
+                });
+            }
+
+            ViewData["selOpts"] = new MultiSelectList(selected, "ID", "DisplayText");
+            ViewData["availOpts"] = new MultiSelectList(available, "ID", "DisplayText");
+
+        }
+
+
+
+
+
+
+
+
+
+
 
         private SelectList LocationSelectionList(int? selectedId)
         {

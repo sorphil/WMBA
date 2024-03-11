@@ -111,6 +111,9 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BattingOrder")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("GameID")
                         .HasColumnType("INTEGER");
 
@@ -181,6 +184,9 @@ namespace WMBA5.Data.WMBAMigrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BattingOrder")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("DivisionID")

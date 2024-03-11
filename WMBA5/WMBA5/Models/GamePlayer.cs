@@ -1,4 +1,6 @@
-﻿namespace WMBA5.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WMBA5.Models
 {
     public class GamePlayer
     {
@@ -17,5 +19,7 @@
 
         public int PlayerID { get; set; }
         public Player Player { get; set; }
+        [Display(Name = "Lineup Batting Position")]
+        public int BattingOrder { get; set; } = 0;
     }
 }
