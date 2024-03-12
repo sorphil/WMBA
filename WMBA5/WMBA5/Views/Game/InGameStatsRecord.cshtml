@@ -382,7 +382,7 @@
             // Getting selected player and inning IDs
             let selectedPlayerID = selectPlayer.value;
             let selectedInningID = selectInning.value;
-            let selectedRunsID = selectRuns.value;
+
             // Checking if both player and inning are selected
             if (selectedPlayerID === "" || selectedInningID === "") {
                 alert("Please select a player and an inning.");
@@ -390,9 +390,24 @@
             }
             else {
                 let runs = 0
-                while (runs > 4 || runs < 1) {
-                    runs = prompt("Please enter the number of runs (between 1 and 4) scored with this home run", "");
+                // while (runs > 4 || runs < 1 || runs != null) {
+                //     runs = parseInt(prompt("Please enter the number of runs (between 1 and 4) scored with this home run", ""));
+                // }
+                runs = prompt("Please enter the number of runs (between 1 and 4) scored with this home run", "");
+                if (runs == null) {
+                    return; 
                 }
+                let runsInt = parseInt(runs)
+                if(isNaN(runsInt))
+                {
+                    alert("The input only takes numeric values between 1 and 4")
+                    return;
+                }
+
+                while ((runsInt < 1 || runsInt > 4)) {
+                    runsInt = parseInt(prompt("Please enter the number of runs (between 1 and 4) scored with this home run", ""));
+                }
+            
                 let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Runs", IncrementValue: runs }
                 $.ajax({
                     type: "POST",
