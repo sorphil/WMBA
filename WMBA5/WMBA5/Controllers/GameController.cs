@@ -365,9 +365,9 @@ namespace WMBA5.Controllers
             PopulateDropDownLists(game); // Repopulate dropdown lists if validation fails
             return View(game);
         }
-
+        [HttpGet]
         //Creating the action to record the in-game Stats for futher creation of the view
-        public async Task<IActionResult> InGameStatsRecord(Game game, int? id, int?PlayerID, int?InningID)
+        public async Task<IActionResult> InGameStatsRecord(Game game, int? id, string LineupStr="Home")
         {
             var gameStats = await _context.Games
                 .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
@@ -417,7 +417,7 @@ namespace WMBA5.Controllers
 
             ViewBag.TotalRuns = 0;
 
-         
+            ViewBag.TeamLineup = "Home";
 
             
             if (ModelState.IsValid)
@@ -425,42 +425,13 @@ namespace WMBA5.Controllers
                 
 
                 
-            }   
-
+            }
+         
             return View(gameStats);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetPlayerScore(int? GameID, int? PlayerID, int? InningID)
-        {
-            var playerScore = await _context.Scores
-                .FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
-
-
-            if (playerScore == null)
-            {
-                // Create a new score object if it doesn't exist
-                var score = new Score
-                {
-                    PlayerID = (int)PlayerID,
-                    InningID = (int)InningID,
-                    GameID = (int)GameID,
-                    Balls = 0,
-                    Runs=0,
-                    FoulBalls =0,
-                    Hits = 0,
-                    Strikes = 0,
-                    Out = 0
-                    };
-                    _context.Scores.Add(score);
-                await _context.SaveChangesAsync();
-                return Json(score);
-            }
-
-            return Json(playerScore);
-        }
         [HttpPost]
-        public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int? homeRunsScore)
+        public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int? IncrementValue)
         {
             int? gameID = ViewBag.GameID;
             // Find or create the score object for the player, inning, and game
@@ -481,8 +452,15 @@ namespace WMBA5.Controllers
             switch (IncrementField)
             {
                 case "Hits":
+                    if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
+                    {
+                        score.Hits += IncrementValue.GetValueOrDefault();
+                    }
+                    else
+                    {
+                        score.Hits++;
+                    }
                    
-                    score.Hits++;
                     break;
                 case "Balls":
                     score.Balls++;
@@ -503,9 +481,9 @@ namespace WMBA5.Controllers
                     score.Out++;
                     break;
                 case "Runs":
-                    if(homeRunsScore.GetValueOrDefault()!=null|| homeRunsScore.GetValueOrDefault() != 0)
+                    if(IncrementValue.GetValueOrDefault()!=null|| IncrementValue.GetValueOrDefault() != 0)
                     {
-                        score.Runs += homeRunsScore.GetValueOrDefault();
+                        score.Runs += IncrementValue.GetValueOrDefault();
                     }
                     else
                     {
@@ -520,7 +498,59 @@ namespace WMBA5.Controllers
             // Redirect to appropriate action or view
             return Json(score);
         }
+        [HttpGet]
+        public async Task<IActionResult> ChangeTeam(int? id, string LineupStr)
+        {
+            var gameStats = await _context.Games
+                   .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
+                   .Include(g => g.HomeTeam)
+                   .Include(g=>g.AwayTeam)
+                      .FirstOrDefaultAsync(m => m.ID == id);
+            var players = await _context.GamePlayers.Include(gp => gp.Player).Where(gp => gp.TeamLineup == TeamLineup.Away && gp.GameID == id).OrderBy(gp => gp.BattingOrder).AsNoTracking().ToListAsync();
+            if (LineupStr=="Home")
+            {
 
+                players = await _context.GamePlayers.Include(gp => gp.Player)
+                    .Where(gp => gp.TeamLineup == TeamLineup.Home && gp.GameID == id).OrderBy(gp=>gp.BattingOrder).AsNoTracking().ToListAsync();
+
+                return Json(players);
+
+            }
+
+            return Json(players);
+
+
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetPlayerScore(int? GameID, int? PlayerID, int? InningID)
+        {
+            var playerScore = await _context.Scores
+                .FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
+
+
+            if (playerScore == null)
+            {
+                // Create a new score object if it doesn't exist
+                var score = new Score
+                {
+                    PlayerID = (int)PlayerID,
+                    InningID = (int)InningID,
+                    GameID = (int)GameID,
+                    Balls = 0,
+                    Runs = 0,
+                    FoulBalls = 0,
+                    Hits = 0,
+                    Strikes = 0,
+                    Out = 0
+                };
+                _context.Scores.Add(score);
+                await _context.SaveChangesAsync();
+                return Json(score);
+            }
+
+            return Json(playerScore);
+        }
         // GET: Game/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

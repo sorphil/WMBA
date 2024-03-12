@@ -9,6 +9,9 @@
 <hr />
 <form asp-action="InGameStatsRecord"  >  
     <input type="hidden" value="@ViewBag.GameID" id="gameID" />
+    <input type="hidden" value="@ViewBag.TeamLineup" id="TeamLineup" />
+    <label id="lblTeam">Current Team: @ViewBag.TeamName</label>
+    <button id="changeTeam">Change Team</button>
     <table class="table">
         <tbody>
             <tr>
@@ -21,7 +24,12 @@
                                     <br />
                                     <label id="lblHit" name="lblHit" class="fw-bold" for="btnHit">Hit: </label>
                                     <br />
-                                    <button id="btnHit" name="btnHit" class="score-plus-btn">+</button>
+                                    <button id="btnHit" name="btnHit" class="score-plus-btn">+</button> 
+                                    <select id="selectHit">
+                                        <option value ="1">Single</option>
+                                        <option value="2">Double</option>
+                                        <option value="3">Triple</option>
+                                    </select>
                                     <br />
                                     <label id="lblHit" name="lblHit" class="fw-bold" for="btnHit">Run: </label>
                                     <br />
@@ -85,10 +93,10 @@
                         <br />
                         <select id="selectPlayer" Name="players" Size="10" class="score-slc-players">
                             @foreach (var item in Model.GamePlayers
-                            .Where(gp => gp.TeamLineup == TeamLineup.Home)
-                            .OrderBy(o => o.Player.LastName))
+                            .Where(gp=>gp.TeamLineup==TeamLineup.Home)
+                            .OrderByDescending(o => o.Player.BattingOrder))
                             {
-                                <option value="@item.PlayerID" data-name="@item.Player.FullName">@item.Player.FullName</option>
+                                <option value="@item.PlayerID" data-name="@item.Player.FullName">@item.BattingOrder - @item.Player.FullName</option>
                                 <br />
                             }
                         </select>
@@ -130,7 +138,46 @@
 
        changePlayer(1)
        changeInning(1)
+        document.querySelector("#changeTeam").addEventListener("click", function (event) {
+            event.preventDefault();
+            let lineupStr = document.querySelector("#TeamLineup").value;
+           
+            let data = { id: @ViewBag.GameID, LineupStr: lineupStr == "Home" ? "Away" : "Home" }
+            console.log(document.querySelector("#TeamLineup"))
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ChangeTeam", "Game")",
+                data: data,
+                success: function (data) {
+                   
+                    console.log(data)
+                    $("#selectPlayer").empty();
+                    for (let i = 0; i < data["$values"].length; i++) {
+                        $("#selectPlayer").append(`<option value='${data["$values"][i]["playerID"]}' data-name='${data["$values"][i]["player"]["fullName"]}'>${data["$values"][i]["battingOrder"]} - ${data["$values"][i]["player"]["fullName"]} </option>`);
+                    }
+                    document.querySelector("#TeamLineup").value = document.querySelector("#TeamLineup").value == "Home" ? "Away" : "Home"
 
+                },
+                error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                    var errorMessages = [];
+                    console.log(data)
+                    switch (xhr.status) {
+                        case 401:
+                            errorMessages.push("You must be logged in first.");
+                            break;
+                        case 403:
+                            errorMessages.push("You are not authorized for this action.");
+                            break;
+                        default:
+                            //Messages coming from the Model State Errors
+                            //We split on the | delimeter and the .slice removes the last one
+                            errorMessages = xhr.responseText.split("|").slice(0, -1);
+                    }
+
+                }
+            });
+        
+        });
 
         let selectRuns = document.querySelector("#selectRuns")
 
@@ -209,6 +256,7 @@
            
             return false;
         });
+      
 
         document.querySelector("#selectPlayer").onchange = function (event) {
             var name = event.target.options[event.target.selectedIndex].dataset.name;
@@ -246,6 +294,7 @@
             // Getting selected player and inning IDs
             let selectedPlayerID = selectPlayer.value;
             let selectedInningID = selectInning.value;
+            let hitValue = document.querySelector("#selectHit").value;
             // Checking if both player and inning are selected
             if (selectedPlayerID === "" || selectedInningID === "") {
                 alert("Please select a player and an inning.");
@@ -253,7 +302,7 @@
             }
             else {
 
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Hits" }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Hits", IncrementValue: hitValue }
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
@@ -261,7 +310,7 @@
                     success: function (data) {
                         let hits = document.querySelector("#playerHits").innerHTML
                         let hitsInt = parseInt(hits);
-                        hitsInt++;
+                        hitsInt += parseInt(hitValue);
                         document.querySelector("#playerHits").innerHTML = hitsInt;
                     }
                 });
@@ -286,7 +335,7 @@
                 while (runs > 4 || runs < 1) {
                     runs = prompt("Please enter the number of runs (between 1 and 4) scored with this home run", "");
                 }
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Runs", homeRunsScore: runs }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Runs", IncrementValue: runs }
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
