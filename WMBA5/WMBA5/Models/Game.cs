@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WMBA5.Data;
 
 namespace WMBA5.Models
 {
@@ -70,6 +71,21 @@ namespace WMBA5.Models
             if (HomeTeamID == AwayTeamID)
             {
                 yield return new ValidationResult("Home and Away teams must be different.", new[] { "AwayTeamID" });
+            }
+            // Access the database context from dependency injection to check if the jersey number is already used by another player in the same team
+            var dbContext = (WMBAContext)validationContext.GetService(typeof(WMBAContext));
+            {
+                var homeTeam = dbContext.Teams
+                    .Where(t => t.ID == HomeTeamID)
+                    .FirstOrDefault();
+                var awayTeam = dbContext.Teams
+                   .Where(t => t.ID == AwayTeamID)
+                   .FirstOrDefault();
+
+                if (homeTeam?.DivisionID != awayTeam?.DivisionID)
+                {
+                    yield return new ValidationResult("Home and Away teams must have the same division.", new[] { "HomeTeamID" });
+                }
             }
         }
 

@@ -660,39 +660,7 @@ namespace WMBA5.Data
                         context.SaveChanges();
                     }
                 }//end seed data for games
-                if (!context.Innings.Any())
-                {
-                    for (int i = 1; i <= 7; i++)
-                    {
-                        context.Innings.Add(new Inning
-                        {
-                            InningNo = $"Inning {i}",
-                            GameID = 1
-                        });
-                        context.Innings.Add(new Inning
-                        {
-                            InningNo = $"Inning {i}",
-                            GameID = 2
-                        });
-                        context.Innings.Add(new Inning
-                        {
-                            InningNo = $"Inning {i}",
-                            GameID = 3
-                        });
-                        context.Innings.Add(new Inning
-                        {
-                            InningNo = $"Inning {i}",
-                            GameID = 4
-                        });
-                        context.Innings.Add(new Inning
-                        {
-                            InningNo = $"Inning {i}",
-                            GameID = 5
-                        });
-                    }
 
-                    context.SaveChanges();
-                }
                 //Adding Stats
                 if (!context.Stats.Any())
                 {
@@ -725,46 +693,46 @@ namespace WMBA5.Data
 
                     context.SaveChanges();
                 }
-                if (!context.Scores.Any())
-                {
-                    Random rnd = new Random();
+                //if (!context.Scores.Any())
+                //{
+                //    Random rnd = new Random();
 
-                    // Seed scores for PlayerID = 1
-                    for (int i = 1; i <= 7; i++)
-                    {
-                        context.Scores.Add(new Score
-                        {
-                            Balls = rnd.Next(0, 4), // Balls range from 0 to 3
-                            FoulBalls = rnd.Next(0, 3), // Foul balls range from 0 to 2
-                            Strikes = rnd.Next(0, 3), // Strikes range from 0 to 2
-                            Out = rnd.Next(0, 3), // Outs range from 0 to 2
-                            Runs = rnd.Next(0, 5), // Runs range from 0 to 4
-                            Hits = rnd.Next(0, 5), // Hits range from 0 to 4
-                            PlayerID = 1,
-                            InningID = i,
-                            GameID = 1
-                        });
-                    }
+                //    // Seed scores for PlayerID = 1
+                //    for (int i = 1; i <= 7; i++)
+                //    {
+                //        context.Scores.Add(new Score
+                //        {
+                //            Balls = rnd.Next(0, 4), // Balls range from 0 to 3
+                //            FoulBalls = rnd.Next(0, 3), // Foul balls range from 0 to 2
+                //            Strikes = rnd.Next(0, 3), // Strikes range from 0 to 2
+                //            Out = rnd.Next(0, 3), // Outs range from 0 to 2
+                //            Runs = rnd.Next(0, 5), // Runs range from 0 to 4
+                //            Hits = rnd.Next(0, 5), // Hits range from 0 to 4
+                //            PlayerID = 1,
+                //            InningID = i,
+                //            GameID = 1
+                //        });
+                //    }
 
-                    // Seed scores for PlayerID = 2
-                    //for (int i = 8; i <= 14; i++)
-                    //{
-                    //    context.Scores.Add(new Score
-                    //    {
-                    //        Balls = rnd.Next(0, 4),
-                    //        FoulBalls = rnd.Next(0, 3),
-                    //        Strikes = rnd.Next(0, 3),
-                    //        Out = rnd.Next(0, 3),
-                    //        Runs = rnd.Next(0, 5),
-                    //        Hits = rnd.Next(0, 5),
-                    //        PlayerID = 2,
-                    //        InningID = i,
-                    //        GameID = 1
-                    //    });
-                    //}
+                //    // Seed scores for PlayerID = 2
+                //    //for (int i = 8; i <= 14; i++)
+                //    //{
+                //    //    context.Scores.Add(new Score
+                //    //    {
+                //    //        Balls = rnd.Next(0, 4),
+                //    //        FoulBalls = rnd.Next(0, 3),
+                //    //        Strikes = rnd.Next(0, 3),
+                //    //        Out = rnd.Next(0, 3),
+                //    //        Runs = rnd.Next(0, 5),
+                //    //        Hits = rnd.Next(0, 5),
+                //    //        PlayerID = 2,
+                //    //        InningID = i,
+                //    //        GameID = 1
+                //    //    });
+                //    //}
 
-                    context.SaveChanges();
-                }
+                //    context.SaveChanges();
+                //}
             }
             catch (Exception ex) 
             {

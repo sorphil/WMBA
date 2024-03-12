@@ -15,6 +15,7 @@ using WMBA5.Models;
 using WMBA5.ViewModels;
 using static System.Formats.Asn1.AsnWriter;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.DiaSymReader;
 
 namespace WMBA5.Controllers
 {
@@ -155,7 +156,6 @@ namespace WMBA5.Controllers
             return View(game);
         }
 
-        // GET: Game/Create
         public IActionResult Create()
         {
             // Keeping your original SelectList assignments for other fields
@@ -178,10 +178,11 @@ namespace WMBA5.Controllers
         }
 
 
+
         // POST: Game/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,StartTime,HomeTeamID,AwayTeamID,LocationID,OutcomeID, DivisionID")] Game game, int HomeTeamID, int AwayTeamID)
+        public async Task<IActionResult> Create([Bind("ID,StartTime,HomeTeamID,AwayTeamID,LocationID")] Game game, int HomeTeamID, int AwayTeamID)
         {
             var teamList = _context.Teams.Select(t => new SelectListItem
             {
@@ -191,41 +192,10 @@ namespace WMBA5.Controllers
 
             try
             {
-                var homeTeam = await _context.Teams.Include(t => t.Division).FirstOrDefaultAsync(t => t.ID == HomeTeamID);
-                var awayTeam = await _context.Teams.Include(t => t.Division).FirstOrDefaultAsync(t => t.ID == AwayTeamID);
-
-                if (homeTeam.DivisionID != game.DivisionID || awayTeam.DivisionID != game.DivisionID)
-                {
-                    ModelState.AddModelError("", "The selected teams must belong to the selected game's division.");
-                }
-
-                if (ModelState.IsValid)
-                {
-                    _context.Add(game);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-
-                PopulateDropDownLists(game);
-
-                if (HomeTeamID == 0 || AwayTeamID == 0)
-                {
-                    ModelState.AddModelError("", "Home Team and Away Team are required.");
-                    PopulateDropDownLists(game);
-                    ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
-                    ViewData["Teams"] = new SelectList(teamList, "Value", "Text");
-                    return View(game);
-                }
-
-                if (homeTeam.DivisionID != awayTeam.DivisionID)
-                {
-                    ModelState.AddModelError("", "Home Team and Away Team must belong to the same division.");
-                    PopulateDropDownLists(game);
-                    ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
-                    ViewData["Teams"] = new SelectList(teamList, "Value", "Text");
-                    return View(game);
-                }
-
+                var team = await _context.Teams.Where(t => t.ID == HomeTeamID).FirstOrDefaultAsync();
+                var outcome = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "TBD");
+                game.DivisionID = team.DivisionID;
+                game.OutcomeID = outcome.ID;
                 if (ModelState.IsValid)
                 {
                     //Load all of the Teams with Players into the game object first
@@ -237,20 +207,30 @@ namespace WMBA5.Controllers
 
                     _context.Add(game);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", new { id = game.ID });
+                    return RedirectToAction(nameof(Index));
+                }
+
+                else
+                {
+                    foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        error.ToString();
+                    }
                 }
                 ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName");
-                ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "TeamName");
-                ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "TeamName");
+                ViewData["AwayTeamID"] = teamList;
+                ViewData["HomeTeamID"] = teamList;
                 ViewData["LocationID"] = new SelectList(_context.Locations, "ID", "LocationName");
-                ViewData["OutcomeID"] = new SelectList(_context.Outcomes, "ID", "OutcomeString");
 
             }
 
-            catch (Exception ex)
+            catch (RetryLimitExceededException /* dex */)
             {
-                ModelState.AddModelError("", ex.Message);
-
+                ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+            }
+            catch (DbUpdateException dex)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
             return View(game);
@@ -402,8 +382,26 @@ namespace WMBA5.Controllers
 
             ViewBag.GameID = id;
 
+            if (gameStats.Innings.Any() == false)
+            {
+                var inning = new Inning
+                {
+                    GameID = gameStats.ID,
+                    InningNo = $"Inning {(gameStats.Innings.Count() + 1).ToString()}",
+                };
+                _context.Innings.Add(inning);
+                await _context.SaveChangesAsync();
 
-            var innings = _context.Innings.Where(i => i.GameID == game.ID).ToList();
+                gameStats.Innings.Add(inning);
+                ViewBag.Inning = inning;
+                ViewBag.Innings = gameStats.Innings;
+            }
+            else
+            {
+                var innings = _context.Innings.Where(i => i.GameID == game.ID).ToList();
+                ViewBag.Innings = innings;
+            }    
+       
 
             var teamScores = _context.Scores.Include(s=>s.Player).ThenInclude(p=>p.Team)
              .GroupBy(s => new {TeamID =  s.Player.TeamID, s.GameID })
@@ -415,11 +413,11 @@ namespace WMBA5.Controllers
              }).FirstOrDefault();
 
 
+
+
+            ViewBag.TotalRuns = 0;
+
          
-
-            ViewBag.TotalRuns = teamScores.TotalRuns;
-
-            ViewBag.Innings = innings;
 
             
             if (ModelState.IsValid)
@@ -483,13 +481,23 @@ namespace WMBA5.Controllers
             switch (IncrementField)
             {
                 case "Hits":
+                   
                     score.Hits++;
                     break;
                 case "Balls":
                     score.Balls++;
                     break;
                 case "Strikes":
-                    score.Strikes++;
+                    if (score.Strikes + 1 >= 3)
+                    {
+                        score.Out = score.Out + 1;
+                        score.Strikes = 0;
+                    }
+                    else if (score.Strikes + 1 < 3)
+                    {
+                        score.Strikes++;
+                    }
+                    
                     break;
                 case "Outs":
                     score.Out++;
@@ -510,7 +518,7 @@ namespace WMBA5.Controllers
             await _context.SaveChangesAsync();
 
             // Redirect to appropriate action or view
-            return RedirectToAction(nameof(Index));
+            return Json(score);
         }
 
         // GET: Game/Delete/5
@@ -678,7 +686,35 @@ namespace WMBA5.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> NewInning(int? id)
+        {
+            int? gameID = ViewBag.GameID;
+            var game = await _context.Games.FirstOrDefaultAsync(g => g.HomeTeam.ID == id);
 
+            try
+            {
+                var inning = new Inning
+                {
+                    GameID = game.ID,
+                    InningNo = $"Inning {(_context.Innings.Where(i => i.GameID == id).ToList().Count() + 1).ToString()}",
+                };
+                _context.Innings.Add(inning);
+                await _context.SaveChangesAsync();
+                ViewBag.Inning = inning;
+
+                return Json(inning);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+            return RedirectToAction(nameof(Index));
+
+
+        }
 
 
 
