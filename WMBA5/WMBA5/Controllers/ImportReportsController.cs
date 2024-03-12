@@ -25,14 +25,15 @@ namespace WMBA5.Controllers
             _context = context;
         }
 
-        public void ImportTeams(List<ImportReport> imported, string feedBack)
+        public string ImportTeams(List<ImportReport> imported, int added)
         {
+            string feedBack = "";
             List<Team> teams = new List<Team>();
             foreach (ImportReport r in imported)
             {
                 string teamDivision = r.Division + r.Team;
                 string existingTeam = _context.Divisions.FirstOrDefault(t => t.DivisionName == r.Division)?.DivisionName + _context.Teams.FirstOrDefault(t => t.TeamName == r.Team)?.TeamName;
-                if(existingTeam != teamDivision)
+                if (existingTeam != teamDivision)
                 {
                     Team t = new Team
                     {
@@ -40,6 +41,10 @@ namespace WMBA5.Controllers
                         DivisionID = _context.Divisions.FirstOrDefault(d => d.DivisionName == r.Division).ID
                     };
                     teams.Add(t);
+                }
+                else
+                {
+                    feedBack = $"Team {existingTeam} already exist.  \n";
                 }
 
             }
@@ -52,15 +57,15 @@ namespace WMBA5.Controllers
                     transaction.Commit();
                     if (feedBack == "")
                     {
-                        feedBack = "Teams added successfully.";
+                        feedBack = "All teams added successfully.";
                     }
-                    else if (teams.Count > 0)
+                    else if (added > 0)
                     {
-                        feedBack = "Teams have been added if they were not already in the database.";
+                        feedBack += $"\n{added} Team were added to the database.  \n";
                     }
                     else
                     {
-                        feedBack = "Teams already exists in the database. No teams were added.";
+                        feedBack = "Teams already in the database. No teams were added.  \n";
                     }
                 }
                 catch (Exception ex)
@@ -69,9 +74,11 @@ namespace WMBA5.Controllers
                     feedBack = $"Error: An error occurred while saving data. {ex.Message}";
                 }
             }
+            return feedBack;
         }
-        public void ImportPlayers(List<ImportReport> imported, string feedBack)
+        public string ImportPlayers(List<ImportReport> imported, int added)
         {
+            string feedBack = "";
             List<Player> players = new List<Player>();
             foreach (ImportReport r in imported)
             {
@@ -92,6 +99,10 @@ namespace WMBA5.Controllers
                     };
                     players.Add(p);
                 }
+                else
+                {
+                    feedBack = $"Player(MemberID): {existingPlayer} already exist.  \n";
+                }
 
             }
             using (var transaction = _context.Database.BeginTransaction())
@@ -103,15 +114,15 @@ namespace WMBA5.Controllers
                     transaction.Commit();
                     if (feedBack == "")
                     {
-                        feedBack = "Teams added successfully.";
+                        feedBack = " All Players added successfully.";
                     }
-                    else if (players.Count > 0)
+                    else if (added > 0)
                     {
-                        feedBack = "Teams have been added if they were not already in the database.";
+                        feedBack += $"{added} Players have been added.  \n";
                     }
                     else
                     {
-                        feedBack = "Teams already exists in the database. No teams were added.";
+                        feedBack = "Players already exists in the database. No players were added.  \n";
                     }
                 }
                 catch (Exception ex)
@@ -120,6 +131,7 @@ namespace WMBA5.Controllers
                     feedBack = $"Error: An error occurred while saving data. {ex.Message}";
                 }
             }
+            return feedBack;
         }
 
 
@@ -128,7 +140,7 @@ namespace WMBA5.Controllers
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Team");
+            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "ImportReports");
             string feedBack = string.Empty;
 
             if (TheExcel != null)
@@ -153,12 +165,13 @@ namespace WMBA5.Controllers
 
                             if (workSheet.Cells[1, 8].Text == "Team" &&
                                 workSheet.Cells[1, 6].Text == "Division" &&
-                                workSheet.Cells[2, 5].Text == DateTime.Now.Year.ToString())
+                                workSheet.Cells[2, 5].Text == "2023")//DateTime.Now.Year.ToString())
                             {
                                 var start = workSheet.Dimension.Start;
                                 var end = workSheet.Dimension.End;
                                 List<ImportReport> imported = new List<ImportReport>();
-
+                                int playerAdded = 0;
+                                int teamAdded = 0;
                                 for (int row = start.Row + 1; row <= end.Row; row++)
                                 {
                                     var id = workSheet.Cells[row, 1].ToString();
@@ -169,7 +182,9 @@ namespace WMBA5.Controllers
                                     var season = workSheet.Cells[row, 5].Text;
                                     var teamName = workSheet.Cells[row, 8].Text.Trim(' ', 'U', '1', '3', '5', '8', '9');
                                     var division = workSheet.Cells[row, 6].Text;
-
+                                    string teamDivision = division + teamName;
+                                    string existingTeam = _context.Divisions.FirstOrDefault(t => t.DivisionName == division)?.DivisionName + _context.Teams.FirstOrDefault(t => t.TeamName == teamName)?.TeamName;
+                                    string existinPlayer = _context.Players.FirstOrDefault(p => p.MemberID == memberID)?.MemberID;
                                     ImportReport import = new ImportReport
                                     {
                                         ID = id,
@@ -182,11 +197,20 @@ namespace WMBA5.Controllers
                                         Team = teamName
                                     };
                                     imported.Add(import);
+                                    if (existingTeam != teamDivision)
+                                    {
+                                        teamAdded++;
+                                    }
+                                    if(existinPlayer == null)
+                                    {
+                                        playerAdded++;
+                                    }
 
                                 }
-                                ImportTeams(imported, feedBack);
-                                Redirect(ViewData["ReturnURL"].ToString());
-                                ImportPlayers(imported, feedBack);
+                                ImportTeams(imported, teamAdded);
+                                //Redirect(ViewData["ReturnURL"].ToString());
+                                ImportPlayers(imported, playerAdded);
+                                feedBack += ImportPlayers(imported, playerAdded) + " " + ImportTeams(imported, teamAdded);
                             }
                             else
                             {
@@ -207,13 +231,14 @@ namespace WMBA5.Controllers
                                 }
 
                                 List<ImportReport> imported = new List<ImportReport>();
-
+                                int playerAdded = 0;
+                                int teamAdded = 0;
                                 while (!csvParser.EndOfData)
                                 {
                                     string[] fields = csvParser.ReadFields();
 
                                     if (fields.Length >= 3 &&
-                                        fields[4] == DateTime.Now.Year.ToString()) // Ensure there are at least 3 fields (Team Name, Coach, Division)
+                                        fields[4] == "2023")//DateTime.Now.Year.ToString()) // Ensure there are at least 3 fields (Team Name, Coach, Division)
                                     {
                                         var id = fields[0];
                                         var firstName = fields[1];
@@ -223,7 +248,9 @@ namespace WMBA5.Controllers
                                         var season = fields[4];
                                         var teamName = fields[7].TrimStart(' ', 'U', '1', '3', '5', '8', '9');
                                         var division = fields[5];
-
+                                        string teamDivision = division + teamName;
+                                        string existingTeam = _context.Divisions.FirstOrDefault(t => t.DivisionName == division)?.DivisionName + _context.Teams.FirstOrDefault(t => t.TeamName == teamName)?.TeamName;
+                                        string existinPlayer = _context.Players.FirstOrDefault(p => p.MemberID == memberID)?.MemberID;
                                         ImportReport import = new ImportReport
                                         {
                                             ID = id,
@@ -236,6 +263,14 @@ namespace WMBA5.Controllers
                                             Team = teamName
                                         };
                                         imported.Add(import);
+                                        if (existingTeam != teamDivision)
+                                        {
+                                            teamAdded++;
+                                        }
+                                        if (existinPlayer != null)
+                                        {
+                                            playerAdded++;
+                                        }
                                     }
                                     else
                                     {
@@ -243,36 +278,10 @@ namespace WMBA5.Controllers
                                         break; // Exit the loop as the CSV structure is not as expected
                                     }
                                 }
-                                ImportTeams(imported, feedBack);
-                                Redirect(ViewData["ReturnURL"].ToString());
-                                ImportPlayers(imported, feedBack);
-
-                                //using (var transaction = _context.Database.BeginTransaction())
-                                //{
-                                //    try
-                                //    {
-                                //        _context.Teams.AddRange(teams);
-                                //        _context.SaveChanges();
-                                //        transaction.Commit();
-                                //        if (feedBack == "")
-                                //        {
-                                //            feedBack = "Teams added successfully.";
-                                //        }
-                                //        else if (teams.Count > 0)
-                                //        {
-                                //            feedBack = "Teams have been added if they were not already in the database.";
-                                //        }
-                                //        else
-                                //        {
-                                //            feedBack = "Teams already exists in the database or is and outdated version of the file. No teams were added.";
-                                //        }
-                                //    }
-                                //    catch (Exception ex)
-                                //    {
-                                //        transaction.Rollback();
-                                //        feedBack = $"Error: An error occurred while saving data. {ex.Message}";
-                                //    }
-                                //}
+                                ImportTeams(imported, teamAdded);
+                                //Redirect(ViewData["ReturnURL"].ToString());
+                                ImportPlayers(imported, playerAdded);
+                                feedBack += ImportPlayers(imported, playerAdded) + " " + ImportTeams(imported, teamAdded);
                             }
                         }
                         else
@@ -288,7 +297,7 @@ namespace WMBA5.Controllers
                 catch (Exception ex)
                 {
                     feedBack = $"Error: An unexpected error occurred. {ex.Message}" +
-                        $"Please try again or contact support.";
+                        $"  Please try again or contact support.";
                 }
             }
             else
