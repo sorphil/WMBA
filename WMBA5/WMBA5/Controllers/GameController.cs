@@ -452,44 +452,62 @@ namespace WMBA5.Controllers
             switch (IncrementField)
             {
                 case "Hits":
-                    if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
+                    if(IncrementValue.GetValueOrDefault()<0 && score.Runs==0)
+                    {
+                        break;
+                    }
+                   else if(IncrementValue.GetValueOrDefault()!=null|| IncrementValue.GetValueOrDefault() != 0)
                     {
                         score.Hits += IncrementValue.GetValueOrDefault();
                     }
-                    else
-                    {
-                        score.Hits++;
-                    }
-                   
                     break;
                 case "Balls":
-                    score.Balls++;
+                    if (IncrementValue.GetValueOrDefault() < 0 && score.Balls == 0)
+                    {
+                        break;
+                    }
+                    else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
+                    {
+                        score.Balls += IncrementValue.GetValueOrDefault();
+                    }
                     break;
                 case "Strikes":
-                    if (score.Strikes + 1 >= 3)
+                    if (IncrementValue.GetValueOrDefault() < 0 && score.Strikes == 0)
+                    {
+                        break;
+                    }
+                 
+                    if (score.Strikes + IncrementValue.GetValueOrDefault() >= 3)
                     {
                         score.Out = score.Out + 1;
                         score.Strikes = 0;
                     }
-                    else if (score.Strikes + 1 < 3)
+                    else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0 || score.Strikes + IncrementValue.GetValueOrDefault() < 3)
                     {
-                        score.Strikes++;
+                        score.Strikes += IncrementValue.GetValueOrDefault();
                     }
                     
                     break;
-                case "Outs":
-                    score.Out++;
+                    case "Outs":
+                    if (IncrementValue.GetValueOrDefault() < 0 && score.Out == 0)
+                    {
+                        break;
+                    }
+                    else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
+                    {
+                        score.Out += IncrementValue.GetValueOrDefault();
+                    }
                     break;
                 case "Runs":
-                    if(IncrementValue.GetValueOrDefault()!=null|| IncrementValue.GetValueOrDefault() != 0)
+                    if (IncrementValue.GetValueOrDefault() < 0 && score.Runs == 0)
+                    {
+                        break;
+                    }
+                    else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
                     {
                         score.Runs += IncrementValue.GetValueOrDefault();
                     }
-                    else
-                    {
-                        score.Runs++;
-                    }
-                   
+
                     break;
             }
             // Save changes to the database

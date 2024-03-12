@@ -9,8 +9,9 @@
 <hr />
 <form asp-action="InGameStatsRecord"  >  
     <input type="hidden" value="@ViewBag.GameID" id="gameID" />
-    <input type="hidden" value="@ViewBag.TeamLineup" id="TeamLineup" />
-    <label id="lblTeam">Current Team: @ViewBag.TeamName</label>
+
+    <label id="lblLineup">Current Team: <span id="TeamLineup">@ViewBag.TeamLineup</span></label>
+    <br />
     <button id="changeTeam">Change Team</button>
     <table class="table">
         <tbody>
@@ -18,53 +19,54 @@
                 <td class="score-table">
                     <table>
                         <tbody>
-                            <tr class="score-cont">
-                                <td>
+                            <tr class="score-cont" style="display:flex; width:400px;">
+                                <td style="width:50%">
                                     <label id="lblSelectedPlayer" class="player-atbat">Player: </label>
                                     <br />
                                     <label id="lblHit" name="lblHit" class="fw-bold" for="btnHit">Hit: </label>
                                     <br />
-                                    <button id="btnHit" name="btnHit" class="score-plus-btn">+</button> 
+
+                                    <button id="btnHit" name="btnHit" class="score-plus-btn">+</button>
+                            
                                     <select id="selectHit">
                                         <option value ="1">Single</option>
                                         <option value="2">Double</option>
                                         <option value="3">Triple</option>
                                     </select>
+                                    <button id="btnHitUndo" name="btnHitUndo" class="score-plus-btn"> - </button>
                                     <br />
-                                    <label id="lblHit" name="lblHit" class="fw-bold" for="btnHit">Run: </label>
+                                    <label id="lblRun" name="lblRun" class="fw-bold" for="btnRunUndo">Run: </label>
                                     <br />
                                     <button id="btnRun" name="btnRun" class="score-btn"> + </button>
+                                    <button id="btnRunUndo" name="btnRunUndo" class="score-plus-btn">-</button>
                                     <br />
-                                    <label id="lblHit" name="lblHit" class="fw-bold" for="btnHit">Home Run: </label>
+                                    <label id="lblHomeRun" name="lblHomeRun" class="fw-bold" for="btnHomeRun">Home Run: </label>
                                     <br />
                                     <button id="btnHomeRun" name="btnRun" class="score-btn"> +</button>
                                     <br />
                                 </td>
-                                <td class="score-center-col">
-                                    <select id="selectRuns"class="form-control score-ddl">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                    </select>
-                                </td>
+                               
                                 <td class="score-left-col">
                                     <div class="score-plus-btn-ctn">
                                         <label id="lblStrike" name="lblStrike" class="fw-bold" for="btnStrike">Strike: </label>
                                         <br />
                                         <button id="btnStrike" name="btnStrike" class="score-plus-btn">+</button>
+                                        <button id="btnStrikeUndo" name="btnStrikeUndo" class="score-plus-btn"> - </button>
                                         <br />
                                         <label id="lblBall" for="btnBall" class="fw-bold">Balls: @ViewBag.TotalBalls</label>
                                         <br />
                                         <button id="btnBall" name="btnBall" class="score-plus-btn">+</button>
+                                        <button id="btnBallUndo" name="btnBallUndo" class="score-plus-btn"> - </button>
                                         <br />
                                         <label id="lblOut" for="btnOut" class="fw-bold">Out: </label>
                                         <br />
                                         <button id="btnOut" name="btnOut" class="score-plus-btn">+</button>
+                                        <button id="btnOutUndo" name="btnOutUndo" class="score-plus-btn"> - </button>
                                         <br/>
                                         <label id="lblOut" for="btnFoul" class="fw-bold">Foul: </label>
                                         <br />
                                         <button id="btnFoul" name="btnFoul" class="score-plus-btn">+</button>
+                                        <button id="btnFoulUndo" name="btnFoulUndo" class="score-plus-btn"> - </button>
                                     </div>
                                 </td>
                             </tr>
@@ -119,7 +121,6 @@
                         </select>
                         <button type="button" id="prevInning" onclick="changeInning(-1)">Back</button>
                         <button type="button" id="nextInning" onclick="changeInning(1)">Next</button>
-                        <button type="button"  id="newInning">New Inning</button>
                     </div>
                 </td>
             </tr>
@@ -140,7 +141,7 @@
        changeInning(1)
         document.querySelector("#changeTeam").addEventListener("click", function (event) {
             event.preventDefault();
-            let lineupStr = document.querySelector("#TeamLineup").value;
+            let lineupStr = document.querySelector("#TeamLineup").innerHTML;
            
             let data = { id: @ViewBag.GameID, LineupStr: lineupStr == "Home" ? "Away" : "Home" }
             console.log(document.querySelector("#TeamLineup"))
@@ -155,7 +156,7 @@
                     for (let i = 0; i < data["$values"].length; i++) {
                         $("#selectPlayer").append(`<option value='${data["$values"][i]["playerID"]}' data-name='${data["$values"][i]["player"]["fullName"]}'>${data["$values"][i]["battingOrder"]} - ${data["$values"][i]["player"]["fullName"]} </option>`);
                     }
-                    document.querySelector("#TeamLineup").value = document.querySelector("#TeamLineup").value == "Home" ? "Away" : "Home"
+                    document.querySelector("#TeamLineup").innerHTML = (document.querySelector("#TeamLineup").innerHTML == "Home") ? "Away" : "Home"
 
                 },
                 error: function (xhr) { //Note: xhr is the XMLHttpRequest
@@ -236,7 +237,7 @@
 
         $("#newInning").click(function (event) {
             event.preventDefault();
-            if (confirm("Press a button!\nEither OK or Cancel.")) 
+            if (confirm("Would you like to create a new inning?")) 
             {
                 let data = { id: @ViewBag.GameID }
                 $.ajax({
@@ -274,7 +275,7 @@
             }
             else {
 
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Fouls" }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Fouls", IncrementValue: 1 }
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
@@ -283,6 +284,35 @@
                         let fouls = document.querySelector("#playerFoulBalls").innerHTML
                         let foulsInt = parseInt(fouls);
                         foulsInt++;
+                        document.querySelector("#playerFoulBalls").innerHTML = foulsInt;
+                    }
+                });
+            }
+            return false;
+        });
+        $("#btnFoulUndo").click(function (event) {
+            event.preventDefault();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            let fouls = document.querySelector("#playerFoulBalls").innerHTML
+            if (parseInt(fouls) == 0) { alert("Foul Balls are already zero"); return; }
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Fouls", IncrementValue: -1 }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function () {
+                        let fouls = document.querySelector("#playerFoulBalls").innerHTML
+                        let foulsInt = parseInt(fouls);
+                        foulsInt--;
                         document.querySelector("#playerFoulBalls").innerHTML = foulsInt;
                     }
                 });
@@ -317,7 +347,35 @@
             }
             return false;
         });
-        $('#selectRuns').hide();
+        $("#btnHitUndo").click(function (event) {
+            event.preventDefault();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            let hits = document.querySelector("#playerHits").innerHTML
+            if (parseInt(hits) == 0) { alert("Hits are already zero"); return; }
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Hits", IncrementValue: -1 }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function (data) {
+                        let hits = document.querySelector("#playerHits").innerHTML
+                        let hitsInt = parseInt(hits);
+                        hitsInt--;
+                        document.querySelector("#playerHits").innerHTML = hitsInt;
+                    }
+                });
+            }
+            return false;
+        });
         $("#btnHomeRun").click(function (event) {
             event.preventDefault();
             // ClearErrors();
@@ -363,6 +421,7 @@
             // Getting selected player and inning IDs
             let selectedPlayerID = selectPlayer.value;
             let selectedInningID = selectInning.value;
+
             // Checking if both player and inning are selected
             if (selectedPlayerID === "" || selectedInningID === "") {
                 alert("Please select a player and an inning.");
@@ -370,7 +429,7 @@
             }
             else {
 
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Balls" }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Balls", IncrementValue: 1 }
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
@@ -379,6 +438,38 @@
                         let balls = document.querySelector("#playerBalls").innerHTML
                         let ballsInt = parseInt(balls);
                         ballsInt++;
+                        document.querySelector("#playerBalls").innerHTML = ballsInt;
+                    }
+
+                });
+            }
+            return false;
+        });
+        $("#btnBallUndo").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+             let balls = document.querySelector("#playerBalls").innerHTML
+            if (parseInt(balls) <= 0) { alert("Balls are already zero"); return; }
+
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Balls", IncrementValue: -1 }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function () {
+                        let balls = document.querySelector("#playerBalls").innerHTML
+                        let ballsInt = parseInt(balls);
+                        ballsInt--;
                         document.querySelector("#playerBalls").innerHTML = ballsInt;
                     }
 
@@ -399,7 +490,7 @@
             }
             else {
 
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Strikes" }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Strikes", IncrementValue: 1 }
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
@@ -428,6 +519,36 @@
             }
             return false;
         });
+        $("#btnStrikeUndo").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            let strikes = document.querySelector("#playerStrikes").innerHTML
+            if(parseInt(strikes)==0){ alert("Strikes are already zero"); return; }
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Strikes", IncrementValue: -1 }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function (data) {
+                        let strikes = document.querySelector("#playerStrikes").innerHTML
+                        let strikesInt = parseInt(strikes);
+                        strikesInt--;
+                        document.querySelector("#playerStrikes").innerHTML = strikesInt;
+                    }
+                });
+            }
+            return false;
+        });
         $("#btnOut").click(function (event) {
             event.preventDefault();
             // ClearErrors();
@@ -441,12 +562,12 @@
                 return;
             }
             else if (outs == 3) {
-                alert("You archieve the limit of outs, please change to the next inning.");
+                alert("You achieved the limit of outs, please change to the next inning.");
                 return;
             }
             else {
 
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Outs" }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Outs", IncrementValue: 1 }
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
@@ -461,6 +582,38 @@
             }
             return false;
         });
+        $("#btnOutUndo").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            let outs = btnOut.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            let outsDiv = document.querySelector("#playerOuts").innerHTML
+            if (parseInt(outsDiv)==0) { alert("Outs are already zero"); return; }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Outs", IncrementValue: -1 }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function (data) {
+                        let outs = document.querySelector("#playerOuts").innerHTML
+                        let outsInt = parseInt(outs);
+                        outsInt--;
+                        document.querySelector("#playerOuts").innerHTML = outsInt;
+                    }
+                });
+            }
+            return false;
+        });
+
         $("#btnRun").click(function (event) {
             event.preventDefault();
             // ClearErrors();
@@ -474,7 +627,7 @@
             }
             else {
 
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Runs" }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Runs", IncrementValue: 1 }
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
@@ -487,6 +640,42 @@
 
                         runsInt++;
                         totalInt++;
+                        document.querySelector("#playerRuns").innerHTML = runsInt;
+                        document.querySelector("#lblTotal").innerHTML = `Total Score: ${totalInt}`;
+
+                    }
+                });
+            }
+            return false;
+        });
+        $("#btnRunUndo").click(function (event) {
+            event.preventDefault();
+            // ClearErrors();
+            // Getting selected player and inning IDs
+            let selectedPlayerID = selectPlayer.value;
+            let selectedInningID = selectInning.value;
+            // Checking if both player and inning are selected
+            if (selectedPlayerID === "" || selectedInningID === "") {
+                alert("Please select a player and an inning.");
+                return;
+            }
+            let runs = document.querySelector("#playerRuns").innerHTML
+            if (parseInt(runs)==0){ alert("Runs are already zero"); return; }
+            else {
+
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Runs", IncrementValue: -1 }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("InGameStatsRecord", "Game")",
+                    data: data,
+                    success: function () {
+                        let runs = document.querySelector("#playerRuns").innerHTML
+                        let totalRuns = document.querySelector("#lblTotal").innerHTML.slice(13)
+                        let runsInt = parseInt(runs);
+                        let totalInt = parseInt(totalRuns)
+
+                        runsInt--;
+                        totalInt--;
                         document.querySelector("#playerRuns").innerHTML = runsInt;
                         document.querySelector("#lblTotal").innerHTML = `Total Score: ${totalInt}`;
 
@@ -584,7 +773,7 @@
         function changeInning(step) {
             var select = document.getElementById('selectInning');
             if (select.selectedIndex == select.length - 1 && step>0) {
-                if (confirm("Press a button!\nEither OK or Cancel.")) {
+                if (confirm("Create a new Inning?")) {
                     let data = { id: @ViewBag.GameID }
                     $.ajax({
                         type: "POST",
