@@ -238,7 +238,7 @@ namespace WMBA5.Controllers
                                     string[] fields = csvParser.ReadFields();
 
                                     if (fields.Length >= 3 &&
-                                        fields[4] == "2023")//DateTime.Now.Year.ToString()) // Ensure there are at least 3 fields (Team Name, Coach, Division)
+                                        fields[4] == "2023")//DateTime.Now.Year.ToString()) // Ensure there are at least 3 fields (Team Name, Coach, Division) and its the right season
                                     {
                                         var id = fields[0];
                                         var firstName = fields[1];
