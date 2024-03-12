@@ -217,26 +217,29 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,TeamName,CoachID,DivisionID,LineupID")] Team team, string[] selectedOptions)
+        public async Task<IActionResult> Edit(int id, string[] selectedOptions)//(int id, [Bind("ID,TeamName,CoachID,DivisionID,LineupID")] Team team, string[] selectedOptions)
         {
+            var teamToUpdate = await _context.Teams
+                .Include(t => t.Coach)
+                .FirstOrDefaultAsync();
             try
             {
-                if (id != team.ID)
+                if (id != teamToUpdate.ID)
                 {
                     return NotFound();
                 }
-                UpdateTeamPlayerListboxes(selectedOptions, team);
+                UpdateTeamPlayerListboxes(selectedOptions, teamToUpdate);
 
                 if (ModelState.IsValid)
                 {
                     try
                     {
-                        _context.Update(team);
+                        _context.Update(teamToUpdate);
                         await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!TeamExists(team.ID))
+                        if (!TeamExists(teamToUpdate.ID))
                         {
                             return NotFound();
                         }
@@ -248,8 +251,7 @@ namespace WMBA5.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
-                ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
+                ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", teamToUpdate.CoachID);
             }
             catch (RetryLimitExceededException)
             {
@@ -257,7 +259,7 @@ namespace WMBA5.Controllers
             }
 
             
-            return View(team);
+            return View(teamToUpdate);
         }
 
         // GET: Team/Delete/5
