@@ -275,7 +275,7 @@
             }
             else {
 
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Fouls", IncrementValue: 1 }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Fouls", IncrementValue: 1}
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
@@ -283,8 +283,18 @@
                     success: function () {
                         let fouls = document.querySelector("#playerFoulBalls").innerHTML
                         let foulsInt = parseInt(fouls);
+                        let strikes = document.querySelector("#playerStrikes").innerHTML
+                        let strikesInt = parseInt(strikes);
                         foulsInt++;
                         document.querySelector("#playerFoulBalls").innerHTML = foulsInt;
+                        //A foul ball count as 1 strike unless the batter already has 2 strikes, in this case
+                        //It wont increment the number of strikes
+                        if (strikesInt < 2) {
+
+                            strikesInt++;
+
+                        }
+                        document.querySelector("#playerStrikes").innerHTML = strikesInt;
                     }
                 });
             }
