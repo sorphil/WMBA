@@ -305,6 +305,8 @@
             // Getting selected player and inning IDs
             let selectedPlayerID = selectPlayer.value;
             let selectedInningID = selectInning.value;
+            let strikes = document.querySelector("#playerStrikes").innerHTML
+            let strikesInt = parseInt(strikes);
             let fouls = document.querySelector("#playerFoulBalls").innerHTML
             if (parseInt(fouls) == 0) { alert("Foul Balls are already zero"); return; }
             // Checking if both player and inning are selected
@@ -324,6 +326,8 @@
                         let foulsInt = parseInt(fouls);
                         foulsInt--;
                         document.querySelector("#playerFoulBalls").innerHTML = foulsInt;
+                        strikesInt--;
+                        document.querySelector("#playerStrikes").innerHTML = strikesInt;
                     }
                 });
             }
@@ -463,6 +467,17 @@
                         let balls = document.querySelector("#playerBalls").innerHTML
                         let ballsInt = parseInt(balls);
                         ballsInt++;
+                        if (ballsInt == 4) {
+
+                            if (document.querySelector("#selectPlayer").selectedIndex == document.querySelector("#selectPlayer").length - 1) {
+                                document.querySelector("#selectPlayer").selectedIndex = 0;
+                            }
+                            else {
+                                changePlayer(1)
+                            }
+                            ballsInt = 0;
+
+                        }
                         document.querySelector("#playerBalls").innerHTML = ballsInt;
                     }
 
