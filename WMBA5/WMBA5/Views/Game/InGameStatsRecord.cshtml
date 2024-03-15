@@ -355,6 +355,14 @@
                         let hits = document.querySelector("#playerHits").innerHTML
                         let hitsInt = parseInt(hits);
                         hitsInt += parseInt(hitValue);
+
+                            if (document.querySelector("#selectPlayer").selectedIndex == document.querySelector("#selectPlayer").length - 1) {
+                                document.querySelector("#selectPlayer").selectedIndex = 0;
+                            }
+                            else {
+                                changePlayer(1)
+                            }
+
                         document.querySelector("#playerHits").innerHTML = hitsInt;
                     }
                 });
@@ -435,6 +443,12 @@
                         let runsInt = parseInt(runsDiv);
                         totalInt += homeRunsInt;
                         runsInt += homeRunsInt;
+                        if (document.querySelector("#selectPlayer").selectedIndex == document.querySelector("#selectPlayer").length - 1) {
+                            document.querySelector("#selectPlayer").selectedIndex = 0;
+                        }
+                        else {
+                            changePlayer(1)
+                        }
                         document.querySelector("#playerRuns").innerHTML = runsInt;
                         document.querySelector("#lblTotal").innerHTML = `Total Score: ${totalInt}`;;
                     }
