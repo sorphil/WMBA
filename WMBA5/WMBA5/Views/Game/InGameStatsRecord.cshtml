@@ -592,7 +592,16 @@
                         let outsInt = parseInt(outs);
                         outsInt++;
                         document.querySelector("#playerOuts").innerHTML = outsInt;
+
+                            if (document.querySelector("#selectPlayer").selectedIndex == document.querySelector("#selectPlayer").length - 1) {
+                                document.querySelector("#selectPlayer").selectedIndex = 0;
+                            }
+                            else {
+                                changePlayer(1)
+                            }
+                        document.querySelector("#playerOuts").innerHTML = outsInt;
                     }
+
                 });
             }
             return false;
