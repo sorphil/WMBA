@@ -275,7 +275,7 @@
             }
             else {
 
-                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Fouls", IncrementValue: 1 }
+                let data = { GameID: @ViewBag.GameID, PlayerID: selectedPlayerID, InningID: selectedInningID, IncrementField: "Fouls", IncrementValue: 1}
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("InGameStatsRecord", "Game")",
@@ -283,8 +283,18 @@
                     success: function () {
                         let fouls = document.querySelector("#playerFoulBalls").innerHTML
                         let foulsInt = parseInt(fouls);
+                        let strikes = document.querySelector("#playerStrikes").innerHTML
+                        let strikesInt = parseInt(strikes);
                         foulsInt++;
                         document.querySelector("#playerFoulBalls").innerHTML = foulsInt;
+                        //A foul ball count as 1 strike unless the batter already has 2 strikes, in this case
+                        //It wont increment the number of strikes
+                        if (strikesInt < 2) {
+
+                            strikesInt++;
+
+                        }
+                        document.querySelector("#playerStrikes").innerHTML = strikesInt;
                     }
                 });
             }
@@ -295,6 +305,8 @@
             // Getting selected player and inning IDs
             let selectedPlayerID = selectPlayer.value;
             let selectedInningID = selectInning.value;
+            let strikes = document.querySelector("#playerStrikes").innerHTML
+            let strikesInt = parseInt(strikes);
             let fouls = document.querySelector("#playerFoulBalls").innerHTML
             if (parseInt(fouls) == 0) { alert("Foul Balls are already zero"); return; }
             // Checking if both player and inning are selected
@@ -314,6 +326,8 @@
                         let foulsInt = parseInt(fouls);
                         foulsInt--;
                         document.querySelector("#playerFoulBalls").innerHTML = foulsInt;
+                        strikesInt--;
+                        document.querySelector("#playerStrikes").innerHTML = strikesInt;
                     }
                 });
             }
@@ -341,6 +355,14 @@
                         let hits = document.querySelector("#playerHits").innerHTML
                         let hitsInt = parseInt(hits);
                         hitsInt += parseInt(hitValue);
+
+                            if (document.querySelector("#selectPlayer").selectedIndex == document.querySelector("#selectPlayer").length - 1) {
+                                document.querySelector("#selectPlayer").selectedIndex = 0;
+                            }
+                            else {
+                                changePlayer(1)
+                            }
+
                         document.querySelector("#playerHits").innerHTML = hitsInt;
                     }
                 });
@@ -421,6 +443,12 @@
                         let runsInt = parseInt(runsDiv);
                         totalInt += homeRunsInt;
                         runsInt += homeRunsInt;
+                        if (document.querySelector("#selectPlayer").selectedIndex == document.querySelector("#selectPlayer").length - 1) {
+                            document.querySelector("#selectPlayer").selectedIndex = 0;
+                        }
+                        else {
+                            changePlayer(1)
+                        }
                         document.querySelector("#playerRuns").innerHTML = runsInt;
                         document.querySelector("#lblTotal").innerHTML = `Total Score: ${totalInt}`;;
                     }
@@ -453,6 +481,17 @@
                         let balls = document.querySelector("#playerBalls").innerHTML
                         let ballsInt = parseInt(balls);
                         ballsInt++;
+                        if (ballsInt == 4) {
+
+                            if (document.querySelector("#selectPlayer").selectedIndex == document.querySelector("#selectPlayer").length - 1) {
+                                document.querySelector("#selectPlayer").selectedIndex = 0;
+                            }
+                            else {
+                                changePlayer(1)
+                            }
+                            ballsInt = 0;
+
+                        }
                         document.querySelector("#playerBalls").innerHTML = ballsInt;
                     }
 
@@ -592,7 +631,16 @@
                         let outsInt = parseInt(outs);
                         outsInt++;
                         document.querySelector("#playerOuts").innerHTML = outsInt;
+
+                            if (document.querySelector("#selectPlayer").selectedIndex == document.querySelector("#selectPlayer").length - 1) {
+                                document.querySelector("#selectPlayer").selectedIndex = 0;
+                            }
+                            else {
+                                changePlayer(1)
+                            }
+                        document.querySelector("#playerOuts").innerHTML = outsInt;
                     }
+
                 });
             }
             return false;

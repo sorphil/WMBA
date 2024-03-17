@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 <style>
     .main-body-grid {
@@ -102,10 +102,22 @@
 
 </style>
 
-<h1>Homepage</h1> 
+<h1>Dashboard</h1> 
 <hr/>
 
 <div class="main-body-grid">
+
+    <div class="main-grid-item">
+        <div class="card">
+            <h3>Import </h3>
+            <p>
+                You can make imports from Excel or CSV Files in this page.
+            </p>
+            <p>
+                <a asp-controller="ImportReports" asp-action="Index" class="grid-btn">Go to Import Report Page >></a>
+            </p>
+        </div>
+    </div>
     <div class="main-grid-item" >
         <div class="card">
             <h3>Teams </h3>
