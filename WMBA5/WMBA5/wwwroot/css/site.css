@@ -31,3 +31,126 @@ body {
     padding: 20px;
     width: 20%;
 }
+
+/*InScoreGame css*/
+.score-btn{
+    border-radius:5px;
+    margin: 15px 8px;
+    background-color:beige;
+    font-weight:bold;
+}
+.score-btn:hover {
+    background-color: #62cbf5;
+}
+
+.score-plus-btn {
+    border-radius: 5px;
+    margin: 4px 8px;
+    background-color: beige;
+    font-weight: bold;
+}
+.score-plus-btn:hover{
+    background-color:#62cbf5;
+}
+
+.score-table{
+    width:370px;
+}
+
+.score-cont {
+    margin-top:30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border: solid;
+    border-width: 2px;
+    border-radius: 10px;
+    background-color: yellowgreen;
+}
+
+.score-center-col {
+    margin-top: 65px;
+    padding: 0 35px;
+}
+
+.score-ddl {
+    position: relative;
+    display: inline-block;
+    border: solid;
+    border-width: 2px;
+}
+
+.score-ddl-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+}
+
+.score-ddl:hover .dropdown-content {
+    display: block;
+}
+
+.player-atbat {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    padding-left: 25px;
+    padding-top: 15px;
+}
+
+.score-left-col{
+    padding-top: 40px;
+}
+
+.score-plus-btn-ctn{
+    padding-left:48px;
+}
+
+.score-stats{
+    font-size:15px;
+    font-weight:bold;
+}
+
+.score-players{
+    width:100px;
+}
+.score-innings{
+
+}
+.score-slc-innings {
+    overflow: hidden;
+    border-radius: 10px;
+    width: 120px;
+    padding: 25px 15px 0px 28px;
+    height: 280px;
+}
+.score-slc-players {
+    border-radius: 10px;
+    width: 250px;
+    padding: 15px 0px 0px 28px;
+    height:280px;
+}
+.score-lists{
+    font-size:20px;
+}
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

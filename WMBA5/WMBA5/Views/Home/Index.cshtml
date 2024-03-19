@@ -1,8 +1,7 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 <style>
-
     .main-body-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -10,20 +9,44 @@
     }
 
     .main-grid-item {
-        padding: 50px;
+        padding-top: 10px;
+        border: 5px solid #17254c;
+        border-radius:15px;
+        background-color: #2e8b43;
     }
 
     .card {
-        width: 100%; 
-        height: 100%; 
-        max-width: 400px; 
+        border: none;
+        width: 100%;
+        height: 100%;
+        max-width: 400px;
         max-height: 350px;
         position: relative;
         perspective: 1000px;
+        background-color: #2e8b43;
     }
 
-    .card-front,
-    .card-back {
+    h3, p {
+        text-align: left;
+        padding-left: 10px;
+        padding-right: 10px;
+        color: #fff;
+    }
+
+    p a {
+        display: block;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+    }
+
+    a:hover{
+        color: #ffa500;
+    }
+
+    /* .card-front
+        ,.card-back
+    {
         width: 100%;
         height: 100%;
         position: absolute;
@@ -32,94 +55,102 @@
         backface-visibility: hidden;
         transform-style: preserve-3d;
         transition: transform 0.5s;
-    }
+    } */
 
-    .card-front {
+    /* .card-front {
         z-index: 2;
-    }
+    } */
 
-    .card-back {
+    /* .card-back {
+        width: 100%;
+        height: 100%;
         transform: rotateY(180deg);
         z-index: 1;
         background-color: #EAEAEA;
-        padding: 20px;
         text-align: left;
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+    } */
 
-    .grid-item-text {
+    /* .grid-item-text {
         display: none;
-    }
+    } */
 
-    .card:hover .card-front {
+    /* .card:hover .card-front {
         transform: rotateY(-180deg);
-    }
+    } */
 
-    .card:hover .card-back {
+    /* .card:hover .card-back {
         transform: rotateY(0deg);
-    }
+    } */
 
-    .card:hover .grid-item-text {
+    /* .card:hover .grid-item-text {
         display: block;
-    }
+    } */
+
+    
+
+    /* .card-back p {
+        width: 100%;
+        height: 100%;
+        padding-left: 5px;
+        color: blue;
+        text-align: center;
+        font-size:18px;
+    } */
 
 </style>
-<h1>Homepage</h1> <hr/>
+
+<h1>Dashboard</h1> 
+<hr/>
+
 <div class="main-body-grid">
 
+    <div class="main-grid-item">
+        <div class="card">
+            <h3>Import </h3>
+            <p>
+                You can make imports from Excel or CSV Files in this page.
+            </p>
+            <p>
+                <a asp-controller="ImportReports" asp-action="Index" class="grid-btn">Go to Import Report Page >></a>
+            </p>
+        </div>
+    </div>
     <div class="main-grid-item" >
         <div class="card">
-            <div class="card-front">
-                <h3 >Teams </h3>
-                <p >
-                    You can view information about team/s on this page.
-                </p>
-            </div>
-            <div class="card-back">
-                <p>
-                    <br />
-                    <br />
-                    <a asp-controller="Team" asp-action="Index" class="grid-btn">Go to Teams >></a>
-                </p>
-            </div>
+            <h3>Teams </h3>
+            <p>
+                You can view information about team/s on this page.
+            </p>
+            <p>
+                <a asp-controller="Team" asp-action="Index" class="grid-btn">Go to Team Page >></a>
+            </p>
         </div>
     </div>
 
     <div class="main-grid-item">
         <div class="card">
-            <div class="card-front">
-                <h3>Players </h3>
-                <p >
-                    You can view information about player/s on this page.
-                </p>
-            </div>
-            <div class="card-back">
-                <p>
-                    <br />
-                    <br />
-                    <a asp-controller="Player" asp-action="Index" class="grid-btn">Go to Page >></a>
-                </p>
-            </div>
+            <h3>Players </h3>
+            <p >
+                You can view information about player/s on this page.
+            </p>
+            <p>
+                <a asp-controller="Player" asp-action="Index" class="grid-btn">Go to Player Page >></a>
+            </p>
         </div>
     </div>
 
     <div class="main-grid-item">
         <div class="card">
-            <div class="card-front">
-                <h3>Games </h3>
-                <p>
-                    You can view information about game/s on this page.
-                </p>
-            </div>
-            <div class="card-back">
-                <p>
-                    <br />
-                    <br />
-                    <a asp-controller="Game" asp-action="Index" class="grid-btn">Go to Page >></a>
-                </p>
-            </div>
+            <h3>Games </h3>
+            <p>
+                You can view information about game/s on this page.
+            </p>
+            <p>
+                <a asp-controller="Game" asp-action="Index" class="grid-btn">Go to Game Page >></a>
+            </p>
         </div>
     </div>
 
@@ -130,12 +161,8 @@
                 <p>
                     You can view information about division/s on this page.
                 </p>
-            </div>
-            <div class="card-back">
                 <p>
-                    <br />
-                    <br />
-                    <a asp-controller="Division" asp-action="Index" class="grid-btn">Go to Page >></a>
+                    <a asp-controller="Division" asp-action="Index" class="grid-btn">Go to Division Page >></a>
                 </p>
             </div>
         </div>
@@ -148,107 +175,10 @@
                 <p>
                     You can view information about coach on this page.
                 </p>
-            </div>
-            <div class="card-back">
                 <p>
-                <br />
-                <br />
-                <a asp-controller="Coach" asp-action="Index" class="grid-btn">Go to Page >></a>
+                    <a asp-controller="Coach" asp-action="Index" class="grid-btn">Go to Coach Page >></a>
                 </p>
             </div>
         </div>
     </div>
 </div>
-
-@* <div class="main-grid-item-1" style="border-right:solid;border-color:grey;border-width:1px; padding-right:20px">
-        <h3 class="grid-item-header">
-            Players
-        </h3>
-        <p class="grid-item-text">
-            This page will allow you to see all the registered players with relevant information such as their team, their division,
-            and the status of the player arranged in a table of rows and columns as well as the ability to create/register new players, and edit or delete existing ones
-        </p> *@
-@*   <p class="grid-item-text">
-            To create a new player, press the "Create New" button and fill the form out with appropriate data
-        </p>
-        <p class="grid-item-text">
-            To view the details of a player for more information, press the "Details" button found in the last column of the corresponding row the player is in.
-            Here you will find additional information such as the player's Member ID, their jersey number as well as their game stats
-        </p>
-        <p class="grid-item-text">
-            To edit an existing player, press the "Edit" button in the last column of the corresponding row the player is in
-        </p>
-        <p class="grid-item-text">
-            To delete an existing player, press the "Delete" button in the last column of the corresponding row the player is in
-        </p> *@
-
-@* <a asp-controller="Player" asp-action="Index" class="grid-btn">Go to Page >></a>
-    </div> *@
-    
-    @* <div class="main-grid-item-2" style="padding-left:20px;">
-        <h3 class="grid-item-header">
-            Teams
-        </h3>
-        <p class="grid-item-text">
-            This page will allow you to see all the registered teams with relevant information such as their division,
-            and the coach in charge of the team arranged in a table of rows and columns as well as the ability to create new teams, and edit or delete existing ones
-        </p>
-        @* <p class="grid-item-text">
-            To create a new team, press the "Create New" button and fill the form out with appropriate data
-        </p>
-        <p class="grid-item-text">
-            To view the details of a team for more information, press the "Details" button found in the last column of the corresponding row the team is in.This page will also display the various players that are in the team along with some nominal information as well as the ability to directly update those players
-        </p>
-        <p class="grid-item-text">
-            To edit an existing team, press the "Edit" button in the last column of the corresponding row the team is in
-        </p>
-        <p class="grid-item-text">
-            To delete an existing team, press the "Delete" button in the last column of the corresponding row the team is in
-        </p> *@
-
-        @* <a asp-controller="Team" asp-action="Index" class="grid-btn">Go to Page >></a>
-    </div>  *@
-
-    @* <div class="main-grid-item-3" style="border-right:solid;border-top:solid;border-color:grey;border-width:1px; padding-right:20px;padding-top:20px; padding-left:20px;">
-        <h3 class="grid-item-header">
-            Divisions
-        </h3>
-        <p class="grid-item-text">
-            This page will allow you to see all the divisions in the system. As well as the ability to create new divisions, and edit or delete existing ones
-        </p>
-        <a asp-controller="Division" asp-action="Index" class="grid-btn">Go to Page >></a>
-    </div> *@
-
-    @* <div class="main-grid-item-4" style="border-right:solid;border-top:solid;border-color:grey;border-width:1px; padding-right:20px; padding-top:20px;">
-        <h3 class="grid-item-header">
-            Games
-        </h3>
-        <p class="grid-item-text">
-            This page will allow you to see all the games recorded in the system, with relevant information such as their start date, the teams playing, the location of the game, and other relevant information; all arranged in a table of rows and columns, and also will provide you with the ability to create new teams, and edit or delete existing ones
-        </p>
-       @*  <p class="grid-item-text">
-            To create a new game, press the "Create New" button and fill the form out with appropriate data
-        </p>
-        <p class="grid-item-text">
-            To view the details of a game for more information, press the "Details" button found in the last column of the corresponding row the game is in.
-        </p>
-        <p class="grid-item-text">
-            To edit an existing game, press the "Edit" button in the last column of the corresponding row the game is in
-        </p>
-        <p class="grid-item-text">
-            To delete an existing game, press the "Delete" button in the last column of the corresponding row the game is in
-        </p> *@
-
-        @* <a asp-controller="Game" asp-action="Index" class="grid-btn">Go to Page >></a>
-    </div> *@
-
-    @* <div class="main-grid-item-5" style="border-top:solid;border-color:grey;border-width:1px; padding-top:20px;padding-left:20px;">
-        <h3 class="grid-item-header">
-            Coaches
-        </h3>
-        <p class="grid-item-text">
-            This page will allow you to see all the coaches registered in the system. As well as the ability to create/register new coaches, and edit or delete existing ones
-        </p>
-
-        <a asp-controller="Coach" asp-action="Index" class="grid-btn">Go to Page >></a>
-    </div> *@

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using WMBA5.Data;
 
 namespace WMBA5.Models
@@ -34,8 +35,8 @@ namespace WMBA5.Models
         //Unique ID to identify the player by their Member ID
         [Display(Name = "Member ID")]
         [Required(ErrorMessage = "You cannot leave the Member ID blank.")]
-        [RegularExpression("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", ErrorMessage = "The Member ID must be at least 8 characters long, " +
-            "it must have a combination of numbers and letters and it cant have symbols or special chracters(!,@,#,$,%,^,&,*)")]
+        [RegularExpression("^[A-Za-z0-9]{8,}$", ErrorMessage = "The Member ID must be at least 8 characters long, " +
+            "it must have a combination of numbers and/or letters and it cant have symbols or special chracters(!,@,#,$,%,^,&,*,_,-)")]
         public string MemberID { get; set; }
 
         [Display(Name = "First Name")]
@@ -58,18 +59,18 @@ namespace WMBA5.Models
 
         //Status: Active or Inactive
         [Display(Name = "Status")]
-        [Required(ErrorMessage = "You cannot leave the Status Blank")]
-        public int StatusID { get; set; }
-        [Display(Name ="Status")]
+        [DefaultValue("")]
+        public int? StatusID { get; set; }
         public Status Status { get; set; }
 
         //Foreign key
         [Display(Name ="Division")]
-        [Required(ErrorMessage = "You cannot leave the Division blank.")]
-        public int DivisionID { get; set; }
+        [DefaultValue("")]
+        public int? DivisionID { get; set; }
         public Division Division { get; set; }
 
         [Display(Name = "Team Name")]
+        [DefaultValue("")]
         public int? TeamID { get; set; }
         public Team Team { get; set; }
 
@@ -85,7 +86,10 @@ namespace WMBA5.Models
 
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
         //public ICollection<InGameStats> InGameStats { get; set; } = new HashSet<InGameStats>();
-       
+
+        [Display(Name = "Team Batting Position")]
+        public int BattingOrder { get; set; } = 0;
+
         public ICollection<GamePlayer> GamePlayers { get; set; } = new HashSet<GamePlayer>();
         //Adding validation for the jersey number
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -96,7 +100,7 @@ namespace WMBA5.Models
             var dbContext = (WMBAContext)validationContext.GetService(typeof(WMBAContext));
             {
                 var teamPlayerWithSameJersey = dbContext.Players
-                    .Where(p => p.TeamID == TeamID && p.JerseyNumber == JerseyNumber && p.ID != ID)
+                    .Where(p => p.TeamID == TeamID && p.JerseyNumber == JerseyNumber && p.ID != ID && p.JerseyNumber!= null)
                     .FirstOrDefault();
 
                 if (teamPlayerWithSameJersey != null)

@@ -1,17 +1,15 @@
 ﻿@model WMBA5.Models.Game
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Game";
 }
 
-<h1>Edit</h1>
-
-<h4>Game</h4>
-<hr />
+<h1>Edit Game</h1>
 <partial name="_addLocationModal" />
 <div class="row">
+
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -20,12 +18,18 @@
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="DivisionID" class="control-label"></label>
+                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
+            </div>
+            <div class="form-group">
                 <label class="control-label">Home Team</label>
-                @* @Html.DropDownList("SelectedHomeTeam", (SelectList)ViewBag.Teams, "Select a Home Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" }) *@
+                @Html.DropDownList("HomeTeamID", (SelectList)ViewBag.Teams, "Select a Home Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
+                <span asp-validation-for="HomeTeamID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Away Team</label>
-                @* @Html.DropDownList("SelectedAwayTeam", (SelectList)ViewBag.Teams, "Select an Away Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" }) *@
+                @Html.DropDownList("AwayTeamID", (SelectList)ViewBag.Teams, "Select an Away Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
+                <span asp-validation-for="AwayTeamID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LocationID" class="control-label"></label>
@@ -38,45 +42,39 @@
                     </select>
                 </div>
             </div>
-            @* <div class="form-group">
-            <label asp-for="Location" class="control-label"></label>
-            <input asp-for="Location" class="form-control" />
-            <span asp-validation-for="Location" class="text-danger"></span>
-            </div> *@
-            @*    <div class="form-group">
-            <label asp-for="Oponent" class="control-label"></label>
-            <input asp-for="Oponent" class="form-control" />
-            <span asp-validation-for="Oponent" class="text-danger"></span> 
-            </div>
             <div class="form-group">
-            <label asp-for="PlayingAt" class="control-label"></label>
-            <input asp-for="PlayingAt" class="form-control" />
-            <span asp-validation-for="PlayingAt" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="Outcome" class="control-label"></label>
-                <select asp-for="Outcome" class="form-control"><option value="Yet to be decided">Yet to be decided</option><option value="Win">Win</option><option value="Lose">Lose</option></select>
+                <label asp-for="OutcomeID" class="control-label"></label>
+                <select asp-for="OutcomeID" class="form-control" asp-items="ViewBag.OutcomeID"></select>
+                <span asp-validation-for="OutcomeID" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DivisionID" class="control-label"></label>
-                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
-                <span asp-validation-for="DivisionID" class="text-danger"></span>
-            </div>
-            @*   <div class="form-group">
-            <label asp-for="LineupID" class="control-label"></label>
-            <input asp-for="LineupID" class="form-control" />
-            <span asp-validation-for="LineupID" class="text-danger"></span>
-            </div> *@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
+
 </div>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+@* @section Scripts{
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	<script src="~/js/refreshDDL.js"></script>
+	<script type="text/javascript">
+		$('#DivisionID').change(function () {
+			var selectedDivision = $("#DivisionID").val();
+			var URL = "/Game/GetGame/?DivisionID=" + selectedDivision;
+			refreshDDL('TeamID', URL, true, 'Select a Division with teams first', false, null, true);
+		});
+	</script>
+} *@
+
+
 
 @section Scripts {
     @{
@@ -97,7 +95,7 @@
                     data: form.serialize(),
                     success: function () {
                         $('#addLocationModal').modal('hide');
-                    },
+                    }, 
                     error: function (xhr) { //Note: xhr is the XMLHttpRequest
                         var errorMessages = [];
                         switch (xhr.status) {
@@ -134,7 +132,7 @@
             document.getElementById("createLocationForm").reset();//to clear the data in the popup form
             ClearErrors();
             var selectedOption = $('#LocationID').val();//Return to the current selected value
-          refreshDDL('LocationID', '/Game/GetLocations/' + selectedOption, false, null, true, 'None', true);
+            refreshDDL('LocationID', '/Game/GetLocations/' + selectedOption, false, null, true, 'None', true);
         });
         function ClearErrors() {
             //Empty out the list of validation errors if there are any
@@ -143,8 +141,31 @@
                 ul.removeChild(ul.firstChild);
             }
         }
+        $('#DivisionID').change(function () {
+            var selectedDivision = $("#DivisionID").val();
+            var URL = "/Game/GetGame/?DivisionID=" + selectedDivision;
+            refreshDDL('TeamID', URL, true, 'Select a Division with teams first', false, null, true);
+        });
+        $(document).ready(function () {
+            $("#createGameForm").submit(function (e) {
+                var selectedDivisionID = $("#DivisionID").val();
+                var selectedHomeTeamID = $("#HomeTeamID").val();
+                var selectedAwayTeamID = $("#AwayTeamID").val();
+
+                // Fetch division IDs for selected teams via AJAX or use hidden fields populated on the server-side
+                var homeTeamDivisionID; // Set this based on your AJAX response or hidden field value
+                var awayTeamDivisionID; // Set this based on your AJAX response or hidden field value
+
+                if (selectedDivisionID !== homeTeamDivisionID || selectedDivisionID !== awayTeamDivisionID) {
+                    e.preventDefault(); // Prevent form submission
+                    alert("The selected teams must belong to the selected game's division.");
+                }
+            });
+        });
+
     </script>
 
 }
+
 
 

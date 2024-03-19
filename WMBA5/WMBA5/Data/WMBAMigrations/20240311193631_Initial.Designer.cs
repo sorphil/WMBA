@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240303220845_Initial")]
+    [Migration("20240311193631_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -114,6 +114,9 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BattingOrder")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("GameID")
                         .HasColumnType("INTEGER");
 
@@ -186,7 +189,10 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("DivisionID")
+                    b.Property<int>("BattingOrder")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DivisionID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
@@ -210,7 +216,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("StatusID")
+                    b.Property<int?>("StatusID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("TeamID")
@@ -376,7 +382,7 @@ namespace WMBA5.Data.WMBAMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CoachID")
+                    b.Property<int?>("CoachID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DivisionID")
@@ -393,6 +399,37 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasIndex("DivisionID");
 
                     b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("WMBA5.ViewModels.ImportReport", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Club")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Division")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("First_Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Last_Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Member_ID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Season")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Team")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ImportReport");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Division", b =>
@@ -484,14 +521,11 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasOne("WMBA5.Models.Division", "Division")
                         .WithMany("Players")
                         .HasForeignKey("DivisionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("WMBA5.Models.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusID");
 
                     b.HasOne("WMBA5.Models.Team", "Team")
                         .WithMany("Players")
@@ -575,8 +609,7 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasOne("WMBA5.Models.Coach", "Coach")
                         .WithMany("Teams")
                         .HasForeignKey("CoachID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("WMBA5.Models.Division", "Division")
                         .WithMany("Teams")

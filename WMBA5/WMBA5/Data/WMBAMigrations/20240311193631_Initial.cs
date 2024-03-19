@@ -38,6 +38,24 @@ namespace WMBA5.Data.WMBAMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImportReport",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "TEXT", nullable: false),
+                    First_Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Last_Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Member_ID = table.Column<string>(type: "TEXT", nullable: true),
+                    Season = table.Column<string>(type: "TEXT", nullable: true),
+                    Division = table.Column<string>(type: "TEXT", nullable: true),
+                    Club = table.Column<string>(type: "TEXT", nullable: true),
+                    Team = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImportReport", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
                 {
@@ -116,7 +134,7 @@ namespace WMBA5.Data.WMBAMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TeamName = table.Column<string>(type: "TEXT", nullable: false),
-                    CoachID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CoachID = table.Column<int>(type: "INTEGER", nullable: true),
                     DivisionID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -195,9 +213,10 @@ namespace WMBA5.Data.WMBAMigrations
                     Nickname = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     JerseyNumber = table.Column<int>(type: "INTEGER", nullable: true),
-                    StatusID = table.Column<int>(type: "INTEGER", nullable: false),
-                    DivisionID = table.Column<int>(type: "INTEGER", nullable: false),
-                    TeamID = table.Column<int>(type: "INTEGER", nullable: true)
+                    StatusID = table.Column<int>(type: "INTEGER", nullable: true),
+                    DivisionID = table.Column<int>(type: "INTEGER", nullable: true),
+                    TeamID = table.Column<int>(type: "INTEGER", nullable: true),
+                    BattingOrder = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -207,13 +226,12 @@ namespace WMBA5.Data.WMBAMigrations
                         column: x => x.DivisionID,
                         principalTable: "Divisions",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Players_Statuses_StatusID",
                         column: x => x.StatusID,
                         principalTable: "Statuses",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_Players_Teams_TeamID",
                         column: x => x.TeamID,
@@ -250,7 +268,8 @@ namespace WMBA5.Data.WMBAMigrations
                         .Annotation("Sqlite:Autoincrement", true),
                     TeamLineup = table.Column<int>(type: "INTEGER", nullable: false),
                     GameID = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false)
+                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    BattingOrder = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -486,6 +505,9 @@ namespace WMBA5.Data.WMBAMigrations
         {
             migrationBuilder.DropTable(
                 name: "GamePlayers");
+
+            migrationBuilder.DropTable(
+                name: "ImportReport");
 
             migrationBuilder.DropTable(
                 name: "PlayerAtBat");

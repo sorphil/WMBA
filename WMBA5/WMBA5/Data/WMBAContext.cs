@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
 using WMBA5.Models;
+using WMBA5.ViewModels;
 
 namespace WMBA5.Data
 {
@@ -53,6 +54,12 @@ namespace WMBA5.Data
             //Division to Teams
             modelBuilder.Entity<Division>()
                 .HasMany<Team>(c => c.Teams)
+                .WithOne(c => c.Division)
+                .HasForeignKey(c => c.DivisionID)
+                .OnDelete(DeleteBehavior.Restrict);
+            //Division to Player
+            modelBuilder.Entity<Division>()
+                .HasMany<Player>(c => c.Players)
                 .WithOne(c => c.Division)
                 .HasForeignKey(c => c.DivisionID)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -224,5 +231,12 @@ namespace WMBA5.Data
 
 
         public DbSet<WMBA5.Models.Score> Score { get; set; }
+
+
+        //public DbSet<TeamLineup> TeamLineups { get; set; } // this is a enum not a class Dbset is not required for this.
+
+
+
+        public DbSet<WMBA5.ViewModels.ImportReport> ImportReport { get; set; }
     }
 }

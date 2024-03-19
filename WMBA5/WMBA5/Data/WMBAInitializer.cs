@@ -203,45 +203,6 @@ namespace WMBA5.Data
                     context.SaveChanges();
                 }
 
-                
-
-                
-                
-                //if (!context.TeamGames.Any())
-                //{
-                //    context.TeamGames.AddRange(
-                //         new TeamGame
-                //         {
-                //             HomeTeamID = 1,
-                //             AwayTeamID = 2,
-                //             GameID = 1
-                //         },
-                //        new TeamGame
-                //        {
-                //            HomeTeamID = 1,
-                //            AwayTeamID = 3,
-                //            GameID = 2,
-                //        },
-                //        new TeamGame
-                //        {
-                //            HomeTeamID = 2,
-                //            AwayTeamID = 1,
-                //            GameID = 3,
-                //        },
-                //        new TeamGame
-                //        {
-                //            HomeTeamID = 2,
-                //            AwayTeamID = 3,
-                //            GameID = 4,
-                //        },
-                //        new TeamGame
-                //        {
-                //            HomeTeamID = 4,
-                //            AwayTeamID = 2,
-                //            GameID = 5,
-                //        }
-                //        );
-                //}
 
                 //Adding Players
                 if (!context.Players.Any())
@@ -511,34 +472,113 @@ namespace WMBA5.Data
                     );
 
                     //Adding more players with random values, so we have more players in more Teams
-                    string[] firstNames = new string[] { "Lyric", "Antoinette", "Kendal", "Vivian", "Ruth", "Jamison", "Emilia", "Natalee", "Yadiel", "Jakayla", "Lukas", "Moses", "Kyler", "Karla" };
-                    string[] lastNames = new string[] { "Watts", "Randall", "Arias", "Weber", "Stone", "Carlson", "Robles", "Frederick", "Parker"};
+                    string[] firstNames = new string[] { "Lyric", "Antoinette", "Vivian" };
+                    string[] lastNames = new string[] { "Watts", "Randall", "Arias", };
                     int[] teamIDs = context.Teams.Select(d => d.ID).ToArray();
                     int teamIDCount = teamIDs.Length;
+                    string[] firstNames2 = new string[] { "Ruth", "Jamison", "Emilia", "Natalee" };
+                    string[] lastNames2 = new string[] { "Weber", "Stone", "Carlson" };
+                    string[] firstNames3 = new string[] { "Yadiel", "Jakayla", "Lukas", "Moses" };
+                    string[] lastNames3= new string[] { "Robles", "Frederick", "Parker" };
+                    string[] firstNames4 = new string[] { "Chris", "Tommas", "David", "Sam" };
+                    string[] lastNames4 = new string[] { "Bumstead", "Mazza", "Laid" };
+
                     //Loop through names and add more
+                    //For whitecaps team
                     foreach (string lastName in lastNames)
-                    {
-                        foreach (string firstname in firstNames)
                         {
+                            foreach (string firstname in firstNames)
+                            {
+
+                                //Construct some details
+                                Player a = new Player()
+                                {
+                                    FirstName = firstname,
+                                    LastName = lastName,
+                                    MemberID = random.Next(11111111, 34500000).ToString(),
+                                    JerseyNumber = random.Next(0, 99),
+                                    StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                    TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Whitecaps").ID,
+                                    DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                                };
+                                context.Players.Add(a);
+
+
+                            }
+                        }
+                    //For Bisons
+                    foreach (string lastName in lastNames2)
+                    {
+                        foreach (string firstname in firstNames2)
+                        {
+
                             //Construct some details
                             Player a = new Player()
                             {
                                 FirstName = firstname,
                                 LastName = lastName,
-                                MemberID = random.Next(11111111,99999999).ToString(),
-                                JerseyNumber = random.Next(0,99),
+                                MemberID = random.Next(34500001, 54500000).ToString(),
+                                JerseyNumber = random.Next(0, 99),
                                 StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
-                                TeamID = teamIDs[random.Next(teamIDCount)],
-                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Bisons").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
                             };
                             context.Players.Add(a);
+
+
+                        }
+                    }
+                    //For Dragons
+                    foreach (string lastName in lastNames3)
+                    {
+                        foreach (string firstname in firstNames3)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(54500001, 74500000).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Dragons").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    //For Trash Pandas
+                    foreach (string lastName in lastNames4)
+                    {
+                        foreach (string firstname in firstNames4)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(74500001, 99999999).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Trash Pandas").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID,
+                            };
+                            context.Players.Add(a);
+
+
                         }
                     }
                     context.SaveChanges();
-                    context.SaveChanges();
-                }//End adding the players for Bananas and IronBirds (Hardcoded and random numbers)
 
-                
+                    
+                    //context.SaveChanges();
+                }//End adding the players for all Teams (Hardcoded and random numbers)
+
+
                 //Adding Games
                 if (!context.Games.Any())
                 {
@@ -620,54 +660,7 @@ namespace WMBA5.Data
                         context.SaveChanges();
                     }
                 }//end seed data for games
-                if (!context.Innings.Any())
-                {
-                    context.Innings.AddRange(
-                        new Inning
-                        {
-                            ID = 1,
-                            InningNo = "Inning One",
-                            GameID = 1
-                        },
-                           new Inning
-                           {
-                               ID = 2,
-                               InningNo = "Inning Two",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 3,
-                               InningNo = "Inning Three",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 4,
-                               InningNo = "Inning Four",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 5,
-                               InningNo = "Inning Five",
-                               GameID = 1
-                           },
-                           new Inning
-                           {
-                               ID = 6,
-                               InningNo = "Inning Six",
-                               GameID = 1
-                           },
-                                new Inning
-                                {
-                                    ID = 7,
-                                    InningNo = "Inning Seven",
-                                    GameID = 1
-                                }
-                        );
-                    context.SaveChanges();
-                }
+
                 //Adding Stats
                 if (!context.Stats.Any())
                 {
@@ -700,46 +693,46 @@ namespace WMBA5.Data
 
                     context.SaveChanges();
                 }
-                if (!context.Scores.Any())
-                {
-                    Random rnd = new Random();
+                //if (!context.Scores.Any())
+                //{
+                //    Random rnd = new Random();
 
-                    // Seed scores for PlayerID = 1
-                    for (int i = 1; i <= 7; i++)
-                    {
-                        context.Scores.Add(new Score
-                        {
-                            Balls = rnd.Next(0, 4), // Balls range from 0 to 3
-                            FoulBalls = rnd.Next(0, 3), // Foul balls range from 0 to 2
-                            Strikes = rnd.Next(0, 3), // Strikes range from 0 to 2
-                            Out = rnd.Next(0, 3), // Outs range from 0 to 2
-                            Runs = rnd.Next(0, 5), // Runs range from 0 to 4
-                            Hits = rnd.Next(0, 5), // Hits range from 0 to 4
-                            PlayerID = 1,
-                            InningID = i,
-                            GameID = 1
-                        });
-                    }
+                //    // Seed scores for PlayerID = 1
+                //    for (int i = 1; i <= 7; i++)
+                //    {
+                //        context.Scores.Add(new Score
+                //        {
+                //            Balls = rnd.Next(0, 4), // Balls range from 0 to 3
+                //            FoulBalls = rnd.Next(0, 3), // Foul balls range from 0 to 2
+                //            Strikes = rnd.Next(0, 3), // Strikes range from 0 to 2
+                //            Out = rnd.Next(0, 3), // Outs range from 0 to 2
+                //            Runs = rnd.Next(0, 5), // Runs range from 0 to 4
+                //            Hits = rnd.Next(0, 5), // Hits range from 0 to 4
+                //            PlayerID = 1,
+                //            InningID = i,
+                //            GameID = 1
+                //        });
+                //    }
 
-                    // Seed scores for PlayerID = 2
-                    //for (int i = 8; i <= 14; i++)
-                    //{
-                    //    context.Scores.Add(new Score
-                    //    {
-                    //        Balls = rnd.Next(0, 4),
-                    //        FoulBalls = rnd.Next(0, 3),
-                    //        Strikes = rnd.Next(0, 3),
-                    //        Out = rnd.Next(0, 3),
-                    //        Runs = rnd.Next(0, 5),
-                    //        Hits = rnd.Next(0, 5),
-                    //        PlayerID = 2,
-                    //        InningID = i,
-                    //        GameID = 1
-                    //    });
-                    //}
+                //    // Seed scores for PlayerID = 2
+                //    //for (int i = 8; i <= 14; i++)
+                //    //{
+                //    //    context.Scores.Add(new Score
+                //    //    {
+                //    //        Balls = rnd.Next(0, 4),
+                //    //        FoulBalls = rnd.Next(0, 3),
+                //    //        Strikes = rnd.Next(0, 3),
+                //    //        Out = rnd.Next(0, 3),
+                //    //        Runs = rnd.Next(0, 5),
+                //    //        Hits = rnd.Next(0, 5),
+                //    //        PlayerID = 2,
+                //    //        InningID = i,
+                //    //        GameID = 1
+                //    //    });
+                //    //}
 
-                    context.SaveChanges();
-                }
+                //    context.SaveChanges();
+                //}
             }
             catch (Exception ex) 
             {

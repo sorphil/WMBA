@@ -61,22 +61,30 @@
         </thead>
         <tbody>
             <tr>
+        <tbody>
+            <tr>
                 <td>
-                    @foreach (var item in Model.GamePlayers
+                            @foreach (var item in Model.GamePlayers
                     .Where(gp => gp.TeamLineup == TeamLineup.Home)
-                    .OrderBy(o => o.Player.LastName))
-                    {
-                        @item.Player.FullName <br />
-                    }
+                    .OrderBy(o => o.BattingOrder).ThenBy(p => p.Player.FullName))
+                            {
+                                @item.BattingOrder @:- @item.Player.Summary <br />
+                            }
+                    <a asp-action="EditLineup" class="btn btn-primary"
+                       asp-route-Lineup="Home" asp-route-id="@Model?.ID">Edit Home Lineup</a>
                 </td>
                 <td>
-                    @foreach (var item in Model.GamePlayers
+                            @foreach (var item in Model.GamePlayers
                     .Where(gp => gp.TeamLineup == TeamLineup.Away)
-                    .OrderBy(o => o.Player.LastName))
-                    {
-                        @item.Player.FullName <br />
-                    }
+                    .OrderBy(o => o.BattingOrder).ThenBy(p => p.Player.FullName))
+                            {
+                                @item.BattingOrder @:- @item.Player.Summary <br />
+                            }
+                    <a asp-action="EditLineup" class="btn btn-success"
+                       asp-route-Lineup="Away" asp-route-id="@Model?.ID">Edit Away Lineup</a>
                 </td>
+            </tr>
+        </tbody>
             </tr>
         </tbody>
     </table>
