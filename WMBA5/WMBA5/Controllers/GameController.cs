@@ -236,6 +236,18 @@ namespace WMBA5.Controllers
             return View(game);
         }
 
+        [HttpGet]
+        public async Task<JsonResult>GetTeamsByDivision(int divisionId)
+        {
+            // Retrieve teams for the selected division
+            var teams = await _context.Teams
+                .Where(t => t.DivisionID == divisionId)
+                .Select(t => new SelectListItem { Value = t.ID.ToString(), Text = $"{t.Division.DivisionName} - {t.TeamName}" })
+                .ToListAsync();
+
+            return Json(teams);
+        }
+
         private void FillLineupsWithTeams(Game game)
         {
             //Add the players from the teams to each one
