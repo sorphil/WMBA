@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using WMBA5.Data;
+using WMBA5.Utilities;
+using WMBA5.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +57,14 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+//For email service configuration
+builder.Services.AddSingleton<IEmailConfiguration>(builder.Configuration
+    .GetSection("EmailConfiguration").Get<EmailConfiguration>());
+//For the Identity System
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+//Email with added methods for production use.
+builder.Services.AddTransient<IMyEmailSender, MyEmailSender>();
 
 builder.Services.AddControllersWithViews();
 
