@@ -72,20 +72,10 @@ namespace WMBA5.Models
             {
                 yield return new ValidationResult("Home and Away teams must be different.", new[] { "AwayTeamID" });
             }
-            // Access the database context from dependency injection to check if the jersey number is already used by another player in the same team
-            var dbContext = (WMBAContext)validationContext.GetService(typeof(WMBAContext));
+            
+            if(StartTime < DateTime.Now)
             {
-                var homeTeam = dbContext.Teams
-                    .Where(t => t.ID == HomeTeamID)
-                    .FirstOrDefault();
-                var awayTeam = dbContext.Teams
-                   .Where(t => t.ID == AwayTeamID)
-                   .FirstOrDefault();
-
-                if (homeTeam?.DivisionID != awayTeam?.DivisionID)
-                {
-                    yield return new ValidationResult("Home and Away teams must have the same division.", new[] { "HomeTeamID" });
-                }
+                yield return new ValidationResult("Game cannot be created back in time. Please select another date.", new[] { "StartTime" });
             }
         }
 

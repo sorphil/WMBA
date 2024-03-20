@@ -180,6 +180,7 @@ namespace WMBA5.Controllers
         public IActionResult Create()
         {
             PopulateDropDownLists();
+            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName");
             return View();
 
         }
@@ -242,7 +243,10 @@ namespace WMBA5.Controllers
             {
                 return NotFound();
             }
-            ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", player.TeamID);
+
+            var teamsinDiv = _context.Teams.Where(t => t.DivisionID == player.DivisionID).Select(t => new SelectListItem { Value = t.ID.ToString(), Text = t.TeamName });
+
+            ViewData["TeamID"] = new SelectList(teamsinDiv, "Value", "Text", player.TeamID);
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", player.DivisionID);
             ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", player.StatusID);
 			return View(player);
@@ -289,10 +293,11 @@ namespace WMBA5.Controllers
                 }
                 
             }
+            var teamsinDiv = _context.Teams.Where(t => t.DivisionID == playerToUpdate.DivisionID).Select(t => new SelectListItem { Value = t.ID.ToString(), Text = t.TeamName });
             //ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
             PopulateDropDownLists(playerToUpdate);
-			ViewData["TeamID"] = new SelectList(_context.Teams, "ID", "TeamName", playerToUpdate.TeamID);
-			ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", playerToUpdate.DivisionID);
+            ViewData["TeamID"] = new SelectList(teamsinDiv, "Value", "Text", playerToUpdate.TeamID);
+            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", playerToUpdate.DivisionID);
 			ViewData["StatusID"] = new SelectList(_context.Statuses, "ID", "StatusName", playerToUpdate.StatusID);
 
 			return View(playerToUpdate);
@@ -395,13 +400,21 @@ namespace WMBA5.Controllers
         {
             ViewData["DivisionID"] = DivisionSelectionList(player?.DivisionID);
             ViewData["StatusID"] = StatusSelectionList(player?.StatusID);
+
+            // Only populate TeamID if DivisionID is selected
             if (player?.DivisionID != null)
             {
-                ViewData["TeamID"] = TeamSelectionList(player?.DivisionID, player?.TeamID);
+                // Filter teams by the selected division
+                var teams = _context.Teams
+                    .Where(t => t.DivisionID == player.DivisionID)
+                    .OrderBy(t => t.TeamName)
+                    .ToList();
+                ViewData["TeamID"] = new SelectList(teams, "ID", "TeamName", player.TeamID);
             }
             else
             {
-                ViewData["TeamID"] = TeamSelectionList(null, null);
+                // If no division is selected, show an empty team list
+                ViewData["TeamID"] = new SelectList(new List<Team>(), "ID", "TeamName", null);
             }
         }
 

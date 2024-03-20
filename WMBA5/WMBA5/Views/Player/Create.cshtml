@@ -46,9 +46,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="TeamID" class="control-label"></label>
-                <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
+                @* <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
                     <option value="">No Team</option>
-                </select>
+                </select> *@
+                @Html.DropDownList("TeamID", (SelectList)ViewBag.Teams, "Select a Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
                 <span asp-validation-for="TeamID" class="text-danger"></span>
             </div>
         </div>
@@ -66,25 +67,35 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/refreshDDL.js"></script>
     <script>
         $(document).ready(function () {
+            $('#DivisionID').change();
+
             $('#DivisionID').change(function () {
                 var divisionId = $(this).val();
+                console.log("Selected Division ID:", divisionId); // Log selected division ID
                 $.ajax({
                     url: '@Url.Action("GetTeamsByDivision", "Player")',
                     type: 'GET',
                     data: { divisionId: divisionId },
                     success: function (data) {
-                        $('#TeamID').empty();
-                        if (data.length === 0) {
-                            $('#TeamID').prop('disabled', true).append($('<option></option>').text('No teams available'));
-                        } else {
-                            $('#TeamID').prop('disabled', false);
+                        console.log("Teams returned:", data); // Log teams returned from the server
+                        var options = '';
+
+                        if (data.$values.length > 0) { // Check if data is not empty
+                            options += '<option value="">Select a Team</option>';
                             $('#TeamID').append($('<option></option>').text('Select a Team').attr('value', ''));
-                            $.each(data, function (index, team) {
-                                $('#TeamID').append($('<option></option>').val(team.value).text(team.text));
+                            $.each(data.$values, function (index, team) {
+                                options += '<option value="' + team.value + '">' + team.text + '</option>';
                             });
+                        } else {
+                            options += '<option value="" selected>No teams for this division.</option>';
                         }
+                        $('#TeamID').html(options);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error fetching teams:", errorThrown); // Log any errors
                     }
                 });
             });

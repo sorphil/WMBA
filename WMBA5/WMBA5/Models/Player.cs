@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using WMBA5.Data;
 
@@ -107,33 +108,43 @@ namespace WMBA5.Models
                 {
                     yield return new ValidationResult("The jersey number you choose is already used by another player in the same team. Please choose a different jersey number.", new[] { "JerseyNumber" });
                 }
-                var player = dbContext.Players
-                    .FirstOrDefault(p => p.ID == ID);
 
-                var team = dbContext.Teams
-                    .FirstOrDefault(t => t.ID == TeamID);
+                var originalPlayer = dbContext.Players.AsNoTracking().FirstOrDefault(p => p.ID == ID);
 
-                if (player != null && team != null)
+                // Check if the original division differs from the current division
+                if (originalPlayer != null && originalPlayer.DivisionID != null)
                 {
-                    var playerDivision = dbContext.Divisions
-                    .FirstOrDefault(d => d.ID == player.DivisionID); ;
-                    var teamDivision = dbContext.Divisions
-                    .FirstOrDefault(d => d.ID == team.DivisionID);
-                 
-                    if (playerDivision != null && teamDivision != null)
-                    {
-                        List<string> validDivisions = new List<string> { "9U", "11U", "13U", "15U", "18U" };
-                        // Get index of player and team divisions
-                        int playerIndex = validDivisions.IndexOf(playerDivision.DivisionName);
-                        int teamIndex = validDivisions.IndexOf(teamDivision.DivisionName);
+                    var originalDivisionID = originalPlayer.DivisionID;
+                    var newDivisionID = (int?)DivisionID;
 
-                        // Check if the team's division is lower than the player's division
-                        if (teamIndex < playerIndex)
+                    // Retrieve division names based on division IDs
+                    var originalDivisionName = dbContext.Divisions.Where(d => d.ID == originalDivisionID).Select(d => d.DivisionName).FirstOrDefault();
+                    var newDivisionName = dbContext.Divisions.Where(d => d.ID == newDivisionID).Select(d => d.DivisionName).FirstOrDefault();
+
+                    // Check if both original and new division names are not null
+                    if (!string.IsNullOrEmpty(originalDivisionName) && !string.IsNullOrEmpty(newDivisionName))
+                    {
+                        // Check if the original division is "13U" and the new division is "11U", or vice versa
+                        if (originalDivisionName == "18U" && (newDivisionName == "15U" || newDivisionName == "13U" || newDivisionName == "11U" || newDivisionName == "9U"))
                         {
-                            yield return new ValidationResult("A player can only be assigned to a team with the same division or higher.", new[] { "DivisionID" });
+                            yield return new ValidationResult($"Players from '{originalDivisionName}' division cannot be changed to '{newDivisionName}' division.");
+                        }
+
+                        if (originalDivisionName == "15U" && (newDivisionName == "13U" || newDivisionName == "11U" || newDivisionName == "9U"))
+                        {
+                            yield return new ValidationResult($"Players from '{originalDivisionName}' division cannot be changed to '{newDivisionName}' division.", new[] {"DivisionID"});
+                        }
+
+                        if (originalDivisionName == "13U" && (newDivisionName == "11U" || newDivisionName == "9U" || newDivisionName == "18U"))
+                        {
+                            yield return new ValidationResult($"Players from '{originalDivisionName}' division cannot be changed to '{newDivisionName}' division.");
+                        }
+
+                        if (originalDivisionName == "11U" && (newDivisionName == "9U" || newDivisionName == "15U" || newDivisionName == "18U"))
+                        {
+                            yield return new ValidationResult($"Players from '{originalDivisionName}' division cannot be changed to '{newDivisionName}' division.");
                         }
                     }
-                  
                 }
                
             }
