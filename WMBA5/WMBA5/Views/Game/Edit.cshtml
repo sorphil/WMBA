@@ -23,12 +23,12 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Home Team</label>
-                @Html.DropDownList("HomeTeamID", (SelectList)ViewBag.Teams, "Select a Home Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
+                @Html.DropDownListFor(model => model.HomeTeamID, (SelectList)ViewData["HomeTeamID"], "Select a Home Team", new { @class = "form-control" })
                 <span asp-validation-for="HomeTeamID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Away Team</label>
-                @Html.DropDownList("AwayTeamID", (SelectList)ViewBag.Teams, "Select an Away Team", new { @class = "form-control", @style = "margin-top: 0.5rem;" })
+                @Html.DropDownListFor(model => model.AwayTeamID, (SelectList)ViewData["AwayTeamID"], "Select an Away Team", new { @class = "form-control" })
                 <span asp-validation-for="AwayTeamID" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -82,6 +82,43 @@
     }
     @* <script src="~/js/multiselect.js"></script> *@
     <script src="~/js/refreshDDL.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Trigger the change event to load teams for the default division
+            $('#DivisionID').change();
+
+            // Bind change event handler
+            $('#DivisionID').change(function () {
+                var selectedDivisionId = $(this).val();
+                // Send AJAX request to retrieve teams for the selected division
+                $.ajax({
+                    url: '@Url.Action("GetTeamsByDivision", "Game")',
+                    type: 'GET',
+                    data: { divisionId: selectedDivisionId },
+                    success: function (data) {
+                        console.log(data); // Debugging statement
+                        // Update home team and away team dropdown lists
+                        var options = '';
+                        if (data.$values.length > 0) {
+                            options += '<option value="">Select a Team</option>'; // Add "Select a Team" option
+                            $.each(data.$values, function (index, team) {
+                                options += '<option value="' + team.value + '">' + team.text + '</option>';
+                            });
+                        } else {
+                            options += '<option value="" selected>No teams</option>'; // Default to "No teams"
+                        }
+                        $('#HomeTeamID, #AwayTeamID').html(options);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseText); // Debugging statement
+                        console.log(textStatus); // Debugging statement
+                        console.log(errorThrown); // Debugging statement
+                    }
+                });
+            });
+        });
+    </script>
 
     <script type="text/javascript">
         $('#submitLocationCreate').click(function (event) {

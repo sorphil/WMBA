@@ -274,31 +274,33 @@ namespace WMBA5.Controllers
         // GET: Game/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Games == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var game = await _context.Games
-                .Include(g => g.AwayTeam)
-                .Include(g => g.HomeTeam)
-                .Include(g => g.Division)
-                .Include(g => g.Location)
-                .Include(g => g.Outcome)
-                .FirstOrDefaultAsync(g => g.ID == id);
-
-            var teamList = _context.Teams.Select(t => new SelectListItem
-            {
-                Value = t.ID.ToString(),
-                Text = $"{t.Division.DivisionName} - {t.TeamName}" // Adjusting format to include divID
-            });
-
+            var game = await _context.Games.FindAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
 
-            PopulateDropDownLists(game); // Use the existing method to populate drop-down lists
+            // Keeping your original SelectList assignments for other fields
+            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", game.DivisionID);
+            ViewData["LocationID"] = new SelectList(_context.Locations, "ID", "LocationName", game.LocationID);
+            ViewData["OutcomeID"] = new SelectList(_context.Outcomes, "ID", "OutcomeString", game.OutcomeID);
+
+            // Constructing the team list with divID as a string before the team names
+            var teamList = _context.Teams.Where(t => t.DivisionID == game.DivisionID).Select(t => new SelectListItem
+            {
+                Value = t.ID.ToString(),
+                Text = $"{t.Division.DivisionName} - {t.TeamName}" // Adjusting format to include divID
+            });
+
+            // Using the constructed teamList for both AwayTeamID and HomeTeamID dropdowns
+            ViewData["HomeTeamID"] = new SelectList(teamList, "Value", "Text", game.HomeTeamID); // Set selected home team
+            ViewData["AwayTeamID"] = new SelectList(teamList, "Value", "Text", game.AwayTeamID); // Set selected away team
+
             return View(game);
         }
 
