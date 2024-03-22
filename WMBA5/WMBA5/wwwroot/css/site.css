@@ -1,15 +1,68 @@
-html {
-    font-size: 14px;
+.hide-colum{
+    display:none;
 }
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
+.player-buttons{
+    margin-right:50px;
+}
+.table-buttons{
+    width:90px;
+    margin: 2px 0
+}
+.btn-order-lineup{
+    padding:15px 0;
+}
+.table-buttons-player {
+    width: 60px;
+    margin: 2px 0
+}
+.background-body-new {
+    padding: 50px 25px;
+    background-color: #EAEAEA;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+.main-body-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+    grid-gap: 10px;
+}
+
+.main-grid-item {
+    padding-top: 10px;
+    border: 5px solid #17254c;
+    border-radius: 15px;
+    background-color: #2e8b43;
+}
+
+.card {
+    border: none;
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 350px;
+    position: relative;
+    perspective: 1000px;
+    background-color: #2e8b43;
+}
+
+h3, p {
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #fff;
+}
+
+    p a {
+        display: block;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+    }
+
+a:hover {
+    color: #ffa500;
 }
 
 html {
@@ -33,11 +86,16 @@ body {
 }
 
 /*InScoreGame css*/
-.score-btn{
-    border-radius:5px;
+.score-body-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+    grid-gap: 10px;
+}
+.score-btn {
+    border-radius: 5px;
     margin: 15px 8px;
-    background-color:beige;
-    font-weight:bold;
+    background-color: beige;
+    font-weight: bold;
 }
 .score-btn:hover {
     background-color: #62cbf5;
@@ -54,17 +112,18 @@ body {
 }
 
 .score-table{
-    width:370px;
+    width:330px;
 }
 
 .score-cont {
-    margin-top:30px;
+    margin-top: 30px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     border: solid;
     border-width: 2px;
     border-radius: 10px;
     background-color: yellowgreen;
+    padding: 5px 10px
 }
 
 .score-center-col {
@@ -115,10 +174,9 @@ body {
 }
 
 .score-players{
-    width:100px;
-}
-.score-innings{
-
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap:20px;
 }
 .score-slc-innings {
     overflow: hidden;
@@ -153,4 +211,27 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+
+
+@media screen and (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+
+    .background-body-new {
+        padding: 80px 120px;
+        border-radius: 30px;
+        margin-top:60px;
+    }
+
+    .hide-colum {
+        display: table-cell;
+    }
+
+    .table-buttons-player {
+        width: 80px;
+        margin: 2px 0
+    }
 }
