@@ -26,7 +26,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: Team
-        public async Task<IActionResult> Index(string SearchString, int? DivisionID, int? page,
+        public async Task<IActionResult> Index(string SearchString, int? DivisionID, int? page,int? userRoleDiv,int? userRoleDiv2,
             int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "Team")
         {
             ViewData["Filtering"] = "btn-outline-secondary";
@@ -39,6 +39,26 @@ namespace WMBA5.Controllers
                 .Include(t => t.Division)
                 .AsNoTracking();
 
+            //Filter for Rookie Convenor
+            if (User.IsInRole("Rookie Convenor"))
+            {
+                //1 is the ID for U9
+                teams = teams.Where(t => t.DivisionID == 1);
+            }
+            //Filter for Intermeditate Convenor
+            if (User.IsInRole("Intermediate Convenor"))
+            {
+                //2 is the ID for U11 and 3 for U13
+                userRoleDiv = 2;
+                userRoleDiv2 = 3;
+                teams = teams.Where(t  => t.DivisionID == userRoleDiv && t.DivisionID == userRoleDiv2);
+            }
+            //Filter for senior Convenor
+            if (User.IsInRole("Senior Convenor"))
+            {
+                //4 is the ID for U15
+                teams = teams.Where(t => t.DivisionID >= 4);
+            }
             if (DivisionID.HasValue)
             {
                 teams = teams.Where(t => t.DivisionID == DivisionID);
