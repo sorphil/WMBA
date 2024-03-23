@@ -57,13 +57,11 @@ namespace WMBA5.Controllers
                 players = players.Where(t => t.DivisionID == 1);
             }
             //Filter for Intermeditate Convenor
-            //if (User.IsInRole("Intermediate Convenor"))
-            //{
-            //    //2 is the ID for U11 and 3 for U13
-            //    userRoleDiv = 2;
-            //    userRoleDiv2 = 3;
-            //    teams = teams.Where(t => t.DivisionID == userRoleDiv && t.DivisionID == userRoleDiv2);
-            //}
+            if (User.IsInRole("Intermediate Convenor"))
+            {
+                //2 is the ID for U11 and 3 for U13
+                players = players.Where(t => t.DivisionID == 2 || t.DivisionID == 3);
+            }
             //Filter for senior Convenor
             if (User.IsInRole("Senior Convenor"))
             {

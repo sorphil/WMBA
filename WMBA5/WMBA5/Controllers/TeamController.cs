@@ -51,7 +51,7 @@ namespace WMBA5.Controllers
                 //2 is the ID for U11 and 3 for U13
                 userRoleDiv = 2;
                 userRoleDiv2 = 3;
-                teams = teams.Where(t  => t.DivisionID == userRoleDiv && t.DivisionID == userRoleDiv2);
+                teams = teams.Where(t  => t.DivisionID == userRoleDiv || t.DivisionID == userRoleDiv2);
             }
             //Filter for senior Convenor
             if (User.IsInRole("Senior Convenor"))
