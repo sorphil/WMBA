@@ -16,6 +16,7 @@ using WMBA5.ViewModels;
 using static System.Formats.Asn1.AsnWriter;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.DiaSymReader;
+using Org.BouncyCastle.Utilities.IO;
 
 namespace WMBA5.Controllers
 {
@@ -56,6 +57,25 @@ namespace WMBA5.Controllers
 
 
             // Filtering
+            //Filter for Rookie Convenor
+            if (User.IsInRole("Rookie Convenor"))
+            {
+                //1 is the ID for U9
+                gamesQuery = gamesQuery.Where(t => t.DivisionID == 1);
+            }
+            //Filter for Intermeditate Convenor
+            if (User.IsInRole("Intermediate Convenor"))
+            {
+                //2 is the ID for U11 and 3 for U13
+                gamesQuery = gamesQuery.Where(t => t.DivisionID == 2 || t.DivisionID == 3);
+            }
+            //Filter for senior Convenor
+            if (User.IsInRole("Senior Convenor"))
+            {
+                //4 is the ID for U15
+                gamesQuery = gamesQuery.Where(t => t.DivisionID >= 4);
+            }
+            //Rest of filters options
             if (DivisionID.HasValue)
             {
                 gamesQuery = gamesQuery.Where(g => g.DivisionID == DivisionID);

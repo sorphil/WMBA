@@ -52,6 +52,23 @@ namespace WMBA5.Data
                         userManager.AddToRoleAsync(user, "Admin").Wait();
                     }
                 }
+                //Create Rookie Convenor User
+                if (userManager.FindByEmailAsync("rookconv@outlook.com").Result == null)
+                {
+                    IdentityUser user = new IdentityUser
+                    {
+                        UserName = "rookconv@outlook.com",
+                        Email = "rookconv@outlook.com",
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(user, "Rookie Convenor").Wait();
+                    }
+                }
                 //Create Intermediate Convenor User
                 if (userManager.FindByEmailAsync("interconv@outlook.com").Result == null)
                 {
@@ -67,6 +84,23 @@ namespace WMBA5.Data
                     if (result.Succeeded)
                     {
                         userManager.AddToRoleAsync(user, "Intermediate Convenor").Wait();
+                    }
+                }
+                //Create Senior Convenor User
+                if (userManager.FindByEmailAsync("seniorconv@outlook.com").Result == null)
+                {
+                    IdentityUser user = new IdentityUser
+                    {
+                        UserName = "seniorconv@outlook.com",
+                        Email = "seniorconv@outlook.com",
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(user, "Senior Convenor").Wait();
                     }
                 }
                 //Create coach user

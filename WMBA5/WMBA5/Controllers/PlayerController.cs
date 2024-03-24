@@ -15,6 +15,7 @@ using System.Numerics;
 using OfficeOpenXml.Table;
 using OfficeOpenXml;
 using Microsoft.VisualBasic.FileIO;
+using Org.BouncyCastle.Utilities.IO;
 
 namespace WMBA5.Controllers
 {
@@ -49,7 +50,24 @@ namespace WMBA5.Controllers
                 .Include(p => p.Stats)
                 .Include(p=>p.Division)
                 .AsNoTracking();
-
+            //Filter for Rookie Convenor
+            if (User.IsInRole("Rookie Convenor"))
+            {
+                //1 is the ID for U9
+                players = players.Where(t => t.DivisionID == 1);
+            }
+            //Filter for Intermeditate Convenor
+            if (User.IsInRole("Intermediate Convenor"))
+            {
+                //2 is the ID for U11 and 3 for U13
+                players = players.Where(t => t.DivisionID == 2 || t.DivisionID == 3);
+            }
+            //Filter for senior Convenor
+            if (User.IsInRole("Senior Convenor"))
+            {
+                //4 is the ID for U15
+                players = players.Where(t => t.DivisionID >= 4);
+            }
             //Add as many filters as needed
             if (TeamID.HasValue)
             {
