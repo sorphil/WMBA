@@ -54,8 +54,8 @@
 
             <div class="form-group">
                 <label asp-for="TeamID" class="control-label"></label>
-                <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
-                    <option value="">No Team</option>
+                <select asp-for="TeamID" class="form-control" id="TeamID" asp-items="ViewBag.TeamID">
+                    <option value="">No Teams</option>
                 </select>
                 <span asp-validation-for="TeamID" class="text-danger"></span>
             </div>
@@ -75,47 +75,37 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function () {
-            // Variable to store the initially selected team
-            var savedTeamID = $('#SavedTeamID').val();
+            // Trigger change event for DivisionID dropdown to fetch teams based on the selected division
+            $('#DivisionID').change();
 
             // Fetch teams based on the selected division
             $('#DivisionID').change(function () {
                 var divisionId = $(this).val();
-                if (divisionId) {
-                    $.ajax({
-                        url: '/Player/GetTeamsByDivision',
-                        type: 'GET',
-                        data: { divisionId: divisionId },
-                        success: function (data) {
-                            var teamDropdown = $('#TeamID');
-                            var selectedTeam = teamDropdown.val(); // Store the currently selected team
-                            // Update Team dropdown options
-                            teamDropdown.empty();
-                            // Add "Select a team" option
-                            teamDropdown.append($('<option>').val("").text("Select a team"));
-                            $.each(data, function (index, team) {
-                                teamDropdown.append($('<option>').val(team.value).text(team.text));
-                            });
-                            // Restore the selected team, if available
-                            if (selectedTeam && teamDropdown.find('option[value="' + selectedTeam + '"]').length) {
-                                teamDropdown.val(selectedTeam);
-                            }
-                        }
-                    });
-                } else {
-                    // Clear Team dropdown if no division selected
-                    var teamDropdown = $('#TeamID');
-                    teamDropdown.empty();
-                    // Add "Select a team" option
-                    teamDropdown.append($('<option>').val("").text("Select a team"));
-                }
-            });
+                console.log("Selected Division ID:", divisionId); // Log selected division ID
 
-            // Trigger change event on Division dropdown if DivisionID is already set (for editing)
-            var savedDivisionID = $('#DivisionID').val();
-            if (savedDivisionID) {
-                $('#DivisionID').trigger('change');
-            }
+                $.ajax({
+                    url: '@Url.Action("GetTeamsByDivision", "Player")',
+                    type: 'GET',
+                    data: { divisionId: divisionId },
+                    success: function (data) {
+                        console.log("Teams returned:", data); // Log teams returned from the server
+                        var options = '';
+
+                        if (data.$values.length > 0) { // Check if data is not empty
+                            options += '<option value="">Select a Team</option>';
+                            $.each(data.$values, function (index, team) {
+                                options += '<option value="' + team.value + '">' + team.text + '</option>';
+                            });
+                        } else {
+                            options += '<option value="" selected>No teams for this division.</option>';
+                        }
+                        $('#TeamID').html(options);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error fetching teams:", errorThrown); // Log any errors
+                    }
+                });
+            });
         });
     </script>
 }

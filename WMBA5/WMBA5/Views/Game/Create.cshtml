@@ -8,13 +8,18 @@
 <partial name="_addLocationModal" />
 <div class="row">
 
-    <div class="col-md-4">
+    <div class="col-md-5">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
                 <input asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DivisionID" class="control-label"></label>
+                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
+                <span asp-validation-for="DivisionID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Home Team</label>
@@ -73,6 +78,43 @@
     }
     @* <script src="~/js/multiselect.js"></script> *@
     <script src="~/js/refreshDDL.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Trigger the change event to load teams for the default division (9U)
+            $('#DivisionID').change();
+
+            // Bind change event handler
+            $('#DivisionID').change(function () {
+                var selectedDivisionId = $(this).val();
+                // Send AJAX request to retrieve teams for the selected division
+                $.ajax({
+                    url: '@Url.Action("GetTeamsByDivision", "Game")',
+                    type: 'GET',
+                    data: { divisionId: selectedDivisionId },
+                    success: function (data) {
+                        console.log(data); // Debugging statement
+                        // Update home team and away team dropdown lists
+                        var options = '';
+                        if (data.$values.length > 0) {
+                            options += '<option value="">Select a Team</option>'; // Add "Select a Team" option
+                            $.each(data.$values, function (index, team) {
+                                options += '<option value="' + team.value + '">' + team.text + '</option>';
+                            });
+                        } else {
+                            options += '<option value="" selected>No teams for this division. Please select another division.</option>'; // Default to "No teams"
+                        }
+                        $('#HomeTeamID, #AwayTeamID').html(options);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseText); // Debugging statement
+                        console.log(textStatus); // Debugging statement
+                        console.log(errorThrown); // Debugging statement
+                    }
+                });
+            }).change();
+        });
+    </script>
 
     <script type="text/javascript">
         $('#submitLocationCreate').click(function (event) {
@@ -152,7 +194,6 @@
                 }
             });
         });
-
     </script>
 
 }

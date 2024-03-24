@@ -73,7 +73,7 @@ namespace WMBA5.Data
                        }, 
                        new Coach
                        {
-                           CoachName = "Melisa Vanderley"
+                           CoachName = "Melisa Vanderlely"
                        });
                     context.SaveChanges();
                 }
@@ -179,13 +179,14 @@ namespace WMBA5.Data
                         new Team
                         {
                             TeamName = "Whitecaps",
-                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Mark Hardwick").ID,
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendell").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID
                         },
+                        //U15
                         new Team
                         {
                             TeamName = "Bisons",
-                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendell").ID,
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Mark Hardwick").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID
                         },
                         new Team
@@ -197,13 +198,72 @@ namespace WMBA5.Data
                         new Team
                         {
                             TeamName = "Trash Pandas",
-                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "David Stovell").ID,
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Joshua Kaluba").ID,
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "15U").ID
-                        });
+                        },
+                        //Adding more teams following feedback
+                        //U9
+                        new Team
+                        {
+                            TeamName = "Raimon",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "David Stovell").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "9U").ID
+                        },
+                        new Team
+                        {
+                            TeamName = "Orfeo",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendell").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "9U").ID
+                        },
+                        new Team
+                        {
+                            TeamName = "Kings",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Mark Hardwick").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "9U").ID
+                        },
+                        //U11
+                        new Team
+                        {
+                            TeamName = "Trash Pandas",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "David Stovell").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "11U").ID
+                        },
+                        new Team
+                        {
+                            TeamName = "Angry Birds",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendell").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "11U").ID
+                        },
+                        new Team
+                        {
+                            TeamName = "G2",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Melisa Vanderlely").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "11U").ID
+                        },
+                        //U18
+                        new Team
+                        {
+                            TeamName = "Raimon",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Joshua Kaluba").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "18U").ID
+                        },
+                        new Team
+                        {
+                            TeamName = "Leviathan",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Dave Kendell").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "18U").ID
+                        },
+                        new Team
+                        {
+                            TeamName = "Wellanders",
+                            CoachID = context.Coaches.FirstOrDefault(c => c.CoachName == "Melisa Vanderlely").ID,
+                            DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "18U").ID
+                        }
+                        );
                     context.SaveChanges();
                 }
 
-
+                #region Hardcoded Players
                 //Adding Players
                 if (!context.Players.Any())
                 {
@@ -470,7 +530,8 @@ namespace WMBA5.Data
                             DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "13U").ID,
                         }
                     );
-
+                    #endregion
+                    #region Array of Names
                     //Adding more players with random values, so we have more players in more Teams
                     string[] firstNames = new string[] { "Lyric", "Antoinette", "Vivian" };
                     string[] lastNames = new string[] { "Watts", "Randall", "Arias", };
@@ -482,7 +543,20 @@ namespace WMBA5.Data
                     string[] lastNames3= new string[] { "Robles", "Frederick", "Parker" };
                     string[] firstNames4 = new string[] { "Chris", "Tommas", "David", "Sam" };
                     string[] lastNames4 = new string[] { "Bumstead", "Mazza", "Laid" };
-
+                    //New names for more teams
+                    string[] firstNames5 = new string[] { "Juan", "Jorge", "Gama", "Joshua" };
+                    string[] lastNames5= new string[] { "Weber", "Wagner", "Carlson" };
+                    string[] firstNames6 = new string[] { "Rishi", "Philip", "Subit", "Cole" };
+                    string[] lastNames6 = new string[] { "Warner", "Soriano", "Paudyal" };
+                    string[] firstNames7 = new string[] { "Donnis", "Apolo", "Rocky", "Sam" };
+                    string[] lastNames7 = new string[] { "Creed", "Balboa", "Marquez" };
+                    string[] firstNames8 = new string[] { "Ruth", "Jamison", "Emilia", "Natalee" };
+                    string[] lastNames8 = new string[] { "Weber", "Stone", "Carlson" };
+                    string[] firstNames9 = new string[] { "Yadiel", "Jakayla", "Lukas", "Moses" };
+                    string[] lastNames9 = new string[] { "Robles", "Frederick", "Parker" };
+                    string[] firstNames10 = new string[] { "Chris", "Tommas", "David", "Sam" };
+                    string[] lastNames10 = new string[] { "Bumstead", "Mazza", "Laid" };
+                    #endregion
                     //Loop through names and add more
                     //For whitecaps team
                     foreach (string lastName in lastNames)
@@ -495,7 +569,7 @@ namespace WMBA5.Data
                                 {
                                     FirstName = firstname,
                                     LastName = lastName,
-                                    MemberID = random.Next(11111111, 34500000).ToString(),
+                                    MemberID = random.Next(11111111, 24500000).ToString(),
                                     JerseyNumber = random.Next(0, 99),
                                     StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                                     TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Whitecaps").ID,
@@ -506,6 +580,8 @@ namespace WMBA5.Data
 
                             }
                         }
+                    #region U15 players
+                    //U15
                     //For Bisons
                     foreach (string lastName in lastNames2)
                     {
@@ -517,7 +593,7 @@ namespace WMBA5.Data
                             {
                                 FirstName = firstname,
                                 LastName = lastName,
-                                MemberID = random.Next(34500001, 54500000).ToString(),
+                                MemberID = random.Next(24500001, 37500000).ToString(),
                                 JerseyNumber = random.Next(0, 99),
                                 StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                                 TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Bisons").ID,
@@ -539,7 +615,7 @@ namespace WMBA5.Data
                             {
                                 FirstName = firstname,
                                 LastName = lastName,
-                                MemberID = random.Next(54500001, 74500000).ToString(),
+                                MemberID = random.Next(37500001, 44500000).ToString(),
                                 JerseyNumber = random.Next(0, 99),
                                 StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                                 TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Dragons").ID,
@@ -561,7 +637,7 @@ namespace WMBA5.Data
                             {
                                 FirstName = firstname,
                                 LastName = lastName,
-                                MemberID = random.Next(74500001, 99999999).ToString(),
+                                MemberID = random.Next(44500001, 57500000).ToString(),
                                 JerseyNumber = random.Next(0, 99),
                                 StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
                                 TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Trash Pandas").ID,
@@ -572,9 +648,223 @@ namespace WMBA5.Data
 
                         }
                     }
+                    #endregion
+                    #region 9U Players
+                    //U9
+                    //For Raimon
+                    foreach (string lastName in lastNames5)
+                    {
+                        foreach (string firstname in firstNames5)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(57500000, 59500000).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Raimon" && t.Division.DivisionName =="9U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "9U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    context.SaveChanges();
+                    //For Orfeo
+                    foreach (string lastName in lastNames6)
+                    {
+                        foreach (string firstname in firstNames6)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(59500001, 63500000).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Orfeo" && t.Division.DivisionName == "9U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "9U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    context.SaveChanges();
+                    //For Kings
+                    foreach (string lastName in lastNames5)
+                    {
+                        foreach (string firstname in firstNames5)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(63500001, 67500000).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Kings" && t.Division.DivisionName == "9U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "9U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    #endregion
+                    #region 11U Players
+                    //U11
+                    //For Trash Pandas
+                    foreach (string lastName in lastNames7)
+                    {
+                        foreach (string firstname in firstNames7)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(67500001, 70000000).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Trash Pandas" && t.Division.DivisionName == "11U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "11U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    context.SaveChanges();
+                    //For Angry Birds
+                    foreach (string lastName in lastNames8)
+                    {
+                        foreach (string firstname in firstNames8)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(70000001, 70025000).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Angry Birds" && t.Division.DivisionName == "11U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "11U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    context.SaveChanges();
+                    //For G2
+                    foreach (string lastName in lastNames9)
+                    {
+                        foreach (string firstname in firstNames9)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(70025001, 70055001).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "G2" && t.Division.DivisionName == "11U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "11U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    #endregion
+                    #region 18U Players
+                    //U18
+                    //For Raimon
+                    foreach (string lastName in lastNames10)
+                    {
+                        foreach (string firstname in firstNames10)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(70055002, 70800000).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Raimon" && t.Division.DivisionName == "18U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "18U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    context.SaveChanges();
+                    //For Leviathan
+                    foreach (string lastName in lastNames8)
+                    {
+                        foreach (string firstname in firstNames)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(70800001, 80002500).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Leviathan" && t.Division.DivisionName == "18U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "18U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    context.SaveChanges();
+                    //For Wellanders
+                    foreach (string lastName in lastNames4)
+                    {
+                        foreach (string firstname in firstNames3)
+                        {
+
+                            //Construct some details
+                            Player a = new Player()
+                            {
+                                FirstName = firstname,
+                                LastName = lastName,
+                                MemberID = random.Next(80002501, 80040500).ToString(),
+                                JerseyNumber = random.Next(0, 99),
+                                StatusID = context.Statuses.FirstOrDefault(c => c.StatusName == "Active").ID,
+                                TeamID = context.Teams.FirstOrDefault(t => t.TeamName == "Wellanders" && t.Division.DivisionName == "18U").ID,
+                                DivisionID = context.Divisions.FirstOrDefault(c => c.DivisionName == "18U").ID,
+                            };
+                            context.Players.Add(a);
+
+
+                        }
+                    }
+                    #endregion
                     context.SaveChanges();
 
-                    
+
                     //context.SaveChanges();
                 }//End adding the players for all Teams (Hardcoded and random numbers)
 
