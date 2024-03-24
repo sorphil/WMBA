@@ -707,7 +707,7 @@ namespace WMBA5.Controllers
             //Now we can get all of the other players
             var allOptions = _context.Players
                 .Include(p => p.Team)
-                .Where(p => !playersInGame.Contains(p.ID))
+                .Where(p => !playersInGame.Contains(p.ID) && p.DivisionID == game.DivisionID)
                 .OrderBy(p => p.LastName).ThenBy(p => p.FirstName);
 
             //Current players on the lineup
@@ -720,10 +720,13 @@ namespace WMBA5.Controllers
             var selected = new List<ListOptionVM>();
             foreach (var lineupPlayer in currentLineup)
             {
+                // Check if BattingOrder is greater than 0 before adding it to the DisplayText
+                string displayText = lineupPlayer.BattingOrder > 0 ? lineupPlayer.BattingOrder.ToString() + " - " + lineupPlayer.Player.Summary : lineupPlayer.Player.Summary;
+
                 selected.Add(new ListOptionVM
                 {
                     ID = lineupPlayer.PlayerID,
-                    DisplayText = lineupPlayer.BattingOrder.ToString() + " - " + lineupPlayer.Player.Summary
+                    DisplayText = displayText
                 });
             }
             var available = new List<ListOptionVM>();
@@ -738,30 +741,32 @@ namespace WMBA5.Controllers
 
             ViewData["selOpts"] = new MultiSelectList(selected, "ID", "DisplayText");
             ViewData["availOpts"] = new MultiSelectList(available, "ID", "DisplayText");
-            //// Get the team associated with the lineup
-            //var team = lineup == TeamLineup.Home ? game.HomeTeam : game.AwayTeam;
+        
 
-            //// Get players from the specific team for the lineup
-            //var teamPlayers = _context.Players
-            //                          .Where(p => p.TeamID == team.ID)
-            //                          .OrderBy(p => p.LastName)
-            //                          .ThenBy(p => p.FirstName)
-            //                          .Select(p => new SelectListItem
-            //                          {
-            //                              Value = p.ID.ToString(),
-            //                              Text = p.LastName + ", " + p.FirstName
-            //                          }).ToList();
+        //// Get the team associated with the lineup
+        //var team = lineup == TeamLineup.Home ? game.HomeTeam : game.AwayTeam;
 
-            //// Empty selected list as it should start empty and be populated based on user selection
-            //var selected = new List<SelectListItem>();
+        //// Get players from the specific team for the lineup
+        //var teamPlayers = _context.Players
+        //                          .Where(p => p.TeamID == team.ID)
+        //                          .OrderBy(p => p.LastName)
+        //                          .ThenBy(p => p.FirstName)
+        //                          .Select(p => new SelectListItem
+        //                          {
+        //                              Value = p.ID.ToString(),
+        //                              Text = p.LastName + ", " + p.FirstName
+        //                          }).ToList();
 
-            //// Set ViewData for the listboxes
-            //ViewData["selOpts"] = new SelectList(selected, "Value", "Text");
-            //ViewData["availOpts"] = new SelectList(teamPlayers, "Value", "Text");
-        }
+        //// Empty selected list as it should start empty and be populated based on user selection
+        //var selected = new List<SelectListItem>();
+
+        //// Set ViewData for the listboxes
+        //ViewData["selOpts"] = new SelectList(selected, "Value", "Text");
+        //ViewData["availOpts"] = new SelectList(teamPlayers, "Value", "Text");
+    }
 
 
-        [HttpPost]
+    [HttpPost]
         public async Task<IActionResult> NewInning(int? id)
         {
             int? gameID = ViewBag.GameID;
