@@ -21,7 +21,7 @@ namespace WMBA5.Data
                 //Create Roles
                 var RoleManager = applicationBuilder.ApplicationServices.CreateScope()
                     .ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                string[] roleNames = { "Admin", "Rookie Convenor", "Intermediate Convenor", "Senior Convenor", "Coach", "Scorekeeper" };
+                string[] roleNames = { "Admin", "Rookie Convenor", "Intermediate Convenor", "Senior Convenor", "Trash Pandas 15U Coach","Trash Pandas 15U Scorekeeper", "Scorekeeper", "Coach" };
                 IdentityResult roleResult;
                 foreach (var roleName in roleNames)
                 {
@@ -103,7 +103,7 @@ namespace WMBA5.Data
                         userManager.AddToRoleAsync(user, "Senior Convenor").Wait();
                     }
                 }
-                //Create coach user
+                //Create coach Trash Pandas u15 user
                 if (userManager.FindByEmailAsync("coach@outlook.com").Result == null)
                 {
                     IdentityUser user = new IdentityUser
@@ -118,6 +118,40 @@ namespace WMBA5.Data
                     if (result.Succeeded)
                     {
                         userManager.AddToRoleAsync(user, "Coach").Wait();
+                    }
+                }
+                //Create coach Trash Pandas u15 user
+                if (userManager.FindByEmailAsync("coachtp15@outlook.com").Result == null)
+                {
+                    IdentityUser user = new IdentityUser
+                    {
+                        UserName = "coachtp15@outlook.com",
+                        Email = "coachtp15@outlook.com",
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(user, "Coach").Wait();
+                    }
+                }
+                //Create Trash Pandas 15U scorekeeper user
+                if (userManager.FindByEmailAsync("scorekeepertp15@outlook.com").Result == null)
+                {
+                    IdentityUser user = new IdentityUser
+                    {
+                        UserName = "scorekeepertp15@outlook.com",
+                        Email = "scorekeepertp15@outlook.com",
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(user, "Scorekeeper").Wait();
                     }
                 }
                 //Create scorekeeper user
