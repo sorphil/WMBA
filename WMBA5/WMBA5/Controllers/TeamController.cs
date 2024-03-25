@@ -292,7 +292,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: Team/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -315,7 +315,7 @@ namespace WMBA5.Controllers
         // POST: Team/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Teams == null)

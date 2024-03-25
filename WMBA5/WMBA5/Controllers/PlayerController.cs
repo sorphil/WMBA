@@ -16,9 +16,11 @@ using OfficeOpenXml.Table;
 using OfficeOpenXml;
 using Microsoft.VisualBasic.FileIO;
 using Org.BouncyCastle.Utilities.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Trash Pandas 15U Scorekeeper, Scorekeeper, Coach")]
     public class PlayerController : ElephantController
     {
         private readonly WMBAContext _context;
@@ -208,6 +210,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: Player/Create
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public IActionResult Create()
         {
             PopulateDropDownLists();
@@ -221,7 +224,8 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-         public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
+        public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
          {
             try
             {
@@ -335,6 +339,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: Player/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Players == null)
@@ -356,6 +361,7 @@ namespace WMBA5.Controllers
         // POST: Player/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Players == null)
