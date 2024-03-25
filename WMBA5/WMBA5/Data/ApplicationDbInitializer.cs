@@ -134,7 +134,7 @@ namespace WMBA5.Data
 
                     if (result.Succeeded)
                     {
-                        userManager.AddToRoleAsync(user, "Coach").Wait();
+                        userManager.AddToRoleAsync(user, "Trash Pandas 15U Coach").Wait();
                     }
                 }
                 //Create Trash Pandas 15U scorekeeper user
@@ -151,7 +151,7 @@ namespace WMBA5.Data
 
                     if (result.Succeeded)
                     {
-                        userManager.AddToRoleAsync(user, "Scorekeeper").Wait();
+                        userManager.AddToRoleAsync(user, "Trash Pandas 15U Scorekeeper").Wait();
                     }
                 }
                 //Create scorekeeper user

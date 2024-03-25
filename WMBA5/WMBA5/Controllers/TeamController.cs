@@ -41,15 +41,9 @@ namespace WMBA5.Controllers
                 .Include(t => t.Division)
                 .AsNoTracking();
 
-            //Filter for Rookie Convenor
-            if (User.IsInRole("Trash Pandas 15U Coach"))
+            //Filter for  Trash Pandas 15U Coach
+            if (User.IsInRole("Trash Pandas 15U Coach")|| User.IsInRole("Trash Pandas 15U Scorekeeper"))
             {
-                teams = teams.Where(t => t.TeamName == "Trash Pandas" && t.Division.DivisionName == "15U");
-            }
-            //Filter for Trash Pandas 15U Scorekeeper
-            if (User.IsInRole("Trash Pandas 15U Scorekeeper"))
-            {
-                //1 is the ID for U9
                 teams = teams.Where(t => t.TeamName == "Trash Pandas" && t.Division.DivisionName == "15U");
             }
             //Filter for Rookie Convenor
