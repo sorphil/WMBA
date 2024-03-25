@@ -17,9 +17,11 @@ using static System.Formats.Asn1.AsnWriter;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.DiaSymReader;
 using Org.BouncyCastle.Utilities.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Trash Pandas 15U Scorekeeper, Scorekeeper, Coach")]
     public class GameController : ElephantController
     {
         private readonly WMBAContext _context;
@@ -57,6 +59,11 @@ namespace WMBA5.Controllers
 
 
             // Filtering
+            //Filter for  Trash Pandas 15U Coach or Scorekeeper
+            if (User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Trash Pandas 15U Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Trash Pandas" || t.AwayTeam.TeamName == "Trash Pandas" && t.Division.DivisionName == "15U");
+            }
             //Filter for Rookie Convenor
             if (User.IsInRole("Rookie Convenor"))
             {
