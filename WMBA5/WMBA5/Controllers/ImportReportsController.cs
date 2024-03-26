@@ -13,9 +13,11 @@ using WMBA5.Models;
 using Microsoft.VisualBasic.FileIO;
 using WMBA5.Utilities;
 using ImportReport = WMBA5.ViewModels.ImportReport;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
     public class ImportReportsController : Controller
     {
         private readonly WMBAContext _context;

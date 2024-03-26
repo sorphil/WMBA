@@ -48,12 +48,18 @@
                 <th>
                     <input type="submit" name="actionButton" value="Division" class="btn btn-link" />
                 </th>
-                <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-sm btn-outline-success"
-                       role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
-                        <strong>&#x270D; <small>Create New</small></strong>
-                    </a>
-                </th>
+                @{
+                    if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
+                    {
+                        <th style="min-width:120px">
+                            <a asp-action="Create" class="btn btn-sm btn-outline-success"
+                               role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
+                                <strong>&#x270D; <small>Create New</small></strong>
+                            </a>
+                        </th>
+                    }
+                }
+                
             </tr>
         </thead>
         <tbody>
@@ -78,10 +84,15 @@
                            role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             &#x1F50E; <small>Details</small>
                         </a>
-                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary table-buttons"
-                           role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                            &#x274C; <small>Delete</small>
-                        </a>
+                        @{
+                            if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                                   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                                    &#x274C; <small>Delete</small>
+                                </a>
+                            }
+                        }
                     </td>
                 </tr>
             }
