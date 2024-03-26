@@ -87,6 +87,9 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Property<int>("OutcomeID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("PlayerAtBatID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
 
@@ -101,6 +104,8 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasIndex("LocationID");
 
                     b.HasIndex("OutcomeID");
+
+                    b.HasIndex("PlayerAtBatID");
 
                     b.ToTable("Games");
                 });
@@ -276,6 +281,30 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasKey("ID");
 
                     b.ToTable("Positions");
+                });
+
+            modelBuilder.Entity("WMBA5.Models.Runner", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Base")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("GameID");
+
+                    b.HasIndex("PlayerID");
+
+                    b.ToTable("Runners");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Score", b =>
@@ -472,6 +501,10 @@ namespace WMBA5.Data.WMBAMigrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WMBA5.Models.Player", "PlayerAtBat")
+                        .WithMany()
+                        .HasForeignKey("PlayerAtBatID");
+
                     b.Navigation("AwayTeam");
 
                     b.Navigation("Division");
@@ -481,6 +514,8 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Navigation("Location");
 
                     b.Navigation("Outcome");
+
+                    b.Navigation("PlayerAtBat");
                 });
 
             modelBuilder.Entity("WMBA5.Models.GamePlayer", b =>
@@ -559,6 +594,25 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Navigation("Game");
 
                     b.Navigation("Inning");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("WMBA5.Models.Runner", b =>
+                {
+                    b.HasOne("WMBA5.Models.Game", "Game")
+                        .WithMany("Runners")
+                        .HasForeignKey("GameID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WMBA5.Models.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
 
                     b.Navigation("Player");
                 });
@@ -645,6 +699,8 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Navigation("Innings");
 
                     b.Navigation("PlayerAtBats");
+
+                    b.Navigation("Runners");
 
                     b.Navigation("Scores");
                 });
