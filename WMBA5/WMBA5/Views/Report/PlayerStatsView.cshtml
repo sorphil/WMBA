@@ -1,0 +1,96 @@
+﻿@model IEnumerable<WMBA5.Models.Score>
+
+@{
+    ViewData["Title"] = "Download Report";
+}
+
+<h1>PlayerStatsView</h1>
+
+<form asp-action="PlayerStatsView">
+<div class="form-horizontal">
+    <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+    </button><br />
+    <div class="@ViewData["ShowFilter"]" id="collapseFilter">
+        <div class="card card-body bg-light">
+            <div class="row">
+                <div class="form-group col-md-7">
+                    <label class="control-label">Find a game:</label>
+                        @Html.DropDownList("GameID", null, "No Game", htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group col-md-2 align-self-end">
+                        <input type="submit" name="actionButton" value="Download" class="btn btn-outline-primary" />
+                </div>
+            </div>
+                <p class="alert-danger">@TempData["FeedBack"]</p>
+        </div>
+    </div>
+</div>
+@* <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Player)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Balls)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FoulBalls)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Strikes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Out)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Runs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hits)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Game)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Balls)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FoulBalls)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Strikes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Out)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Runs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hits)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Inning.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Game.HomeTeam)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+    <a asp-action="PlayerStatReport" class="btn btn-sm btn-outline-success"
+       role="button" data-bs-toggle="tooltip">
+        <strong><small>Download full report</small></strong>
+    </a> *@
+</form>

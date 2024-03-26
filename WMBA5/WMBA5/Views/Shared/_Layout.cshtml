@@ -43,6 +43,18 @@
                         <li class="nav-item item-nav">
                             <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain User Roles</a>
                         </li>
+                        <li class="nav-item item-nav dropdown">
+                            <a class="nav-link dropdown-toggle" style="color:#E7E7E7" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Reports
+                            </a>
+                            <ul class="dropdown-menu text-black" aria-labelledby="navbarDropdown">
+                                @* <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="GameReport">Game Report</a></li> *@
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="PlayerStatsView">Player Stats Report</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="DownloadStats">Batting Stats Report</a></li>
+                                @*<li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="BattingAnalysisReport">Batting Stats Report</a></li> *@
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="PlayerComparisionView">Player Comparision Report</a></li>
+                            </ul>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
