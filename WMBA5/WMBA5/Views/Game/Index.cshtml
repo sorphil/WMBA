@@ -128,3 +128,35 @@
         </tbody>
     </table>
 </form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Show modal if the flag is set
+        @if (TempData["ShowLoseEditLineupModal"] != null && (bool)TempData["ShowLoseEditLineupModal"] == true)
+        {
+            <text>
+                        $('#loseEditLineupModal').modal('show');
+            </text>
+        }
+                });
+    </script>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="loseEditLineupModal" tabindex="-1" aria-labelledby="loseEditLineupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loseEditLineupModalLabel">There are less than 8 Players in the Lineup</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Lose the match with a score of 3-0?
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" onclick="loseGame()">Lose</a>
+            </div>
+        </div>
+    </div>
+</div>
