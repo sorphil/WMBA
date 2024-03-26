@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -39,6 +39,7 @@
                         <li class="nav-item item-nav">
                             <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Game" asp-action="Index">Games</a>
                         </li>
+
                         @{
                             if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
                             {
@@ -58,7 +59,7 @@
                                 </li>
                             }
                         }
-                        
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
