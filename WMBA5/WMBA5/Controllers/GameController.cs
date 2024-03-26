@@ -438,11 +438,17 @@ namespace WMBA5.Controllers
             // Check if there are any players in the selected lineup (Home/Away)
             var lineup = LineupStr.Equals("Home", StringComparison.OrdinalIgnoreCase) ? TeamLineup.Home : TeamLineup.Away;
             var lineupIsEmpty = gameStats.GamePlayers.Any(gp => gp.BattingOrder == 0 && gp.TeamLineup == TeamLineup.Home);
+            var playerCount = gameStats.GamePlayers.Count(gp => gp.BattingOrder != 0 && gp.TeamLineup == TeamLineup.Home);
 
             if (lineupIsEmpty)
             {
-                TempData["ErrorMessage"] = "No players in the lineup.";
                 return RedirectToAction(nameof(EditLineup), new { id = id, Lineup = LineupStr });
+            }
+
+            if (playerCount < 8)
+            {
+                TempData["ShowLoseEditLineupModal"] = true; // Set flag to show the modal
+                return RedirectToAction(nameof(Index), new { id = id, Lineup = LineupStr });
             }
 
             if (!gameStats.Innings.Any())
@@ -784,28 +790,7 @@ namespace WMBA5.Controllers
 
             ViewData["selOpts"] = new MultiSelectList(selected, "ID", "DisplayText");
             ViewData["availOpts"] = new MultiSelectList(available, "ID", "DisplayText");
-        
 
-        //// Get the team associated with the lineup
-        //var team = lineup == TeamLineup.Home ? game.HomeTeam : game.AwayTeam;
-
-        //// Get players from the specific team for the lineup
-        //var teamPlayers = _context.Players
-        //                          .Where(p => p.TeamID == team.ID)
-        //                          .OrderBy(p => p.LastName)
-        //                          .ThenBy(p => p.FirstName)
-        //                          .Select(p => new SelectListItem
-        //                          {
-        //                              Value = p.ID.ToString(),
-        //                              Text = p.LastName + ", " + p.FirstName
-        //                          }).ToList();
-
-        //// Empty selected list as it should start empty and be populated based on user selection
-        //var selected = new List<SelectListItem>();
-
-        //// Set ViewData for the listboxes
-        //ViewData["selOpts"] = new SelectList(selected, "Value", "Text");
-        //ViewData["availOpts"] = new SelectList(teamPlayers, "Value", "Text");
     }
 
 
