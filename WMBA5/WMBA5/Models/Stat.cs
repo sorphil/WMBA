@@ -6,6 +6,25 @@ namespace WMBA5.Models
     {
         public int ID { get; set; }
 
+        #region calculated stats
+        [Display(Name = "Batting/AVG")]
+        public decimal BattAVG
+        {
+            get
+            {
+                return Hits / PlayerAppearance;
+            }
+        }
+        //[Display(Name = "Slugging Percentage ")]
+        //public decimal SLG
+        //{
+        //    get
+        //    {
+        //        return (single + double*2 + triple*3 + HR*4)/ PlayerAppearance;
+        //    }
+        //}
+        #endregion
+
         [Display(Name = "Games Played")]
         public int GamesPlayed { get; set; }
 
