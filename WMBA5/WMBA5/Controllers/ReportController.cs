@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,6 +19,7 @@ using WMBA5.Utilities;
 
 namespace WMBA5.Controllers
 {
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
     public class ReportController : CognizantController
     {
         private readonly WMBAContext _context;
