@@ -7,7 +7,7 @@
 <h2>Edit @ViewData["Lineup"] Lineup</h2>
 
 <hr />
-<form asp-action="EditLineup" method="post">
+<form id="editLineupForm" asp-action="EditLineup" method="post" onsubmit="return checkPlayerCount()">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="ID" />
     <input type="hidden" name="Lineup" value="@ViewData["Lineup"]" />
@@ -68,9 +68,19 @@
 <div>
     <a asp-action="Details" asp-route-id="@Model.ID">Back to Game Details</a>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script src="~/js/multiselect.js"></script>
+    <script>
+        function checkPlayerCount() {
+            var selectedPlayersCount = $('#selectedOptions option').length;
+            if (selectedPlayersCount < 8) {
+                return confirm("There are less than 8 players in the lineup. Do you want to proceed?");
+            }
+            return true; // If player count is 8 or more, proceed with saving
+        }
+    </script>
 }
