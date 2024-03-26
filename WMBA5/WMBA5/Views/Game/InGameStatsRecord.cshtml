@@ -979,10 +979,14 @@
   
         });
         window.addEventListener("beforeunload", function (event) {
-            if (!boolChangedState) {
+            if (boolChangedState) {
                 event.preventDefault();
                 event.returnValue = ''; // This line is for older browsers
                 alert("You have unsaved changes. Are you sure you want to leave?");
+                return true
+            }
+            else {
+                return null
             }
         });
     </script>
