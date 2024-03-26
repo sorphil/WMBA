@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using WMBA5.Models;
 
 namespace WMBA5.Controllers
 {
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
     public class DivisionController : ElephantController
     {
         private readonly WMBAContext _context;

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,9 +22,14 @@
                         <li class="nav-item item-nav">
                             <a class="nav-link" style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item item-nav">
-                            <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="ImportReports" asp-action="Index">Import</a>
-                        </li>
+                        @{
+                            if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
+                            {
+                                <li class="nav-item item-nav">
+                                    <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="ImportReports" asp-action="Index">Import</a>
+                                </li>
+                            }
+                        }
                         <li class="nav-item item-nav">
                             <a class="nav-link" style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Player" asp-action="Index">Players</a>
                         </li>
@@ -34,16 +39,28 @@
                         <li class="nav-item item-nav">
                             <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Game" asp-action="Index">Games</a>
                         </li>
-                        <li class="nav-item item-nav">
-                            <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Coach" asp-action="Index">Coaches</a>
-                        </li>
-                        <li class="nav-item item-nav">
-                            <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Division" asp-action="Index">Divisions</a>
-                        </li>
-                        <li class="nav-item item-nav">
-                            <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain User Roles</a>
-                        </li>
-                        <li class="nav-item item-nav dropdown">
+
+
+                        @{
+                            if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
+                            {
+                                <li class="nav-item item-nav">
+                                    <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Coach" asp-action="Index">Coaches</a>
+                                </li>
+                                <li class="nav-item item-nav">
+                                    <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Division" asp-action="Index">Divisions</a>
+                                </li>
+                            }
+                        }
+                        @{
+                            if (User.IsInRole("Admin"))
+                            {  
+                                <li class="nav-item item-nav">
+                                    <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain User Roles</a>
+                                </li>
+                            }
+                        }
+                       <li class="nav-item item-nav dropdown">
                             <a class="nav-link dropdown-toggle" style="color:#E7E7E7" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Reports
                             </a>
@@ -55,6 +72,8 @@
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="PlayerComparisionView">Player Comparision Report</a></li>
                             </ul>
                         </li>
+
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

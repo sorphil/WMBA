@@ -13,9 +13,11 @@ using WMBA5.Utilities;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using Microsoft.VisualBasic.FileIO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Trash Pandas 15U Scorekeeper, Scorekeeper, Coach")]
     public class TeamController : ElephantController
     {
         private readonly WMBAContext _context;
@@ -39,6 +41,11 @@ namespace WMBA5.Controllers
                 .Include(t => t.Division)
                 .AsNoTracking();
 
+            //Filter for  Trash Pandas 15U Coach
+            if (User.IsInRole("Trash Pandas 15U Coach")|| User.IsInRole("Trash Pandas 15U Scorekeeper"))
+            {
+                teams = teams.Where(t => t.TeamName == "Trash Pandas" && t.Division.DivisionName == "15U");
+            }
             //Filter for Rookie Convenor
             if (User.IsInRole("Rookie Convenor"))
             {
@@ -159,6 +166,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: Team/Create
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public IActionResult Create()
         {
             ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName");
@@ -171,6 +179,7 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> Create([Bind("ID,TeamName,CoachID,DivisionID,LineupID")] Team team)
         {
             try
@@ -283,6 +292,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: Team/Delete/5
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -305,6 +315,7 @@ namespace WMBA5.Controllers
         // POST: Team/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Teams == null)

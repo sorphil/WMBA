@@ -17,9 +17,11 @@ using static System.Formats.Asn1.AsnWriter;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.DiaSymReader;
 using Org.BouncyCastle.Utilities.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Trash Pandas 15U Scorekeeper, Scorekeeper, Coach")]
     public class GameController : ElephantController
     {
         private readonly WMBAContext _context;
@@ -57,6 +59,11 @@ namespace WMBA5.Controllers
 
 
             // Filtering
+            //Filter for  Trash Pandas 15U Coach or Scorekeeper
+            if (User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Trash Pandas 15U Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Trash Pandas" || t.AwayTeam.TeamName == "Trash Pandas" && t.Division.DivisionName == "15U");
+            }
             //Filter for Rookie Convenor
             if (User.IsInRole("Rookie Convenor"))
             {
@@ -401,8 +408,13 @@ namespace WMBA5.Controllers
         }
         [HttpGet]
         //Creating the action to record the in-game Stats for futher creation of the view
-        public async Task<IActionResult> InGameStatsRecord(Game game, int? id, string LineupStr="Home")
+        public async Task<IActionResult> InGameStatsRecord(int? id, string LineupStr = "Home")
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var gameStats = await _context.Games
                 .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
                 .Include(g => g.AwayTeam)
@@ -410,13 +422,28 @@ namespace WMBA5.Controllers
                 .Include(g => g.Division)
                 .Include(g => g.Outcome)
                 .Include(g => g.Location)
-                .Include(g => g.Innings).ThenInclude(g=> g.Scores)
+                .Include(g => g.Innings).ThenInclude(g => g.Scores)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+            if (gameStats == null)
+            {
+                return NotFound();
+            }
+
             ViewBag.GameID = id;
 
-            if (gameStats.Innings.Any() == false)
+            // Check if there are any players in the selected lineup (Home/Away)
+            var lineup = LineupStr.Equals("Home", StringComparison.OrdinalIgnoreCase) ? TeamLineup.Home : TeamLineup.Away;
+            var lineupIsEmpty = gameStats.GamePlayers.Any(gp => gp.BattingOrder == 0 && gp.TeamLineup == TeamLineup.Home);
+
+            if (lineupIsEmpty)
+            {
+                TempData["ErrorMessage"] = "No players in the lineup.";
+                return RedirectToAction(nameof(EditLineup), new { id = id, Lineup = LineupStr });
+            }
+
+            if (!gameStats.Innings.Any())
             {
                 var inning = new Inning
                 {
@@ -432,37 +459,25 @@ namespace WMBA5.Controllers
             }
             else
             {
-                var innings = _context.Innings.Where(i => i.GameID == game.ID).ToList();
+                var innings = _context.Innings.Where(i => i.GameID == gameStats.ID).ToList();
                 ViewBag.Innings = innings;
-            }    
-       
-
-            var teamScores = _context.Scores.Include(s=>s.Player).ThenInclude(p=>p.Team)
-             .GroupBy(s => new {TeamID =  s.Player.TeamID, s.GameID })
-             .Select(g => new TeamScoreVM
-             {
-                 TeamID = g.Key.TeamID.GetValueOrDefault(),
-                 GameID = g.Key.GameID,
-                 TotalRuns = g.Sum(s => s.Runs)
-             }).FirstOrDefault();
-
-
-
-
-            ViewBag.TotalRuns = 0;
-
-            ViewBag.TeamLineup = "Home";
-
-            
-            if (ModelState.IsValid)
-            {
-                
-
-                
             }
-         
+
+            var teamScores = _context.Scores.Include(s => s.Player).ThenInclude(p => p.Team)
+                .GroupBy(s => new { TeamID = s.Player.TeamID, s.GameID })
+                .Select(g => new TeamScoreVM
+                {
+                    TeamID = g.Key.TeamID.GetValueOrDefault(),
+                    GameID = g.Key.GameID,
+                    TotalRuns = g.Sum(s => s.Runs)
+                }).FirstOrDefault();
+
+            ViewBag.TotalRuns = teamScores?.TotalRuns ?? 0;
+            ViewBag.TeamLineup = LineupStr;
+
             return View(gameStats);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int? IncrementValue)
@@ -724,7 +739,7 @@ namespace WMBA5.Controllers
             return View(game);
         }
 
-        
+
         private void PopulateAssignedLineupData(Game game, TeamLineup lineup)
         {
             //For this to work, you must have Included the child collection in the parent object
@@ -733,7 +748,7 @@ namespace WMBA5.Controllers
             //Now we can get all of the other players
             var allOptions = _context.Players
                 .Include(p => p.Team)
-                .Where(p => !playersInGame.Contains(p.ID))
+                .Where(p => !playersInGame.Contains(p.ID) && p.DivisionID == game.DivisionID)
                 .OrderBy(p => p.LastName).ThenBy(p => p.FirstName);
 
             //Current players on the lineup
@@ -746,10 +761,13 @@ namespace WMBA5.Controllers
             var selected = new List<ListOptionVM>();
             foreach (var lineupPlayer in currentLineup)
             {
+                // Check if BattingOrder is greater than 0 before adding it to the DisplayText
+                string displayText = lineupPlayer.BattingOrder > 0 ? lineupPlayer.BattingOrder.ToString() + " - " + lineupPlayer.Player.Summary : lineupPlayer.Player.Summary;
+
                 selected.Add(new ListOptionVM
                 {
                     ID = lineupPlayer.PlayerID,
-                    DisplayText = lineupPlayer.BattingOrder.ToString() + " - " + lineupPlayer.Player.Summary
+                    DisplayText = displayText
                 });
             }
             var available = new List<ListOptionVM>();
@@ -764,11 +782,32 @@ namespace WMBA5.Controllers
 
             ViewData["selOpts"] = new MultiSelectList(selected, "ID", "DisplayText");
             ViewData["availOpts"] = new MultiSelectList(available, "ID", "DisplayText");
+        
 
-        }
+        //// Get the team associated with the lineup
+        //var team = lineup == TeamLineup.Home ? game.HomeTeam : game.AwayTeam;
+
+        //// Get players from the specific team for the lineup
+        //var teamPlayers = _context.Players
+        //                          .Where(p => p.TeamID == team.ID)
+        //                          .OrderBy(p => p.LastName)
+        //                          .ThenBy(p => p.FirstName)
+        //                          .Select(p => new SelectListItem
+        //                          {
+        //                              Value = p.ID.ToString(),
+        //                              Text = p.LastName + ", " + p.FirstName
+        //                          }).ToList();
+
+        //// Empty selected list as it should start empty and be populated based on user selection
+        //var selected = new List<SelectListItem>();
+
+        //// Set ViewData for the listboxes
+        //ViewData["selOpts"] = new SelectList(selected, "Value", "Text");
+        //ViewData["availOpts"] = new SelectList(teamPlayers, "Value", "Text");
+    }
 
 
-        [HttpPost]
+    [HttpPost]
         public async Task<IActionResult> NewInning(int? id)
         {
             int? gameID = ViewBag.GameID;

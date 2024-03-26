@@ -54,11 +54,17 @@
                     <input type="submit" name="actionButton" value="Status" class="btn btn-toolbar" />
             </th>
              <th>
-                    <a asp-action="Create" class="btn btn-sm btn-outline-success"
-                       role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
-                        <strong>&#x270D; <small>Create New</small></strong>
-                    </a>
-                </th>
+                    @{
+                        if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
+                        {
+                            <a asp-action="Create" class="btn btn-sm btn-outline-success"
+                               role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
+                                <strong>&#x270D; <small>Create New</small></strong>
+                            </a>
+                        }
+                     }
+                       
+             </th>
         </tr>
     </thead>
     <tbody>

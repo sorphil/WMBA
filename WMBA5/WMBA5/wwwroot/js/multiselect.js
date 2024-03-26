@@ -20,6 +20,26 @@ function switchOptions(event, senderDDL, receiverDDL) {
         });
     }
 }
+
+//for reordering elements in the selected list
+document.getElementById("btnUp").addEventListener('click', function () {
+    var selectedIndex = DDLforChosen.selectedIndex;
+
+    if (selectedIndex > 0) {
+        var selectedOption = DDLforChosen.options[selectedIndex];
+        selectedOption.parentNode.insertBefore(selectedOption, selectedOption.previousElementSibling);
+    }
+});
+
+document.getElementById("btnDown").addEventListener('click', function () {
+    var selectedIndex = DDLforChosen.selectedIndex;
+
+    if (selectedIndex < DDLforChosen.options.length - 1) {
+        var selectedOption = DDLforChosen.options[selectedIndex];
+        selectedOption.parentNode.insertBefore(selectedOption.nextElementSibling, selectedOption);
+    }
+});
+
 //create closures so that we can access the event & the 2 parameters
 let addOptions = (event) => switchOptions(event, DDLforAvail, DDLforChosen);
 let removeOptions = (event) => switchOptions(event, DDLforChosen, DDLforAvail);

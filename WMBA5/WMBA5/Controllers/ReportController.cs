@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -14,15 +15,20 @@ using WMBA5.Data;
 using WMBA5.Models;
 using WMBA5.Utilities;
 
+
 namespace WMBA5.Controllers
 {
     public class ReportController : CognizantController
     {
         private readonly WMBAContext _context;
+
+
+
         public ReportController(WMBAContext context)
         {
             _context = context;
         }
+
 
         public IActionResult GameReport()
         {
@@ -535,6 +541,7 @@ namespace WMBA5.Controllers
                 }
             }
             return NotFound("No Data");
+
         }
 
         public IActionResult DownloadStats()
@@ -548,7 +555,9 @@ namespace WMBA5.Controllers
                 .AsNoTracking()
                 .ToList();
 
+
             if (playerStats.Any())
+
             {
                 //Create a new spreadsheet from scratch
                 using (ExcelPackage excel = new ExcelPackage())
@@ -562,9 +571,11 @@ namespace WMBA5.Controllers
                     {
                         rowNum++;
 
+
                         workSheet.Cells[rowNum, 1].Value = "Division: " + division.DivisionName;
                         workSheet.Cells[rowNum, 1].Style.Font.Bold = true;
                         workSheet.Cells[rowNum, 1, rowNum, 11].Merge = true;
+
                         workSheet.Cells[rowNum, 1, rowNum, 11].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
                         //workSheet.Cells[rowNum, 1, rowNum, 11].Style.Border.Top.Style = ExcelBorderStyle.Thick;
@@ -580,8 +591,10 @@ namespace WMBA5.Controllers
                         {
                             workSheet.Cells[rowNum, 1].Value = "Team: " + team.TeamName;
                             workSheet.Cells[rowNum, 1].Style.Font.Bold = true;
+
                             workSheet.Cells[rowNum, 1, rowNum, 11].Merge = true;
                             workSheet.Cells[rowNum, 1, rowNum, 11].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
 
                             //workSheet.Cells[rowNum, 1, rowNum, 11].Style.Border.Top.Style = ExcelBorderStyle.Thick;
                             //workSheet.Cells[rowNum, 1, rowNum, 11].Style.Border.Right.Style = ExcelBorderStyle.Thick;
@@ -598,11 +611,13 @@ namespace WMBA5.Controllers
                                 workSheet.Cells[rowNum, 1].Value = player.FullName;
 
                                 foreach (var stat in player.Stats)
+
                                 {
                                     workSheet.Cells[rowNum, 2].Value = stat.GamesPlayed != 0 ? stat.GamesPlayed : "0";
                                     workSheet.Cells[rowNum, 3].Value = stat.PlayerAppearance != 0 ? stat.PlayerAppearance : "0";
                                     workSheet.Cells[rowNum, 4].Value = stat.RunsScored != 0 ? stat.RunsScored : "0";
                                     workSheet.Cells[rowNum, 5].Value = stat.Hits != 0 ? stat.Hits : "0";
+
                                     //workSheet.Cells[rowNum, 6].Value = "0";       //stat.Single;//needs some fixes in the model
                                     //workSheet.Cells[rowNum, 7].Value = "0";       //stat.Double;//needs some fixes in the model
                                     //workSheet.Cells[rowNum, 8].Value = "0";       //stat.Triple;//needs some fixes in the model
@@ -614,6 +629,7 @@ namespace WMBA5.Controllers
                                 }
 
                                 rowNum++;
+
 
                             }
                             //workSheet.Cells[3, 1, rowNum, 11].Style.Border.BorderAround(ExcelBorderStyle.Thick, Color.Black);
@@ -654,6 +670,7 @@ namespace WMBA5.Controllers
                     workSheet.Cells[3, 3].Value = "Plate Apperances";
                     workSheet.Cells[3, 4].Value = "Runs Scored";
                     workSheet.Cells[3, 5].Value = "Hits";
+
                     //workSheet.Cells[3, 6].Value = "Singles";
                     //workSheet.Cells[3, 7].Value = "Doubles";
                     //workSheet.Cells[3, 8].Value = "Triples";
@@ -661,6 +678,7 @@ namespace WMBA5.Controllers
                     workSheet.Cells[3, 6].Value = "RBI";
                     workSheet.Cells[3, 7].Value = "StrikeOuts";
                     workSheet.Cells[3, 8].Value = "Batting AVG";
+
 
                     //borders
                     //workSheet.Cells[3, 1, 3, 11].Style.Border.Top.Style = ExcelBorderStyle.Thick;
@@ -670,7 +688,9 @@ namespace WMBA5.Controllers
                     try
                     {
                         Byte[] theData = excel.GetAsByteArray();
+
                         string filename = "BattingAnalysis.xlsx";
+
                         string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                         return File(theData, mimeType, filename);
                     }
@@ -685,6 +705,7 @@ namespace WMBA5.Controllers
             {
                 return NotFound("No data.");
             }
+
         }
 
 
