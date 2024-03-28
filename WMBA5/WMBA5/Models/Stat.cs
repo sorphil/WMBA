@@ -31,7 +31,12 @@ namespace WMBA5.Models
         [Display(Name = "Player Appearances")]
         public int PlayerAppearance { get; set; }
 
-        public int Hits { get; set; }
+        public int Singles { get; set; }
+        public int Doubles { get; set; }
+        public int  Triples { get; set; }
+        public int StrikeOut { get; set; }
+        public int GroundOut { get; set; }
+        public int PopOut { get; set; }
 
         [Display(Name = "Runs Scored")]
         public int RunsScored { get; set; }
