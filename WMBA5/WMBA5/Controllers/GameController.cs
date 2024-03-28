@@ -183,6 +183,8 @@ namespace WMBA5.Controllers
             return View(game);
         }
 
+        //Get: Game/Create/5
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public IActionResult Create()
         {
             // Keeping your original SelectList assignments for other fields
@@ -203,12 +205,13 @@ namespace WMBA5.Controllers
             // Proceeding with your Create action logic...
             return View();
         }
-
+        
 
 
         // POST: Game/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> Create([Bind("ID,StartTime,HomeTeamID,AwayTeamID,LocationID")] Game game, int HomeTeamID, int AwayTeamID)
         {
             var teamList = _context.Teams.Select(t => new SelectListItem
@@ -299,6 +302,7 @@ namespace WMBA5.Controllers
             }
         }
         // GET: Game/Edit/5
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -331,9 +335,11 @@ namespace WMBA5.Controllers
             return View(game);
         }
 
+
         // POST: Game/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,StartTime,HomeTeamID,AwayTeamID,LocationID,OutcomeID, DivisionID")] Game game, int HomeTeamID, int AwayTeamID)
         {
             var teamList = _context.Teams.Select(t => new SelectListItem
@@ -619,6 +625,7 @@ namespace WMBA5.Controllers
             return Json(playerScore);
         }
         // GET: Game/Delete/5
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Games == null)
@@ -644,6 +651,7 @@ namespace WMBA5.Controllers
         // POST: Game/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var game = await _context.Games.FindAsync(id);
