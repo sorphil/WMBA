@@ -58,13 +58,21 @@ namespace WMBA5.Models
         public Division Division { get; set; }
 
 
+        [Display(Name = "Player At Bat")]
+        public int? PlayerAtBatID { get; set; }
+        public Player? PlayerAtBat { get; set; }
+
+
         public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
         public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
 
         public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
-   
+
+
         [Display(Name = "Game Players")]
         public ICollection<GamePlayer> GamePlayers { get; set; } = new HashSet<GamePlayer>();
+
+        public ICollection<Runner> Runners { get; set; } = new HashSet<Runner>();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

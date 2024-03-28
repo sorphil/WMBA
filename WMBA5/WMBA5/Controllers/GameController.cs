@@ -18,6 +18,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.DiaSymReader;
 using Org.BouncyCastle.Utilities.IO;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace WMBA5.Controllers
 {
@@ -442,11 +444,17 @@ namespace WMBA5.Controllers
             // Check if there are any players in the selected lineup (Home/Away)
             var lineup = LineupStr.Equals("Home", StringComparison.OrdinalIgnoreCase) ? TeamLineup.Home : TeamLineup.Away;
             var lineupIsEmpty = gameStats.GamePlayers.Any(gp => gp.BattingOrder == 0 && gp.TeamLineup == TeamLineup.Home);
+            var playerCount = gameStats.GamePlayers.Count(gp => gp.BattingOrder != 0 && gp.TeamLineup == TeamLineup.Home);
 
             if (lineupIsEmpty)
             {
-                TempData["ErrorMessage"] = "No players in the lineup.";
                 return RedirectToAction(nameof(EditLineup), new { id = id, Lineup = LineupStr });
+            }
+
+            if (playerCount < 8)
+            {
+                TempData["ShowLoseEditLineupModal"] = true; // Set flag to show the modal
+                return RedirectToAction(nameof(Index), new { id = id, Lineup = LineupStr });
             }
 
             if (!gameStats.Innings.Any())
@@ -790,28 +798,7 @@ namespace WMBA5.Controllers
 
             ViewData["selOpts"] = new MultiSelectList(selected, "ID", "DisplayText");
             ViewData["availOpts"] = new MultiSelectList(available, "ID", "DisplayText");
-        
 
-        //// Get the team associated with the lineup
-        //var team = lineup == TeamLineup.Home ? game.HomeTeam : game.AwayTeam;
-
-        //// Get players from the specific team for the lineup
-        //var teamPlayers = _context.Players
-        //                          .Where(p => p.TeamID == team.ID)
-        //                          .OrderBy(p => p.LastName)
-        //                          .ThenBy(p => p.FirstName)
-        //                          .Select(p => new SelectListItem
-        //                          {
-        //                              Value = p.ID.ToString(),
-        //                              Text = p.LastName + ", " + p.FirstName
-        //                          }).ToList();
-
-        //// Empty selected list as it should start empty and be populated based on user selection
-        //var selected = new List<SelectListItem>();
-
-        //// Set ViewData for the listboxes
-        //ViewData["selOpts"] = new SelectList(selected, "Value", "Text");
-        //ViewData["availOpts"] = new SelectList(teamPlayers, "Value", "Text");
     }
 
 
@@ -905,5 +892,102 @@ namespace WMBA5.Controllers
             return Json(LocationSelectionList(id));
         }
         private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
+
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> NewScoreObject(int? GameID, int? PlayerID, int? InningID)
+        {
+            var score = await _context.Scores.FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
+            if (score == null)
+            {
+                // Create a new score object if it doesn't exist
+                score = new Score
+                {
+                    PlayerID = (int)PlayerID,
+                    InningID = (int)InningID,
+                    GameID = (int)GameID
+                };
+                _context.Scores.Add(score);
+                await _context.SaveChangesAsync();
+            }
+            var scoreJson = JsonConvert.SerializeObject(
+                new
+                    {
+                        score.ID,
+                        score.Balls,
+                        score.FoulBalls,
+                        score.Strikes,
+                        score.Out,
+                        score.Runs,
+                        score.Hits,
+                        score.InningID,
+                        score.GameID,
+                        score.PlayerID
+                    }
+                );
+
+            return Json(scoreJson);
+
+        }
+
+
+
+       
+
+
+
+
+        [HttpGet]
+        //Creating the action to record the in-game Stats for futher creation of the view
+        public async Task<IActionResult> GetGameInfo(int? id)
+        {
+            var gameStats = await _context.Games
+         .Include(g => g.GamePlayers).ThenInclude(gp => gp.Player).ThenInclude(p => p.Scores)
+         .Include(g => g.Runners).ThenInclude(r => r.Player)
+         .FirstOrDefaultAsync(m => m.ID == id);
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+            var gameStatsJson = JsonConvert.SerializeObject(gameStats, settings);
+            // Serialize gameStats to JSON
+
+
+            return Json(gameStatsJson);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateGameInfo(string json)
+        {
+            Console.WriteLine(json);
+            JObject jObject = JObject.Parse(json);
+            var gameStats = JsonConvert.DeserializeObject<Game>(json.ToString());
+            //_context.Games.Update(gameStats);
+
+
+            var existingGame = await _context.Games.FirstOrDefaultAsync(g => g.ID == gameStats.ID);
+            if (existingGame != null)
+            {
+
+                // Detach the existing Game entity from the context
+                _context.Entry(existingGame).State = EntityState.Detached;
+                // Update properties of existingGame with values from gameStats
+                existingGame.GamePlayers = gameStats.GamePlayers;
+                existingGame.Innings = gameStats.Innings;
+
+                // Repeat for other properties as needed
+                _context.Update(existingGame);
+                _context.SaveChanges();
+            }
+            foreach (var score in gameStats.Scores)
+            {
+                _context.Entry(score).State = EntityState.Detached;
+            }
+
+            return Json(new { success = true, data = gameStats });
+        }
     }
 }

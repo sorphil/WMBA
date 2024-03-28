@@ -36,6 +36,9 @@ namespace WMBA5.Data
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Team> Teams { get; set; }
 
+        public DbSet<Runner> Runners { get; set; }
+
+
 
         //public DbSet<TeamLineup> TeamLineups { get; set; } // this is a enum not a class Dbset is not required for this.
 
@@ -156,6 +159,13 @@ namespace WMBA5.Data
             modelBuilder.Entity<Player>()
                 .HasIndex(p => p.MemberID)
                 .IsUnique();
+
+            //Game to Runners
+            modelBuilder.Entity<Game>()
+                .HasMany<Runner>(c => c.Runners)
+                .WithOne(c => c.Game)
+                .HasForeignKey(c => c.GameID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //modelBuilder.Entity<TeamGame>()
             //    .HasOne(tg => tg.AwayTeam)
