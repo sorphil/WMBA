@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
-    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Trash Pandas 15U Scorekeeper, Scorekeeper, Coach")]
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Coach")]
     public class TeamController : ElephantController
     {
         private readonly WMBAContext _context;
