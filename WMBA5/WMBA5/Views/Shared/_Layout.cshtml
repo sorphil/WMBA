@@ -31,7 +31,7 @@
                             }
                         }
                         @{
-                            if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor") || User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Trash Pandas 15U Scorekeeper") || User.IsInRole("Scorekeeper") || User.IsInRole("Coach"))
+                            if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor") || User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Coach"))
                             {
                                 <li class="nav-item item-nav">
                                     <a class="nav-link" style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Player" asp-action="Index">Players</a>
@@ -39,6 +39,12 @@
                                 <li class="nav-item item-nav">
                                     <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Team" asp-action="Index">Teams</a>
                                 </li>
+                                
+                            }
+                        }
+                        @{
+                            if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor") || User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Trash Pandas 15U Scorekeeper") || User.IsInRole("Scorekeeper") || User.IsInRole("Coach"))
+                            {
                                 <li class="nav-item item-nav">
                                     <a class="nav-link " style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Game" asp-action="Index">Games</a>
                                 </li>
