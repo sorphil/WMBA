@@ -1,5 +1,19 @@
 ﻿@model WMBA5.Models.Player
-<partial name="_ViewHeading" />
+
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <partial name="_ViewHeading" />
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the &quot;Create Player&quot; page, you can enter all the necessary information of a player like Player name, MemberID, Jersey No, Division, Status and Team name.</p>
+                       <p>2- Once finished entering the necessary information, click on the &quot;Create&quot; button to add that player.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
 
 <hr />
 <form asp-action="Create" method="post" enctype="multipart/form-data"> 
@@ -101,6 +115,22 @@
             });
             // Trigger change event on division dropdown to populate teams on page load
             $('#DivisionID').change();
+        });
+
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
+
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
         });
     </script>
 }

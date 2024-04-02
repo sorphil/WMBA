@@ -4,7 +4,24 @@
     ViewData["Title"] = "Index";
 }
 
-<partial name="_ViewHeading" />
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <partial name="_ViewHeading" />
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the Teams Page you can see the Team Name, Coach and Division.</p>
+                       <p>2- You can click on any team's &quot;Details&quot; button and you will see all of their details.</p>
+                       <p>3- By clicking on &quot;Edit&quot; button you can edit that particular team's details.</p>
+                       <p>4- On click of &quotCreate New&quot; button you can create a new team.</p>
+                       <p>5- With the Filter/Search bar you can search a team, sort them or group them.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
+
 <hr />
 <label class="alert-danger">@TempData["FeedBack"]</label>
 <form asp-action="Index" method="get">
@@ -100,3 +117,23 @@
     </table>
     <partial name="_PagingNavBar" />
 </form>
+
+@section Scripts {
+    <script type="text/javascript">
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
+
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
+        });
+    </script>
+}
