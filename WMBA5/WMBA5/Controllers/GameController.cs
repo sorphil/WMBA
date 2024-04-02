@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.ContentModel;
@@ -918,7 +918,10 @@ namespace WMBA5.Controllers
             var existingGame = await _context.Games.FirstOrDefaultAsync(g => g.ID == gameStats.ID);
             if (existingGame != null)
             {
-
+                foreach (var gamePlayer in existingGame.GamePlayers)
+                {
+                    _context.Entry(gamePlayer).State = EntityState.Detached;
+                }
                 // Detach the existing Game entity from the context
                 _context.Entry(existingGame).State = EntityState.Detached;
                
@@ -929,13 +932,10 @@ namespace WMBA5.Controllers
                 existingGame.PlayerAtBatID = gameStats.PlayerAtBatID;
                 existingGame.CurrentInningID= gameStats.CurrentInningID;
                 existingGame.CurrentInning = gameStats.CurrentInning;
+                existingGame.CurrentInning.AwayRuns = gameStats.CurrentInning.AwayRuns;
                 // Repeat for other properties as needed
                 _context.Update(existingGame);
                 _context.SaveChanges();
-            }
-            foreach (var score in gameStats.Scores)
-            {
-                _context.Entry(score).State = EntityState.Detached;
             }
 
             return Json(new { success = true, data = gameStats });
@@ -943,7 +943,7 @@ namespace WMBA5.Controllers
       
         public async Task<IActionResult> GetGameInnings(int id)
         {
-            var innings = await _context.Innings.Include(i => i.Scores)
+            var innings = await _context.Innings.Include(i => i.Scores) 
                 .Where(i => i.GameID == id)
                 .ToListAsync();
             

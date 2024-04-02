@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Record Game";
 }
-
 <link rel="stylesheet" href="css/Layout.css">
 <div class="d-flex justify-content-between align-items-center">
     <div class="d-flex align-items-center">
@@ -305,30 +304,42 @@
                 if (confirm("Warning: Moving on to the next inning will save the game state")) 
                 {
                     let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
-                    inning.AwayRuns = input;
-                    let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
-                    let nextInningString = `Inning ${nextInningNumber}`;
-                    let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
-                    gameInfoJson.CurrentInningID = nextInning.id;
-                    console.log(nextInning, nextInningString)
-                    gameInfoJson.CurrentInning = nextInning;
-                    let data = { GameID: @ViewBag.GameID, InningID: gameInfoJson.CurrentInningID }
+                    inning.awayRuns = parseInt(input);
                     $.ajax({
                         url: "@Url.Action("UpdateGameInfo", "Game")",
                         type: 'POST',
                         dataType: "json",
                         data: { 'json': JSON.stringify(gameInfoJson) },
                         success: function (data) {
-                            console.log(data)
+                      
+                            let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
+                            let nextInningString = `Inning ${nextInningNumber}`;
+                            let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
+                            console.log(inning, nextInning)
+                            gameInfoJson.CurrentInningID = nextInning.id;
+                            gameInfoJson.CurrentInning = nextInning;
                             boolChangedState = false;
-                            gameInfoJson = fetchGameInfo().then(() => {
-                                inningsInfoJson = fetchInningsInfo();
-                                return inningsInfoJson
-                            }).then((data) => {
 
-                                setInnings();
-                            });
                         }
+                    }).then(() => {
+                        $.ajax({
+                            url: "@Url.Action("UpdateGameInfo", "Game")",
+                            type: 'POST',
+                            dataType: "json",
+                            data: { 'json': JSON.stringify(gameInfoJson) },
+                            success: function (data) {
+
+
+                                boolChangedState = false;
+                                gameInfoJson = fetchGameInfo().then(() => {
+                                    inningsInfoJson = fetchInningsInfo();
+                                    return inningsInfoJson
+                                }).then((data) => {
+
+                                    setInnings();
+                                });
+                            }
+                        })
                     });
                 }
             }
@@ -339,7 +350,7 @@
         let setInnings = () => {
    
             let innings = inningsInfoJson;
-            console.log(innings, inningsInfoJson.find(i => i.id == gameInfoJson.CurrentInningID).inningNo);
+          // /*   console.log(innings, inningsInfoJson.find(i => i.id == gameInfoJson.CurrentInningID) */.inningNo);
             document.querySelector("#currentInning").innerHTML = inningsInfoJson.find(i => i.id == gameInfoJson.CurrentInningID).inningNo;
             let i = 1;
             inningsInfoJson.forEach((inning) => {
@@ -351,10 +362,10 @@
                     total = total + score?.runs
                     return total;
                 }, 0);
-                console.log(inning)
+                // console.log(inning)
                 document.querySelector(`#home${i}`).innerHTML = inningScore? inningScore : 0;
                 i++;
-                console.log(inningScore)
+                // console.log(inningScore)
             })
  
         }
@@ -461,7 +472,7 @@
             let totalRuns = 0;
             team.forEach(gamePlayer => {
                 let playerScore = 0;
-                if (gamePlayer.Player.Scores.length != 0) {
+                if (gamePlayer.Player.Scores.filter(s=>s.InningID == gameInfoJson.CurrentInningID).length != 0) {
                     playerScore = gamePlayer.Player.Scores.reduce((total, score) => {
                         // Add the total runs to each score object
 
@@ -934,7 +945,7 @@
         });
         $("#btnNext").click(function (event) {
             event.preventDefault();
-            if (gameInfoJson.CurrentInning.AwayRuns == null) {
+            if (gameInfoJson.CurrentInning.awayRuns == null) {
                 let input;
                 do {
                     input = prompt("Please enter the number of runs for the away team");
@@ -945,27 +956,43 @@
 
                 if (input !== null) {
                     let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
-                    inning.AwayRuns = input;
-                    let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
-                    let nextInningString = `Inning ${nextInningNumber}`;
-                    let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
-                    gameInfoJson.CurrentInningID = nextInning.id;
-                    console.log(nextInning, nextInningString)
-                    gameInfoJson.CurrentInning = nextInning;
+                    inning.awayRuns = parseInt(input);
+                  
                     $.ajax({
                                 url: "@Url.Action("UpdateGameInfo", "Game")",
                                 type: 'POST',
                                 dataType: "json",
                                 data: { 'json': JSON.stringify(gameInfoJson) },
                                 success: function (data) {
-                                    console.log(data)
+
+                            let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
+                            let nextInningString = `Inning ${nextInningNumber}`;
+                            let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
+                            console.log(inning, nextInning)
+                            gameInfoJson.CurrentInningID = nextInning.id;
+                            gameInfoJson.CurrentInning = nextInning;
                                     boolChangedState = false;
-                                    gameInfoJson = fetchGameInfo().then(() => { inningsInfoJson = fetchInningsInfo();
-                                    return inningsInfoJson}).then((data) => {
-                              
-                                        setInnings();
-                                    });
+                                    
                                 }
+                            }).then(()=>{
+                        $.ajax({
+                            url: "@Url.Action("UpdateGameInfo", "Game")",
+                            type: 'POST',
+                            dataType: "json",
+                            data: { 'json': JSON.stringify(gameInfoJson) },
+                            success: function (data) {
+
+
+                                boolChangedState = false;
+                                gameInfoJson = fetchGameInfo().then(() => {
+                                    inningsInfoJson = fetchInningsInfo();
+                                    return inningsInfoJson
+                                }).then((data) => {
+
+                                    setInnings();
+                                });
+                            }
+                        })
                             });
 
                   
@@ -975,7 +1002,7 @@
             }
             else {
                 let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
-                inning.AwayRuns = input;
+                inning.awayRuns = parseInt(input);
                 let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
                 let nextInningString = `Inning ${nextInningNumber}`;
                 let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
@@ -1016,10 +1043,21 @@
         });
 
 
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
 
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
+        });
     </script>
 
 }
-
-
-
