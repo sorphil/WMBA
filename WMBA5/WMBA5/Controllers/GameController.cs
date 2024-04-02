@@ -891,6 +891,7 @@ namespace WMBA5.Controllers
         {
             var gameStats = await _context.Games
          .Include(g => g.GamePlayers).ThenInclude(gp => gp.Player).ThenInclude(p => p.Scores)
+         .Include(g=>g.CurrentInning)
          .Include(g => g.Runners)
      
          .FirstOrDefaultAsync(m => m.ID == id);
@@ -913,20 +914,21 @@ namespace WMBA5.Controllers
             var gameStats = JsonConvert.DeserializeObject<Game>(json.ToString());
             //_context.Games.Update(gameStats);
 
-            //var inning = await _context.Innings.FirstOrDefaultAsync(i => i.ID == gameStats.CurrentInningID);
+
             var existingGame = await _context.Games.FirstOrDefaultAsync(g => g.ID == gameStats.ID);
             if (existingGame != null)
             {
 
                 // Detach the existing Game entity from the context
                 _context.Entry(existingGame).State = EntityState.Detached;
+               
                 // Update properties of existingGame with values from gameStats
                 existingGame.GamePlayers = gameStats.GamePlayers;
-                existingGame.Innings = gameStats.Innings;
+             
                 existingGame.Runners = gameStats.Runners;
                 existingGame.PlayerAtBatID = gameStats.PlayerAtBatID;
                 existingGame.CurrentInningID= gameStats.CurrentInningID;
-                //existingGame.CurrentInning =
+                existingGame.CurrentInning = gameStats.CurrentInning;
                 // Repeat for other properties as needed
                 _context.Update(existingGame);
                 _context.SaveChanges();
@@ -938,19 +940,7 @@ namespace WMBA5.Controllers
 
             return Json(new { success = true, data = gameStats });
         }
-        public async Task<IActionResult> NextInning(int GameID, int InningID, int? score)
-        {
-
-            var inning = await _context.Innings.FirstOrDefaultAsync(i => i.ID == InningID);
-            if (score != null)
-            {
-                inning.AwayRuns = score;
-            }
-            int nextInningNumber = Int32.Parse(inning.InningNo.Substring(7)) + 1;
-            string nextInningString = $"Inning {nextInningNumber}";
-            var nextInning = await _context.Innings.FirstOrDefaultAsync(i => i.GameID == GameID && i.InningNo == nextInningString);
-            return Json(nextInning);
-        }
+      
         public async Task<IActionResult> GetGameInnings(int id)
         {
             var innings = await _context.Innings.Include(i => i.Scores)
