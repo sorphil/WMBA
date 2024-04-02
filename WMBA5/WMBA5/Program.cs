@@ -10,7 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
+builder.Services.AddLogging(loggingBuilder => {
+    loggingBuilder.AddConsole()
+        .AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information);
+    loggingBuilder.AddDebug();
+});
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 

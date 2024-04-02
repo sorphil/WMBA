@@ -48,7 +48,7 @@ namespace WMBA5.Controllers
                             a.Balls,
                             a.FoulBalls,
                             a.Strikes,
-                            a.Out,
+                            a.Outs,
                             a.Hits
                         };
 
@@ -120,7 +120,7 @@ namespace WMBA5.Controllers
                             a.Balls,
                             a.FoulBalls,
                             a.Strikes,
-                            a.Out,
+                            a.Outs,
                             a.Hits
                         };
 

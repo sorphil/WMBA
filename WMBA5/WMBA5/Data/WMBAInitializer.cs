@@ -952,37 +952,37 @@ namespace WMBA5.Data
                 }//end seed data for games
 
                 //Adding Stats
-                if (!context.Stats.Any())
-                {
-                    Random rnd = new Random();
+                //if (!context.Stats.Any())
+                //{
+                //    Random rnd = new Random();
 
 
-                    context.Stats.Add(new Stat
-                    {
-                        GamesPlayed = rnd.Next(20, 60),
-                        PlayerAppearance = rnd.Next(20, 50),
-                        Hits = rnd.Next(10, 30),
-                        RunsScored = rnd.Next(5, 20),
-                        StrikeOuts = rnd.Next(5, 25),
-                        Walks = rnd.Next(2, 15),
-                        RBI = rnd.Next(5, 15),
-                        PlayerID = 1,
-                    });
+                //    context.Stats.Add(new Stat
+                //    {
+                //        GamesPlayed = rnd.Next(20, 60),
+                //        PlayerAppearance = rnd.Next(20, 50),
+                //        Hits = rnd.Next(10, 30),
+                //        RunsScored = rnd.Next(5, 20),
+                //        StrikeOuts = rnd.Next(5, 25),
+                //        Walks = rnd.Next(2, 15),
+                //        RBI = rnd.Next(5, 15),
+                //        PlayerID = 1,
+                //    });
 
-                    context.Stats.Add(new Stat
-                    {
-                        GamesPlayed = rnd.Next(20, 60),
-                        PlayerAppearance = rnd.Next(20, 50),
-                        Hits = rnd.Next(10, 30),
-                        RunsScored = rnd.Next(5, 20),
-                        StrikeOuts = rnd.Next(5, 25),
-                        Walks = rnd.Next(2, 15),
-                        RBI = rnd.Next(5, 15),
-                        PlayerID = 2,
-                    });
+                //    context.Stats.Add(new Stat
+                //    {
+                //        GamesPlayed = rnd.Next(20, 60),
+                //        PlayerAppearance = rnd.Next(20, 50),
+                //        Hits = rnd.Next(10, 30),
+                //        RunsScored = rnd.Next(5, 20),
+                //        StrikeOuts = rnd.Next(5, 25),
+                //        Walks = rnd.Next(2, 15),
+                //        RBI = rnd.Next(5, 15),
+                //        PlayerID = 2,
+                //    });
 
-                    context.SaveChanges();
-                }
+                //    context.SaveChanges();
+                //}
                 //if (!context.Scores.Any())
                 //{
                 //    Random rnd = new Random();

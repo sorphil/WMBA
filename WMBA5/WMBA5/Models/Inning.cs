@@ -15,7 +15,7 @@ namespace WMBA5.Models
 
 
         public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
-
+         public int? AwayRuns { get; set; }
 
 
     }

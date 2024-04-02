@@ -62,6 +62,10 @@ namespace WMBA5.Models
         public int? PlayerAtBatID { get; set; }
         public Player? PlayerAtBat { get; set; }
 
+        [Display(Name = "Current Inning")]
+        public int? CurrentInningID { get; set; }
+        public Inning? CurrentInning { get; set; }
+
 
         public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
         public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
@@ -84,15 +88,29 @@ namespace WMBA5.Models
             {
                 yield return new ValidationResult("Game cannot be created back in time. Please select another date.", new[] { "StartTime" });
             }
+
+            // bases can only have one player
             var basesWithMultiplePlayers = Runners
               .GroupBy(runner => runner.Base)
-              .Where(group => group.Count() > 1)
+              .Where(group => group.Count() > 1 )
               .Select(group => group.Key)
               .ToList();
 
             if (basesWithMultiplePlayers.Any())
             {
                 yield return new ValidationResult($"Multiple players cannot be assigned to the same base: {string.Join(", ", basesWithMultiplePlayers)}.", new[] { "Runners" });
+            }
+
+            // no duplicate players in the field
+            var duplicatePlayers = Runners
+           .GroupBy(runner => runner.Player)
+           .Where(group => group.Count() > 1)
+           .Select(group => group.Key)
+           .ToList();
+
+            if (duplicatePlayers.Any())
+            {
+                yield return new ValidationResult($"Player(s) are assigned more than once: {string.Join(", ", duplicatePlayers)}.", new[] { "Runners" });
             }
         }
 

@@ -41,9 +41,6 @@ namespace WMBA5.Data
 
 
         //public DbSet<TeamLineup> TeamLineups { get; set; } // this is a enum not a class Dbset is not required for this.
-
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            //Prevent Cascade Delete
@@ -100,12 +97,7 @@ namespace WMBA5.Data
                 .HasForeignKey(c => c.PlayerID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Player to PlayerAtBat
-            modelBuilder.Entity<Player>()
-                .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
-                .WithOne(c => c.Player)
-                .HasForeignKey(c => c.PlayerID)
-                .OnDelete(DeleteBehavior.Restrict);
+
 
             //Game to Innings
             modelBuilder.Entity<Game>()
@@ -115,11 +107,6 @@ namespace WMBA5.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             //Game to PlayerAtBat
-            modelBuilder.Entity<Game>()
-                .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
-                .WithOne(c => c.Game)
-                .HasForeignKey(c => c.GameID)
-                .OnDelete(DeleteBehavior.Restrict);
             
             //Add a unique index to the Game Player in the Fluent API
             modelBuilder.Entity<GamePlayer>()

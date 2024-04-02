@@ -20,6 +20,8 @@ using Org.BouncyCastle.Utilities.IO;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using Org.BouncyCastle.Utilities.Collections;
 
 namespace WMBA5.Controllers
 {
@@ -410,7 +412,7 @@ namespace WMBA5.Controllers
         }
         [HttpGet]
         //Creating the action to record the in-game Stats for futher creation of the view
-        public async Task<IActionResult> InGameStatsRecord(int? id, string LineupStr = "Home")
+        public async Task<IActionResult> InGameStatsRecord(int? id)
         {
             if (id == null)
             {
@@ -419,57 +421,97 @@ namespace WMBA5.Controllers
 
             var gameStats = await _context.Games
                 .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
+                .Include(g=>g.PlayerAtBat)
+                .Include(g=>g.Runners)
+                .Include(g=>g.CurrentInning)
                 .Include(g => g.AwayTeam)
                 .Include(g => g.HomeTeam)
                 .Include(g => g.Division)
                 .Include(g => g.Outcome)
                 .Include(g => g.Location)
                 .Include(g => g.Innings).ThenInclude(g => g.Scores)
-                .AsNoTracking()
+
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+        
             if (gameStats == null)
             {
                 return NotFound();
             }
 
             ViewBag.GameID = id;
+          
 
-            // Check if there are any players in the selected lineup (Home/Away)
-            var lineup = LineupStr.Equals("Home", StringComparison.OrdinalIgnoreCase) ? TeamLineup.Home : TeamLineup.Away;
             var lineupIsEmpty = gameStats.GamePlayers.Any(gp => gp.BattingOrder == 0 && gp.TeamLineup == TeamLineup.Home);
             var playerCount = gameStats.GamePlayers.Count(gp => gp.BattingOrder != 0 && gp.TeamLineup == TeamLineup.Home);
 
             if (lineupIsEmpty)
             {
-                return RedirectToAction(nameof(EditLineup), new { id = id, Lineup = LineupStr });
+                return RedirectToAction(nameof(EditLineup), new { id = id});
             }
 
             if (playerCount < 8)
             {
                 TempData["ShowLoseEditLineupModal"] = true; // Set flag to show the modal
-                return RedirectToAction(nameof(Index), new { id = id, Lineup = LineupStr });
+                return RedirectToAction(nameof(Index), new { id = id });
+            }
+            ViewBag.AtBat = gameStats.PlayerAtBat;
+           
+            if (gameStats.PlayerAtBatID == null)
+            {
+                var GamePlayer = await _context.GamePlayers.Include(gp=>gp.Player)
+                                    .FirstOrDefaultAsync(gp => gp.BattingOrder == 1 && gp.GameID == id && gp.TeamLineup == 0);
+                ViewBag.AtBat = GamePlayer.Player;
+                gameStats.PlayerAtBatID = GamePlayer?.PlayerID;
+            
             }
 
+           
             if (!gameStats.Innings.Any())
             {
-                var inning = new Inning
+                for (var i = 0; i<9; i++)
                 {
-                    GameID = gameStats.ID,
-                    InningNo = $"Inning {(gameStats.Innings.Count() + 1).ToString()}",
-                };
-                _context.Innings.Add(inning);
+                    var inning = new Inning
+                    {
+                        GameID = gameStats.ID,
+                        InningNo = $"Inning {(gameStats.Innings.Count() + 1).ToString()}",
+                    };
+                    _context.Innings.Add(inning);
+                    gameStats.Innings.Add(inning);
+                }
                 await _context.SaveChangesAsync();
-
-                gameStats.Innings.Add(inning);
-                ViewBag.Inning = inning;
+               
                 ViewBag.Innings = gameStats.Innings;
             }
             else
             {
                 var innings = _context.Innings.Where(i => i.GameID == gameStats.ID).ToList();
                 ViewBag.Innings = innings;
+                ViewBag.CurrentInning = gameStats.CurrentInningID;
             }
+            ViewBag.CurrentInning = gameStats.CurrentInningID;
+            if (gameStats.CurrentInningID == null || gameStats.CurrentInningID == 0)
+            {
+                var currentInning = await _context.Innings.FirstOrDefaultAsync(i => i.GameID == id && i.InningNo == "Inning 1");
+                ViewBag.CurrentInning = currentInning?.ID;
+                gameStats.CurrentInning = currentInning;
+                gameStats.CurrentInningID = currentInning.ID;
+            }
+            if (!gameStats.Runners.Any())
+            {
+                for (var i = 1; i <= 3; i++)
+                {
+                    var runner = new Runner
+                    {
+                        GameID = gameStats.ID,
+                        Base = (Base)i,
+                    };
+                    _context.Runners.Add(runner);
+                    gameStats.Runners.Add(runner);
+                }
+                await _context.SaveChangesAsync();
+            }
+
 
             var teamScores = _context.Scores.Include(s => s.Player).ThenInclude(p => p.Team)
                 .GroupBy(s => new { TeamID = s.Player.TeamID, s.GameID })
@@ -481,98 +523,99 @@ namespace WMBA5.Controllers
                 }).FirstOrDefault();
 
             ViewBag.TotalRuns = teamScores?.TotalRuns ?? 0;
-            ViewBag.TeamLineup = LineupStr;
+            ViewBag.TeamLineup = "Home";
+           
 
             return View(gameStats);
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int? IncrementValue)
-        {
-            int? gameID = ViewBag.GameID;
-            // Find or create the score object for the player, inning, and game
-            var score = await _context.Scores.FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
+        //[HttpPost]
+        //public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int? IncrementValue)
+        //{
+        //    int? gameID = ViewBag.GameID;
+        //    // Find or create the score object for the player, inning, and game
+        //    var score = await _context.Scores.FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
             
-            if (score == null)
-            {
-                // Create a new score object if it doesn't exist
-                score = new Score
-                {
-                    PlayerID = (int)PlayerID,
-                    InningID = (int)InningID,
-                    GameID = (int)GameID
-                };
-                _context.Scores.Add(score);
-            }
-            // Increment the appropriate field based on the IncrementField parameter
-            switch (IncrementField)
-            {
-                case "Hits":
-                    if(IncrementValue.GetValueOrDefault()<0 && score.Runs==0)
-                    {
-                        break;
-                    }
-                   else if(IncrementValue.GetValueOrDefault()!=null|| IncrementValue.GetValueOrDefault() != 0)
-                    {
-                        score.Hits += IncrementValue.GetValueOrDefault();
-                    }
-                    break;
-                case "Balls":
-                    if (IncrementValue.GetValueOrDefault() < 0 && score.Balls == 0)
-                    {
-                        break;
-                    }
-                    else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
-                    {
-                        score.Balls += IncrementValue.GetValueOrDefault();
-                    }
-                    break;
-                case "Strikes":
-                    if (IncrementValue.GetValueOrDefault() < 0 && score.Strikes == 0)
-                    {
-                        break;
-                    }
+        //    if (score == null)
+        //    {
+        //        // Create a new score object if it doesn't exist
+        //        score = new Score
+        //        {
+        //            PlayerID = (int)PlayerID,
+        //            InningID = (int)InningID,
+        //            GameID = (int)GameID
+        //        };
+        //        _context.Scores.Add(score);
+        //    }
+        //    // Increment the appropriate field based on the IncrementField parameter
+        //    switch (IncrementField)
+        //    {
+        //        case "Hits":
+        //            if(IncrementValue.GetValueOrDefault()<0 && score.Runs==0)
+        //            {
+        //                break;
+        //            }
+        //           else if(IncrementValue.GetValueOrDefault()!=null|| IncrementValue.GetValueOrDefault() != 0)
+        //            {
+        //                score.Hits += IncrementValue.GetValueOrDefault();
+        //            }
+        //            break;
+        //        case "Balls":
+        //            if (IncrementValue.GetValueOrDefault() < 0 && score.Balls == 0)
+        //            {
+        //                break;
+        //            }
+        //            else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
+        //            {
+        //                score.Balls += IncrementValue.GetValueOrDefault();
+        //            }
+        //            break;
+        //        case "Strikes":
+        //            if (IncrementValue.GetValueOrDefault() < 0 && score.Strikes == 0)
+        //            {
+        //                break;
+        //            }
                  
-                    if (score.Strikes + IncrementValue.GetValueOrDefault() >= 3)
-                    {
-                        score.Out = score.Out + 1;
-                        score.Strikes = 0;
-                    }
-                    else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0 || score.Strikes + IncrementValue.GetValueOrDefault() < 3)
-                    {
-                        score.Strikes += IncrementValue.GetValueOrDefault();
-                    }
+        //            if (score.Strikes + IncrementValue.GetValueOrDefault() >= 3)
+        //            {
+        //                score.Out = score.Out + 1;
+        //                score.Strikes = 0;
+        //            }
+        //            else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0 || score.Strikes + IncrementValue.GetValueOrDefault() < 3)
+        //            {
+        //                score.Strikes += IncrementValue.GetValueOrDefault();
+        //            }
                     
-                    break;
-                    case "Outs":
-                    if (IncrementValue.GetValueOrDefault() < 0 && score.Out == 0)
-                    {
-                        break;
-                    }
-                    else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
-                    {
-                        score.Out += IncrementValue.GetValueOrDefault();
-                    }
-                    break;
-                case "Runs":
-                    if (IncrementValue.GetValueOrDefault() < 0 && score.Runs == 0)
-                    {
-                        break;
-                    }
-                    else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
-                    {
-                        score.Runs += IncrementValue.GetValueOrDefault();
-                    }
+        //            break;
+        //            case "Outs":
+        //            if (IncrementValue.GetValueOrDefault() < 0 && score.Out == 0)
+        //            {
+        //                break;
+        //            }
+        //            else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
+        //            {
+        //                score.Out += IncrementValue.GetValueOrDefault();
+        //            }
+        //            break;
+        //        case "Runs":
+        //            if (IncrementValue.GetValueOrDefault() < 0 && score.Runs == 0)
+        //            {
+        //                break;
+        //            }
+        //            else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
+        //            {
+        //                score.Runs += IncrementValue.GetValueOrDefault();
+        //            }
 
-                    break;
-            }
-            // Save changes to the database
-            await _context.SaveChangesAsync();
+        //            break;
+        //    }
+        //    // Save changes to the database
+        //    await _context.SaveChangesAsync();
 
-            // Redirect to appropriate action or view
-            return Json(score);
-        }
+        //    // Redirect to appropriate action or view
+        //    return Json(score);
+        //}
         [HttpGet]
         public async Task<IActionResult> ChangeTeam(int? id, string LineupStr)
         {
@@ -597,35 +640,35 @@ namespace WMBA5.Controllers
 
 
         }
-        [HttpGet]
-        public async Task<IActionResult> GetPlayerScore(int? GameID, int? PlayerID, int? InningID)
-        {
-            var playerScore = await _context.Scores
-                .FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
+        //[HttpGet]
+        //public async Task<IActionResult> GetPlayerScore(int? GameID, int? PlayerID, int? InningID)
+        //{
+        //    var playerScore = await _context.Scores
+        //        .FirstOrDefaultAsync(s => s.PlayerID == PlayerID && s.InningID == InningID && s.GameID == GameID);
 
 
-            if (playerScore == null)
-            {
-                // Create a new score object if it doesn't exist
-                var score = new Score
-                {
-                    PlayerID = (int)PlayerID,
-                    InningID = (int)InningID,
-                    GameID = (int)GameID,
-                    Balls = 0,
-                    Runs = 0,
-                    FoulBalls = 0,
-                    Hits = 0,
-                    Strikes = 0,
-                    Out = 0
-                };
-                _context.Scores.Add(score);
-                await _context.SaveChangesAsync();
-                return Json(score);
-            }
+        //    if (playerScore == null)
+        //    {
+        //        // Create a new score object if it doesn't exist
+        //        var score = new Score
+        //        {
+        //            PlayerID = (int)PlayerID,
+        //            InningID = (int)InningID,
+        //            GameID = (int)GameID,
+        //            Balls = 0,
+        //            Runs = 0,
+        //            FoulBalls = 0,
+        //            Hits = 0,
+        //            Strikes = 0,
+        //            Out = 0
+        //        };
+        //        _context.Scores.Add(score);
+        //        await _context.SaveChangesAsync();
+        //        return Json(score);
+        //    }
 
-            return Json(playerScore);
-        }
+        //    return Json(playerScore);
+        //}
         // GET: Game/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -912,33 +955,67 @@ namespace WMBA5.Controllers
                         score.Balls,
                         score.FoulBalls,
                         score.Strikes,
-                        score.Out,
+                        score.FlyOuts,
+                        score.GroundOuts,
+                        score.StrikeOuts,
                         score.Runs,
-                        score.Hits,
+                        score.Singles,
+                        score.Doubles,
+                        score.Triples,
                         score.InningID,
                         score.GameID,
-                        score.PlayerID
+                        score.PlayerID,
+                        score.Hits,
+                        score.Outs
                     }
                 );
 
             return Json(scoreJson);
 
         }
+        [HttpPost]
+        public async Task<IActionResult> NewRunnerObject(int? GameID, int BaseValue)
+        {
+            var runner = await _context.Runners.FirstOrDefaultAsync(r =>r.Base == (Base)BaseValue&& r.GameID == GameID);
+            if (runner == null)
+            {
+                // Create a new score object if it doesn't exist
+                runner = new Runner
+                {
+    
+                    GameID = (int)GameID,
+                    Base = (Base)BaseValue
+                };
+                _context.Runners.Add(runner);
+                await _context.SaveChangesAsync();
+            }
+            var scoreJson = JsonConvert.SerializeObject(
+                new
+                {
+                    runner.ID,
+                    runner.PlayerID,
+                    runner.GameID,
+                    runner.Base
+                }
+                );
+            return Json(scoreJson);
+        }
 
 
 
-       
+
 
 
 
 
         [HttpGet]
-        //Creating the action to record the in-game Stats for futher creation of the view
+        //Creating the action to record the in-game Stats for further creation of the view
         public async Task<IActionResult> GetGameInfo(int? id)
         {
             var gameStats = await _context.Games
          .Include(g => g.GamePlayers).ThenInclude(gp => gp.Player).ThenInclude(p => p.Scores)
-         .Include(g => g.Runners).ThenInclude(r => r.Player)
+         .Include(g => g.Runners)
+     
          .FirstOrDefaultAsync(m => m.ID == id);
             var settings = new JsonSerializerSettings
             {
@@ -959,7 +1036,7 @@ namespace WMBA5.Controllers
             var gameStats = JsonConvert.DeserializeObject<Game>(json.ToString());
             //_context.Games.Update(gameStats);
 
-
+            //var inning = await _context.Innings.FirstOrDefaultAsync(i => i.ID == gameStats.CurrentInningID);
             var existingGame = await _context.Games.FirstOrDefaultAsync(g => g.ID == gameStats.ID);
             if (existingGame != null)
             {
@@ -969,7 +1046,10 @@ namespace WMBA5.Controllers
                 // Update properties of existingGame with values from gameStats
                 existingGame.GamePlayers = gameStats.GamePlayers;
                 existingGame.Innings = gameStats.Innings;
-
+                existingGame.Runners = gameStats.Runners;
+                existingGame.PlayerAtBatID = gameStats.PlayerAtBatID;
+                existingGame.CurrentInningID= gameStats.CurrentInningID;
+                //existingGame.CurrentInning =
                 // Repeat for other properties as needed
                 _context.Update(existingGame);
                 _context.SaveChanges();
@@ -981,5 +1061,30 @@ namespace WMBA5.Controllers
 
             return Json(new { success = true, data = gameStats });
         }
+        public async Task<IActionResult> NextInning(int GameID, int InningID, int? score)
+        {
+
+            var inning = await _context.Innings.FirstOrDefaultAsync(i => i.ID == InningID);
+            if (score != null)
+            {
+                inning.AwayRuns = score;
+            }
+            int nextInningNumber = Int32.Parse(inning.InningNo.Substring(7)) + 1;
+            string nextInningString = $"Inning {nextInningNumber}";
+            var nextInning = await _context.Innings.FirstOrDefaultAsync(i => i.GameID == GameID && i.InningNo == nextInningString);
+            return Json(nextInning);
+        }
+        public async Task<IActionResult> GetGameInnings(int id)
+        {
+            var innings = await _context.Innings.Include(i => i.Scores)
+                .Where(i => i.GameID == id)
+                .ToListAsync();
+            
+            return Json(innings);
+        }
     }
+  
 }
+
+
+

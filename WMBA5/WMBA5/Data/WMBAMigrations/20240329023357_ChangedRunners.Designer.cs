@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WMBA5.Data;
 
@@ -10,9 +11,11 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    partial class WMBAContextModelSnapshot : ModelSnapshot
+    [Migration("20240329023357_ChangedRunners")]
+    partial class ChangedRunners
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.16");
@@ -75,12 +78,6 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Property<int>("AwayTeamID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CurrentInningID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CurrentInningID1")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("DivisionID")
                         .HasColumnType("INTEGER");
 
@@ -102,8 +99,6 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasKey("ID");
 
                     b.HasIndex("AwayTeamID");
-
-                    b.HasIndex("CurrentInningID1");
 
                     b.HasIndex("DivisionID");
 
@@ -150,9 +145,6 @@ namespace WMBA5.Data.WMBAMigrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("AwayRuns")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("GameID")
@@ -474,10 +466,6 @@ namespace WMBA5.Data.WMBAMigrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WMBA5.Models.Inning", "CurrentInning")
-                        .WithMany()
-                        .HasForeignKey("CurrentInningID1");
-
                     b.HasOne("WMBA5.Models.Division", "Division")
                         .WithMany("Games")
                         .HasForeignKey("DivisionID")
@@ -507,8 +495,6 @@ namespace WMBA5.Data.WMBAMigrations
                         .HasForeignKey("PlayerAtBatID");
 
                     b.Navigation("AwayTeam");
-
-                    b.Navigation("CurrentInning");
 
                     b.Navigation("Division");
 

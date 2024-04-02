@@ -29,7 +29,7 @@ namespace WMBA5.Controllers
             Player player = await _context.Players
              .Include(p => p.Team)
              .Include(p => p.Status)
-             .Include(p => p.PlayerAtBats)
+
              .Include(p => p.Stats)
              .Include(p => p.Division)
              .Where(t => t.ID == PlayerID)
@@ -72,7 +72,7 @@ namespace WMBA5.Controllers
             Player player = await _context.Players
              .Include(p => p.Team)
              .Include(p => p.Status)
-             .Include(p => p.PlayerAtBats)
+
              .Include(p => p.Stats)
              .Include(p => p.Division)
              .Where(t => t.ID == PlayerID.GetValueOrDefault())
