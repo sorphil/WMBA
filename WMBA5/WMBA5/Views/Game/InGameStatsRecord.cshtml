@@ -30,10 +30,10 @@
     <input type="hidden" value="@ViewBag.GameID" id="gameID" />
     <div class="container-block">
         <div class="sub-container-block field-block">
-            <div id="base-block-bat" class="base-block"></div>
-            <div id="base-block-one" class="base-block"></div>
-            <div id="base-block-two" class="base-block"></div>
-            <div id="base-block-three" class="base-block"></div>
+            <div class="btnOnField" data-type="0" id="base-block-bat" class="base-block"></div>
+            <div class="btnOnField" data-type="1" id="base-block-one" class="base-block"></div>
+            <div class="btnOnField" data-type="2" id="base-block-two" class="base-block"></div>
+            <div class="btnOnField" data-type="3" id="base-block-three" class="base-block"></div>
         </div>
         <div class="sub-container-block input-block">
             <div class="onfield-block form-block">
@@ -384,6 +384,13 @@
             document.querySelector("#btnBaseOne").dataset.player = playerBaseOne == undefined ? "" : playerBaseOne.Player.ID
             document.querySelector("#btnBaseTwo").dataset.player = playerBaseTwo == undefined ? "" : playerBaseTwo.Player.ID
             document.querySelector("#btnBaseThree").dataset.player = playerBaseThree == undefined ? "" : playerBaseThree.Player.ID
+
+
+            document.querySelector("#base-block-bat").dataset.player = playerAtBat == undefined ? "" : playerAtBat.Player.ID
+            document.querySelector("#base-block-one").dataset.player = playerBaseOne == undefined ? "" : playerBaseOne.Player.ID
+            document.querySelector("#base-block-two").dataset.player = playerBaseTwo == undefined ? "" : playerBaseTwo.Player.ID
+            document.querySelector("#base-block-three").dataset.player = playerBaseThree == undefined ? "" : playerBaseThree.Player.ID``
+
             document.querySelector("#btnPlayerAtBat").hidden = playerAtBat == undefined ? true : false;
             document.querySelector("#btnBaseOne").hidden = playerBaseOne == undefined ? true : false;
             document.querySelector("#btnBaseTwo").hidden = playerBaseTwo == undefined ? true : false;
