@@ -4,7 +4,7 @@
     ViewData["Title"] = "Download Report";
 }
 
-<h1>PlayerStatsView</h1>
+<h1>Download Report</h1>
 
 <form asp-action="PlayerStatsView">
 <div class="form-horizontal">
@@ -18,7 +18,7 @@
                         @Html.DropDownList("GameID", null, "No Game", htmlAttributes: new { @class = "form-control" })
                 </div>
                 <div class="form-group col-md-2 align-self-end">
-                        <input type="submit" name="actionButton" value="Download" class="btn btn-outline-primary" />
+                        <input type="submit" name="actionButton" value="Find" class="btn btn-outline-primary" />
                 </div>
             </div>
                 <p class="alert-danger">@TempData["FeedBack"]</p>
@@ -41,16 +41,13 @@
                 @Html.DisplayNameFor(model => model.Strikes)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Out)
+                @Html.DisplayNameFor(model => model.Outs)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Runs)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Hits)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game)
             </th>
             <th></th>
         </tr>
@@ -71,7 +68,7 @@
                 @Html.DisplayFor(modelItem => item.Strikes)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Out)
+                @Html.DisplayFor(modelItem => item.Outs)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Runs)
@@ -79,18 +76,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Hits)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Inning.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Game.HomeTeam)
-            </td>
         </tr>
         }
     </tbody>
-</table>
-    <a asp-action="PlayerStatReport" class="btn btn-sm btn-outline-success"
-       role="button" data-bs-toggle="tooltip">
-        <strong><small>Download full report</small></strong>
-    </a> *@
+</table> *@
+@*     <form asp-action="PlayerStatsView">
+        <a asp-action="PlayerStatDowload" class="btn btn-sm btn-outline-success"
+           role="button" data-bs-toggle="tooltip">
+            <strong><small>Download</small></strong>
+        </a>
+    </form> *@
 </form>

@@ -20,6 +20,7 @@ namespace WMBA5.Models
                 return StrikeOuts + FlyOuts + GroundOuts;
             }
         }
+        [Display(Name = "Hits")]
         public int ID { get; set; }
         public int Balls { get; set; }
         public int FoulBalls { get; set; }

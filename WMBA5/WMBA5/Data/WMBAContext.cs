@@ -100,12 +100,12 @@ namespace WMBA5.Data
                 .HasForeignKey(c => c.PlayerID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Player to PlayerAtBat
-            modelBuilder.Entity<Player>()
-                .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
-                .WithOne(c => c.Player)
-                .HasForeignKey(c => c.PlayerID)
-                .OnDelete(DeleteBehavior.Restrict);
+            ////Player to PlayerAtBat
+            //modelBuilder.Entity<Player>()
+            //    .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
+            //    .WithOne(c => c.Player)
+            //    .HasForeignKey(c => c.PlayerID)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             //Game to Innings
             modelBuilder.Entity<Game>()
@@ -115,11 +115,11 @@ namespace WMBA5.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             //Game to PlayerAtBat
-            modelBuilder.Entity<Game>()
-                .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
-                .WithOne(c => c.Game)
-                .HasForeignKey(c => c.GameID)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Game>()
+            //    .HasMany<PlayerAtBat>(c => c.PlayerAtBats)
+            //    .WithOne(c => c.Game)
+            //    .HasForeignKey(c => c.GameID)
+            //    .OnDelete(DeleteBehavior.Restrict);
             
             //Add a unique index to the Game Player in the Fluent API
             modelBuilder.Entity<GamePlayer>()
