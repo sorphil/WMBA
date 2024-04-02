@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 using WMBA5.Data;
 namespace WMBA5.Models
 {
@@ -7,6 +9,7 @@ namespace WMBA5.Models
         public int ID { get; set; }
 
         #region calculated stats
+      
         [Display(Name = "Batting/AVG")]
         public decimal BattAVG
         {
@@ -15,6 +18,7 @@ namespace WMBA5.Models
                 return Hits / PlayerAppearance;
             }
         }
+       
         //[Display(Name = "Slugging Percentage ")]
         //public decimal SLG
         //{
@@ -31,9 +35,12 @@ namespace WMBA5.Models
         [Display(Name = "Player Appearances")]
         public int PlayerAppearance { get; set; }
 
+        [Display(Name = "Hits")]
         public int Hits { get; set; }
+        [Display(Name = "Outs")]
+        public int Outs { get; set; }
 
-        [Display(Name = "Runs Scored")]
+     [Display(Name = "Runs Scored")]
         public int RunsScored { get; set; }
 
         [Display(Name = "Strike Outs")]

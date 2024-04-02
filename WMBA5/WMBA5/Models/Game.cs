@@ -66,8 +66,7 @@ namespace WMBA5.Models
         public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
         public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
 
-        public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
-
+     
 
         [Display(Name = "Game Players")]
         public ICollection<GamePlayer> GamePlayers { get; set; } = new HashSet<GamePlayer>();
@@ -84,6 +83,16 @@ namespace WMBA5.Models
             if(StartTime < DateTime.Now)
             {
                 yield return new ValidationResult("Game cannot be created back in time. Please select another date.", new[] { "StartTime" });
+            }
+            var basesWithMultiplePlayers = Runners
+              .GroupBy(runner => runner.Base)
+              .Where(group => group.Count() > 1)
+              .Select(group => group.Key)
+              .ToList();
+
+            if (basesWithMultiplePlayers.Any())
+            {
+                yield return new ValidationResult($"Multiple players cannot be assigned to the same base: {string.Join(", ", basesWithMultiplePlayers)}.", new[] { "Runners" });
             }
         }
 

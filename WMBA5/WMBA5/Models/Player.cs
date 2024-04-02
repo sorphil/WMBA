@@ -85,8 +85,7 @@ namespace WMBA5.Models
 
         public ICollection<Score> Scores { get; set; } = new HashSet<Score>();
 
-        public ICollection<PlayerAtBat> PlayerAtBats { get; set; } = new HashSet<PlayerAtBat>();
-        //public ICollection<InGameStats> InGameStats { get; set; } = new HashSet<InGameStats>();
+
 
         [Display(Name = "Team Batting Position")]
         public int BattingOrder { get; set; } = 0;
