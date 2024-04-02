@@ -521,7 +521,7 @@ namespace WMBA5.Controllers
                     }
                    else if(IncrementValue.GetValueOrDefault()!=null|| IncrementValue.GetValueOrDefault() != 0)
                     {
-                        score.Hits += IncrementValue.GetValueOrDefault();
+                        //score.Hits += IncrementValue.GetValueOrDefault();
                     }
                     break;
                 case "Balls":
@@ -542,7 +542,7 @@ namespace WMBA5.Controllers
                  
                     if (score.Strikes + IncrementValue.GetValueOrDefault() >= 3)
                     {
-                        score.Out = score.Out + 1;
+                        //score.Out = score.Out + 1;
                         score.Strikes = 0;
                     }
                     else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0 || score.Strikes + IncrementValue.GetValueOrDefault() < 3)
@@ -552,13 +552,13 @@ namespace WMBA5.Controllers
                     
                     break;
                     case "Outs":
-                    if (IncrementValue.GetValueOrDefault() < 0 && score.Out == 0)
+                    if (IncrementValue.GetValueOrDefault() < 0 && score.Outs == 0)
                     {
                         break;
                     }
                     else if (IncrementValue.GetValueOrDefault() != null || IncrementValue.GetValueOrDefault() != 0)
                     {
-                        score.Out += IncrementValue.GetValueOrDefault();
+                        //score.Out += IncrementValue.GetValueOrDefault();
                     }
                     break;
                 case "Runs":
@@ -621,9 +621,9 @@ namespace WMBA5.Controllers
                     Balls = 0,
                     Runs = 0,
                     FoulBalls = 0,
-                    Hits = 0,
+                    //Hits = 0,
                     Strikes = 0,
-                    Out = 0
+                    //Outs = 0
                 };
                 _context.Scores.Add(score);
                 await _context.SaveChangesAsync();
@@ -920,7 +920,7 @@ namespace WMBA5.Controllers
                         score.Balls,
                         score.FoulBalls,
                         score.Strikes,
-                        score.Out,
+                        score.Outs,
                         score.Runs,
                         score.Hits,
                         score.InningID,
