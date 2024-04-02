@@ -7,6 +7,17 @@
 
 <div class="main-body-grid">
     @{
+        if (User.IsInRole(""))
+        {
+            <div >
+                    <p>
+                        Your account has been set up but you haven't been assigned to a role yet, please wait
+                        until the Admin assign you to a role and you will have acces to the app.
+                    </p>
+            </div>
+        }
+    }
+    @{
         if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
         {
             <div class="main-grid-item">
@@ -22,42 +33,54 @@
             </div>
         }
     }
-   
-    <div class="main-grid-item" >
-        <div class="card">
-            <h3>Teams </h3>
-            <p>
-                You can view information about team/s on this page.
-            </p>
-            <p>
-                <a asp-controller="Team" asp-action="Index" class="grid-btn">Go to Team Page >></a>
-            </p>
-        </div>
-    </div>
+   @*  Every user that has a role will be able to see it, users that login but dont have a role wont be able to see this *@
+    @{
+        if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor") || User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Coach"))
+        {
+            <div class="main-grid-item">
+                <div class="card">
+                    <h3>Teams </h3>
+                    <p>
+                        You can view information about team/s on this page.
+                    </p>
+                    <p>
+                        <a asp-controller="Team" asp-action="Index" class="grid-btn">Go to Team Page >></a>
+                    </p>
+                </div>
+            </div>
 
-    <div class="main-grid-item">
-        <div class="card">
-            <h3>Players </h3>
-            <p >
-                You can view information about player/s on this page.
-            </p>
-            <p>
-                <a asp-controller="Player" asp-action="Index" class="grid-btn">Go to Player Page >></a>
-            </p>
-        </div>
-    </div>
+            <div class="main-grid-item">
+                <div class="card">
+                    <h3>Players </h3>
+                    <p>
+                        You can view information about player/s on this page.
+                    </p>
+                    <p>
+                        <a asp-controller="Player" asp-action="Index" class="grid-btn">Go to Player Page >></a>
+                    </p>
+                </div>
+            </div>
 
-    <div class="main-grid-item">
-        <div class="card">
-            <h3>Games </h3>
-            <p>
-                You can view information about game/s on this page.
-            </p>
-            <p>
-                <a asp-controller="Game" asp-action="Index" class="grid-btn">Go to Game Page >></a>
-            </p>
-        </div>
-    </div>
+        }
+    }
+    @{
+        if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor") || User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Trash Pandas 15U Scorekeeper") || User.IsInRole("Scorekeeper") || User.IsInRole("Coach"))
+        {
+           
+            <div class="main-grid-item">
+                <div class="card">
+                    <h3>Games </h3>
+                    <p>
+                        You can view information about game/s on this page.
+                    </p>
+                    <p>
+                        <a asp-controller="Game" asp-action="Index" class="grid-btn">Go to Game Page >></a>
+                    </p>
+                </div>
+            </div>
+        }
+    }
+    
     @{
         if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
         {

@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
-    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Trash Pandas 15U Scorekeeper, Scorekeeper, Coach")]
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Coach")]
     public class PlayerController : ElephantController
     {
         private readonly WMBAContext _context;
@@ -48,6 +48,7 @@ namespace WMBA5.Controllers
             var players = _context.Players 
                 .Include(p=>p.Team)
                 .Include(p=>p.Status)
+                //.Include(p => p.PlayerAtBats)
                 .Include(p => p.Stats)
                 .Include(p=>p.Division)
                 .AsNoTracking();
@@ -196,7 +197,7 @@ namespace WMBA5.Controllers
 
             var player = await _context.Players
                 .Include(p => p.Team)
-
+                .Include(p => p.PlayerAtBats)
                 .Include(p => p.Stats)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);

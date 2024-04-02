@@ -9,7 +9,25 @@
         padding-left: 0;
     }
 </style>
-<partial name="_ViewHeading" />
+
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <partial name="_ViewHeading" />
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the Games Page you can see the Game Name, Home Team name, Away Team name, Location, Outcome and Division.</p>
+                       <p>2- You can click on any game's &quot;Details&quot; button and you will see all of it's details.</p>
+                       <p>3- By clicking on &quot;Edit&quot; button you can edit that particular game's details.</p>
+                       <p>4- On click of &quotCreate New&quot; button you can create a new game.</p>
+                       <p>5- With the Filter/Search bar you can search a game, sort them or group them.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
+
 <hr />
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
@@ -21,24 +39,25 @@
         <div class="collapse" id="collapseFilter">
             <div class="card card-body bg-light">
                 <div class="row">
-                    Filter By:
-                    <div class="form-group col-md-2">
+                    <p class="text-black">Filter By:</p>
+                    <br />
+                    <div class="form-group col-md-5">
                         <label class="control-label">Home Team:</label>
                         @Html.DropDownList("HomeTeamID", null, "All Teams", htmlAttributes: new { @class = "form-control" })
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-5">
                         <label class="control-label">Away Team:</label>
                         @Html.DropDownList("AwayTeamID", null, "All Teams", htmlAttributes: new { @class = "form-control" })
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-5">
                         <label class="control-label">Location:</label>
                         @Html.DropDownList("LocationID", null, "All Locations", htmlAttributes: new { @class = "form-control" })
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-5">
                         <label class="control-label">Outcome:</label>
                         @Html.DropDownList("OutcomeID", null, "All Outcomes", htmlAttributes: new { @class = "form-control" })
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-5">
                         <label class="control-label">Division:</label>
                         @Html.DropDownList("DivisionID", null, "All Divisions", htmlAttributes: new { @class = "form-control" })
                     </div>
@@ -73,12 +92,17 @@
                 <th class="hide-colum">
                     <input type="submit" value="Division" class="btn btn-toolbar" />
                 </th>
-                <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-sm btn-outline-success"
-                       role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
-                        <strong>&#x270D; <small>Create New</small></strong>
-                    </a>
-                </th>
+                @{
+                    if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
+                    {
+                        <th style="min-width:120px">
+                            <a asp-action="Create" class="btn btn-sm btn-outline-success"
+                               role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
+                                <strong>&#x270D; <small>Create New</small></strong>
+                            </a>
+                        </th>
+                    }
+                }
             </tr>
         </thead>
         <tbody>
@@ -104,18 +128,20 @@
                         @Html.DisplayFor(modelItem => item.Division.DivisionName)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary table-buttons"
-                           role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                            &#x270E; <small>Edit</small>
-                        </a>
+                        @{
+                            if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary table-buttons"
+                                   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                    &#x270E; <small>Edit</small>
+                                </a>
+                            }
+                        }
+                        
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary table-buttons"
                            role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             &#x1F50E; <small>Details</small>
                         </a>
-                        @* <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-                           role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                            &#x274C; <small>Delete</small>
-                        </a> *@
                         <a asp-action="InGameStatsRecord" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary table-buttons"
                            role="button" data-bs-toggle="tooltip" >
                             &#x1F50E; <small>Start Game</small>
@@ -140,6 +166,22 @@
             </text>
         }
                 });
+
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
+
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
+        });
     </script>
 }
 
@@ -160,3 +202,4 @@
         </div>
     </div>
 </div>
+

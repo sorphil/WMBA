@@ -874,15 +874,36 @@ namespace WMBA5.Data
                 {
 
                     context.Games.AddRange(
+                    #region 13U Games
                          new Game
                          {
-                             StartTime = DateTime.Parse("2024-02-01 14:00:00"),
+                             StartTime = DateTime.Parse("2024-06-01 14:00:00"),
                              HomeTeamID = 1,
                              AwayTeamID = 2,
                              LocationID = 1,
                              OutcomeID = 1,
                              DivisionID = 3
                          },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-06-02 14:00:00"),
+                             HomeTeamID = 1,
+                             AwayTeamID = 3,
+                             LocationID = 2,
+                             OutcomeID = 1,
+                             DivisionID = 3
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-06-03 14:00:00"),
+                             HomeTeamID = 2,
+                             AwayTeamID = 3,
+                             LocationID = 2,
+                             OutcomeID = 1,
+                             DivisionID = 3
+                         },
+                    #endregion
+                    #region 15U Games
                          new Game
                          {
                              StartTime = DateTime.Parse("2024-04-07 14:00:00"),
@@ -901,23 +922,104 @@ namespace WMBA5.Data
                              OutcomeID = 1,
                              DivisionID = 4
                          },
+                          new Game
+                          {
+                              StartTime = DateTime.Parse("2024-04-05 14:00:00"),
+                              HomeTeamID = 6,
+                              AwayTeamID = 4,
+                              LocationID = 4,
+                              OutcomeID = 1,
+                              DivisionID = 4
+                          },
+                    #endregion
+                    #region 11U Games
                          new Game
                          {
                              StartTime = DateTime.Parse("2024-05-06 14:00:00"),
-                             HomeTeamID = 1,
-                             AwayTeamID = 3,
+                             HomeTeamID = 10,
+                             AwayTeamID = 11,
                              LocationID = 2,
                              OutcomeID = 1,
-                             DivisionID = 3
-                         }, new Game
+                             DivisionID = 2
+                         }, 
+                         new Game
                          {
-                             StartTime = DateTime.Parse("2024-03-04 14:00:00"),
-                             HomeTeamID = 2,
-                             AwayTeamID = 3,
+                             StartTime = DateTime.Parse("2024-07-04 14:00:00"),
+                             HomeTeamID = 11,
+                             AwayTeamID = 12,
                              LocationID = 1,
                              OutcomeID = 1,
-                             DivisionID = 3
-                         });
+                             DivisionID = 2
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-05-08 14:00:00"),
+                             HomeTeamID = 12,
+                             AwayTeamID = 10,
+                             LocationID = 4,
+                             OutcomeID = 1,
+                             DivisionID = 2
+                         },
+                    #endregion
+                    #region 9U Games
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-05-09 10:00:00"),
+                             HomeTeamID = 7,
+                             AwayTeamID = 8,
+                             LocationID = 2,
+                             OutcomeID = 1,
+                             DivisionID = 1
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-07-07 15:00:00"),
+                             HomeTeamID = 8,
+                             AwayTeamID = 9,
+                             LocationID = 1,
+                             OutcomeID = 1,
+                             DivisionID = 1
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-05-08 13:00:00"),
+                             HomeTeamID = 9,
+                             AwayTeamID = 7,
+                             LocationID = 3,
+                             OutcomeID = 1,
+                             DivisionID = 1
+                         },
+                    #endregion
+                    #region 18U Games
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-05-10 10:00:00"),
+                             HomeTeamID = 13,
+                             AwayTeamID = 14,
+                             LocationID = 2,
+                             OutcomeID = 1,
+                             DivisionID = 5
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-07-01 15:00:00"),
+                             HomeTeamID = 15,
+                             AwayTeamID = 13,
+                             LocationID = 1,
+                             OutcomeID = 1,
+                             DivisionID = 5
+                         },
+                         new Game
+                         {
+                             StartTime = DateTime.Parse("2024-05-11 13:00:00"),
+                             HomeTeamID = 14,
+                             AwayTeamID = 15,
+                             LocationID = 3,
+                             OutcomeID = 1,
+                             DivisionID = 5
+                         }
+                    #endregion
+                         );
                     context.SaveChanges();
 
 

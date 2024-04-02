@@ -4,7 +4,22 @@
     ViewData["Title"] = "Edit Lineup";
 }
 
-<h2>Edit @ViewData["Lineup"] Lineup</h2>
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <h2>Edit @ViewData["Lineup"] Lineup</h2>
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the &quot;Edit Home Lineup&quot; page , you can make changes to the home team lineup.</p>
+                       <p>2- If you want to remove players from the lineup , select the players from the &quot;lineup&quot; listbox and click &quot;Remove&quot; button.</p>
+                       <p>3- If you want to add players in the lineup , select the players from the &quot;Other Players&quot; listbox and click &quot;Add&quot; button.</p>
+                       <p>4- You can also re-arrange the batting order simply just by selecting the player and clicking &quot;up&quot; or &quot;down&quot; button.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
 
 <hr />
 <form id="editLineupForm" asp-action="EditLineup" method="post" onsubmit="return checkPlayerCount()">
@@ -82,5 +97,21 @@
             }
             return true; // If player count is 8 or more, proceed with saving
         }
+
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
+
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
+        });
     </script>
 }

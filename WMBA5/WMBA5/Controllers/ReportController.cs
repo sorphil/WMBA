@@ -48,7 +48,7 @@ namespace WMBA5.Controllers
                             a.Balls,
                             a.FoulBalls,
                             a.Strikes,
-                            a.Outs,
+                            //a.Out,
                             a.Hits
                         };
 
@@ -97,32 +97,26 @@ namespace WMBA5.Controllers
 
         public async Task<IActionResult> PlayerStatsView(int? GameID)
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            string feedBack = ""; 
             PopulateDropDownLists();
-            var stats = _context.Scores
-                        .Include(a => a.Game)
-                        .Include(a => a.Player)
-                        .OrderBy(a => a.Player.LastName)
-                        .Where(a => a.GameID == GameID);
-
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            string feedBack = "";
             var stats2 = from a in _context.Scores
                         .Include(a => a.Game)
                         .Include(a => a.Player)
                         .OrderBy(a => a.Player.LastName)
                         .Where(a => a.GameID == GameID)
-                        select new
-                        {
-                            Game = a.Game.HomeTeam.TeamName + " VS " + a.Game.AwayTeam.TeamName,
-                            Name = a.Player.FullName,
-                            Result = a.Game.Outcome.OutcomeString,
-                            a.Runs,
-                            a.Balls,
-                            a.FoulBalls,
-                            a.Strikes,
-                            a.Outs,
-                            a.Hits
-                        };
+                         select new
+                         {
+                             Game = a.Game.HomeTeam.TeamName + " VS " + a.Game.AwayTeam.TeamName,
+                             Name = a.Player.FullName,
+                             Result = a.Game.Outcome.OutcomeString,
+                             a.Runs,
+                             a.Balls,
+                             a.FoulBalls,
+                             a.Strikes,
+                             //a.Out,
+                             a.Hits
+                         };
 
             int numRows = stats2.Count();
 
@@ -166,8 +160,92 @@ namespace WMBA5.Controllers
             else
             {
                 feedBack = "No data to download, Please select a game already played";
+                TempData["Feedback"] = feedBack;
             }
-            TempData["Feedback"] = feedBack;
+            var stats = _context.Scores
+                        .Include(a => a.Game)
+                        .Include(a => a.Player)
+                        .OrderBy(a => a.Player.LastName)
+                        .Where(a => a.GameID == GameID);
+
+
+            return View(stats);
+        }
+        public async Task<IActionResult> PlayerStatDowload(int ? GameID)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            string feedBack = "";
+            var stats2 = from a in _context.Scores
+                        .Include(a => a.Game)
+                        .Include(a => a.Player)
+                        .ThenInclude(a => a.Stats)
+                        .OrderBy(a => a.Player.LastName)
+                        .Where(a => a.GameID == GameID)
+                        select new
+                        {
+                            Game = a.Game.HomeTeam.TeamName + " VS " + a.Game.AwayTeam.TeamName,
+                            Name = a.Player.FullName,
+                            Result = a.Game.Outcome.OutcomeString,
+                            a.Runs,
+                            a.Balls,
+                            a.FoulBalls,
+                            a.Strikes,
+                            a.Out,
+                            a.Hits
+                        };
+
+            int numRows = stats2.Count();
+
+            if (numRows > 0)
+            {
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    DateTime localDate = DateTime.Now;
+                    var workSheet = excel.Workbook.Worksheets.Add("PlayerStatsReport");
+
+                    workSheet.Cells[3, 2].LoadFromCollection(stats2, true);
+                    workSheet.Cells[2, 11].Value = "Created: " + localDate.ToShortTimeString() + " on " + localDate.ToShortDateString();
+                    using (ExcelRange headings = workSheet.Cells[3, 2, 3, 11])
+                    {
+                        headings.Style.Font.Bold = true;
+                    }
+                    workSheet.Cells.AutoFitColumns();
+
+                    workSheet.Cells[1, 2].Value = "Player Stats Report";
+                    using (ExcelRange Rng = workSheet.Cells[1, 2, 1, 11])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 19;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+                    workSheet.Cells.AutoFitColumns();
+
+                    try
+                    {
+                        Byte[] theData = excel.GetAsByteArray();
+                        string filename = "PlayerStatsReport.xlsx";
+                        string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.Sheet";
+                        return File(theData, mimeType, filename);
+                    }
+                    catch
+                    {
+                        return BadRequest("Could not build and download the file.");
+                    }
+                }
+            }
+            else
+            {
+                feedBack = "No data to download, Please select a game already played";
+                TempData["Feedback"] = feedBack;
+            }
+            var stats = _context.Scores
+                        .Include(a => a.Game)
+                        .Include(a => a.Player)
+                        .OrderBy(a => a.Player.LastName)
+                        .Where(a => a.GameID == GameID);
+
+
             return View(stats);
         }
 
@@ -607,26 +685,27 @@ namespace WMBA5.Controllers
 
                             rowNum++;
 
-                            var players = _context.Players.Include(p => p.Stats).Where(p => p.TeamID == team.ID).AsNoTracking().ToList();
+                            var players = _context.Players.Include(p => p.Stats).Include(p => p.Scores).Where(p => p.TeamID == team.ID).AsNoTracking().ToList();
                             foreach (var player in players)
                             {
                                 workSheet.Cells[rowNum, 1].Value = player.FullName;
-
                                 foreach (var stat in player.Stats)
-
                                 {
                                     workSheet.Cells[rowNum, 2].Value = stat.GamesPlayed != 0 ? stat.GamesPlayed : "0";
                                     workSheet.Cells[rowNum, 3].Value = stat.PlayerAppearance != 0 ? stat.PlayerAppearance : "0";
                                     workSheet.Cells[rowNum, 4].Value = stat.RunsScored != 0 ? stat.RunsScored : "0";
                                     workSheet.Cells[rowNum, 5].Value = stat.Hits != 0 ? stat.Hits : "0";
 
-                                    //workSheet.Cells[rowNum, 6].Value = "0";       //stat.Single;//needs some fixes in the model
-                                    //workSheet.Cells[rowNum, 7].Value = "0";       //stat.Double;//needs some fixes in the model
-                                    //workSheet.Cells[rowNum, 8].Value = "0";       //stat.Triple;//needs some fixes in the model
-                                    //workSheet.Cells[rowNum, 9].Value = "0";       //stat.HomeRuns//needs some fixes in the model
-                                    workSheet.Cells[rowNum, 6].Value = stat.RBI != 0 ? stat.RBI : "0";
-                                    workSheet.Cells[rowNum, 7].Value = stat.StrikeOuts != 0 ? stat.StrikeOuts : "0";
-                                    workSheet.Cells[rowNum, 8].Value = stat.BattAVG != 0 ? stat.BattAVG : "0";
+                                    foreach(var score in player.Scores)
+                                    {
+                                        workSheet.Cells[rowNum, 6].Value = score.Singles != 0 ? score.Singles : "0" ;//needs some fixes in the model
+                                        workSheet.Cells[rowNum, 7].Value = score.Doubles != 0 ? score.Doubles : "0";//needs some fixes in the model
+                                        workSheet.Cells[rowNum, 8].Value = score.Triples != 0 ? score.Triples : "0";//needs some fixes in the model
+                                    }
+                                    workSheet.Cells[rowNum, 9].Value = stat.RBI != 0 ? stat.RBI : "0";
+                                    workSheet.Cells[rowNum, 10].Value = stat.Outs != 0 ? stat.Outs : "0";
+                                    workSheet.Cells[rowNum, 11].Value = stat.BattAVG != 0 ? stat.BattAVG : "0";
+                                    //workSheet.Cells[rowNum, 12].Value = ((int.Parse(workSheet.Cells[rowNum, 6].Text) + (int.Parse(workSheet.Cells[rowNum, 7].Text) * 2) + (int.Parse(workSheet.Cells[rowNum, 8].Text) * 3))/ stat.GamesPlayed);
 
                                 }
 
@@ -656,30 +735,29 @@ namespace WMBA5.Controllers
                     //DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone).ToLocalTime();
 
                     workSheet.Cells[1, 1].Value = "Player Stats";
-                    workSheet.Cells[1, 1, 1, 11].Merge = true; //need to merge more cells
-                    workSheet.Cells[1, 1, 1, 11].Style.Font.Bold = true;
-                    workSheet.Cells[1, 1, 1, 11].Style.Font.Size = 18;
-                    workSheet.Cells[1, 1, 1, 11].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    workSheet.Cells[1, 1, 1, 12].Merge = true; //need to merge more cells
+                    workSheet.Cells[1, 1, 1, 12].Style.Font.Bold = true;
+                    workSheet.Cells[1, 1, 1, 12].Style.Font.Size = 18;
+                    workSheet.Cells[1, 1, 1, 12].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
                     workSheet.Cells[2, 1].Value = "Created: " + localDate.ToShortTimeString() + " on " + localDate.ToShortDateString();
-                    workSheet.Cells[2, 1, 2, 11].Merge = true;
-                    workSheet.Cells[2, 11].Style.Font.Bold = true;
-                    workSheet.Cells[2, 11].Style.Font.Size = 12;
-                    workSheet.Cells[2, 1, 2, 11].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    workSheet.Cells[2, 1, 2, 12].Merge = true;
+                    workSheet.Cells[2, 12].Style.Font.Bold = true;
+                    workSheet.Cells[2, 12].Style.Font.Size = 12;
+                    workSheet.Cells[2, 1, 2, 12].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
                     //workSheet headings
                     workSheet.Cells[3, 2].Value = "Games Played";
                     workSheet.Cells[3, 3].Value = "Plate Apperances";
                     workSheet.Cells[3, 4].Value = "Runs Scored";
                     workSheet.Cells[3, 5].Value = "Hits";
-
-                    //workSheet.Cells[3, 6].Value = "Singles";
-                    //workSheet.Cells[3, 7].Value = "Doubles";
-                    //workSheet.Cells[3, 8].Value = "Triples";
-                    //workSheet.Cells[3, 6].Value = "HomeRuns";
-                    workSheet.Cells[3, 6].Value = "RBI";
-                    workSheet.Cells[3, 7].Value = "StrikeOuts";
-                    workSheet.Cells[3, 8].Value = "Batting AVG";
+                    workSheet.Cells[3, 6].Value = "Singles";
+                    workSheet.Cells[3, 7].Value = "Doubles";
+                    workSheet.Cells[3, 8].Value = "Triples";
+                    workSheet.Cells[3, 9].Value = "RBI";
+                    workSheet.Cells[3, 10].Value = "Outs";
+                    workSheet.Cells[3, 11].Value = "Batting AVG";
+                    workSheet.Cells[3, 12].Value = "SLG";
 
 
                     //borders
@@ -703,12 +781,9 @@ namespace WMBA5.Controllers
                     }
                 }
             }
-            else
-            {
-                return NotFound("No data.");
-            }
-
+            return View(playerStats);
         }
+
 
 
         private SelectList GameSelectionList(int? selectedId)

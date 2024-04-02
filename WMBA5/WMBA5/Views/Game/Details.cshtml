@@ -4,7 +4,21 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <h2>Details</h2>
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the &quot;Game Details&quot; Page you can see all the information regarding to that game.</p>
+                       <p>2- Below that , you can see the home team lineup in order, 'if set'.</p>
+                       <p>3- By clicking on &quot;Edit Home Lineup&quot; button, you can make changes in the home team lineup.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
 
 <div>
     <h4>Game</h4>
@@ -54,9 +68,6 @@
                 <th>
                     Home Lineup: @Model.HomeTeam.TeamName
                 </th>
-                <th>
-                    Away Lineup: @Model.AwayTeam.TeamName
-                </th>
             </tr>
         </thead>
         <tbody>
@@ -73,18 +84,6 @@
                     <a asp-action="EditLineup" class="btn btn-primary"
                        asp-route-Lineup="Home" asp-route-id="@Model?.ID">Edit Home Lineup</a>
                 </td>
-                <td>
-                            @foreach (var item in Model.GamePlayers
-                    .Where(gp => gp.TeamLineup == TeamLineup.Away)
-                    .OrderBy(o => o.BattingOrder).ThenBy(p => p.Player.FullName))
-                            {
-                                @item.BattingOrder @:- @item.Player.Summary <br />
-                            }
-                    <a asp-action="EditLineup" class="btn btn-success"
-                       asp-route-Lineup="Away" asp-route-id="@Model?.ID">Edit Away Lineup</a>
-                </td>
-            </tr>
-        </tbody>
             </tr>
         </tbody>
     </table>
@@ -93,3 +92,23 @@
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts {
+    <script>
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
+
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
+        });
+    </script>
+}

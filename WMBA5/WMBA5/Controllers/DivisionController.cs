@@ -49,6 +49,7 @@ namespace WMBA5.Controllers
         }
 
         // GET: Division/Create
+        [Authorize(Roles ="Admin")]
         public IActionResult Create()
         {
             ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ClubName");
@@ -61,6 +62,7 @@ namespace WMBA5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,DivisionName,ClubID")] Division division)
         {
             try
@@ -96,6 +98,7 @@ namespace WMBA5.Controllers
             ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ClubName", division.ClubID);
             return View(division);
         }
+        [Authorize(Roles = "Admin")]
 
         // POST: Division/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -139,6 +142,7 @@ namespace WMBA5.Controllers
             ViewData["ClubID"] = new SelectList(_context.Clubs, "ID", "ClubName", divisionToUpdate.ClubID);
             return View(divisionToUpdate);
         }
+        [Authorize(Roles = "Admin")]
 
         // GET: Division/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -158,10 +162,12 @@ namespace WMBA5.Controllers
 
             return View(division);
         }
+        [Authorize(Roles = "Admin")]
 
         // POST: Division/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Divisions == null)

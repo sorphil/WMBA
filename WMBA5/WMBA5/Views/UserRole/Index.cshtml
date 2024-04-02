@@ -4,7 +4,20 @@
     ViewBag.Title = "User Roles";
 }
 
-<h2>User Role Assignments</h2>
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <h2>User Role Assignments</h2>
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the &quot;User Role Assignments&quot; page, you can see different users and there roles in WMBA.</p>
+                       <p>2- You can click on any the &quot;Edit&quot; button to edit that particular user's role.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
 
 <table class="table">
     <tr>
@@ -47,6 +60,22 @@
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
+
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
+        });
     </script>
 }
 

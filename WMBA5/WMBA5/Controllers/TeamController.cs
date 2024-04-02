@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
-    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Trash Pandas 15U Scorekeeper, Scorekeeper, Coach")]
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Coach")]
     public class TeamController : ElephantController
     {
         private readonly WMBAContext _context;
@@ -169,8 +169,20 @@ namespace WMBA5.Controllers
         [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public IActionResult Create()
         {
+            if (User.IsInRole("Rookie Convenor"))
+            {
+                ViewData["DivisionID"] = new SelectList(_context.Divisions.Where(d => d.DivisionName == "9U"), "ID", "DivisionName");
+            }
+            if (User.IsInRole("Intermediate Convenor"))
+            {
+                ViewData["DivisionID"] = new SelectList(_context.Divisions.Where(d => d.DivisionName == "11U" || d.DivisionName =="13U"), "ID", "DivisionName");
+            }
+            if (User.IsInRole("Senior Convenor"))
+            {
+                ViewData["DivisionID"] = new SelectList(_context.Divisions.Where(d => d.DivisionName == "15U" || d.DivisionName == "18U"), "ID", "DivisionName");
+            }
             ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName");
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName");
+            
             return View();
         }
 
@@ -190,6 +202,7 @@ namespace WMBA5.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
+                
                 ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", team.CoachID);
                 ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName", team.DivisionID);
             }
@@ -250,7 +263,7 @@ namespace WMBA5.Controllers
         {
             var teamToUpdate = await _context.Teams
                 .Include(t => t.Coach)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(f => f.ID == id);
             try
             {
                 if (id != teamToUpdate.ID)
@@ -259,12 +272,14 @@ namespace WMBA5.Controllers
                 }
                 UpdateTeamPlayerListboxes(selectedOptions, teamToUpdate);
 
-                if (ModelState.IsValid)
+                if (await TryUpdateModelAsync<Team>(teamToUpdate, "",
+                p => p.TeamName, p => p.CoachID, p => p.DivisionID))
                 {
                     try
                     {
                         _context.Update(teamToUpdate);
                         await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -277,7 +292,7 @@ namespace WMBA5.Controllers
                             throw;
                         }
                     }
-                    return RedirectToAction(nameof(Index));
+                    
                 }
 
                 ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", teamToUpdate.CoachID);
