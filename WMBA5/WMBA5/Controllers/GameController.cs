@@ -843,7 +843,7 @@ namespace WMBA5.Controllers
                         score.GameID,
                         score.PlayerID,
                         score.Hits,
-                        score.Outs
+  
                     }
                 );
 

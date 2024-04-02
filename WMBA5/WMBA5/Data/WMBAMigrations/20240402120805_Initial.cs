@@ -193,6 +193,55 @@ namespace WMBA5.Data.WMBAMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Stats",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GamesPlayed = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlayerAppearance = table.Column<int>(type: "INTEGER", nullable: false),
+                    Hits = table.Column<int>(type: "INTEGER", nullable: false),
+                    Outs = table.Column<int>(type: "INTEGER", nullable: false),
+                    RunsScored = table.Column<int>(type: "INTEGER", nullable: false),
+                    StrikeOuts = table.Column<int>(type: "INTEGER", nullable: false),
+                    Walks = table.Column<int>(type: "INTEGER", nullable: false),
+                    RBI = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stats", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Stats_Players_PlayerID",
+                        column: x => x.PlayerID,
+                        principalTable: "Players",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GamePlayers",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TeamLineup = table.Column<int>(type: "INTEGER", nullable: false),
+                    GameID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    BattingOrder = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GamePlayers", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_GamePlayers_Players_PlayerID",
+                        column: x => x.PlayerID,
+                        principalTable: "Players",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Games",
                 columns: table => new
                 {
@@ -204,7 +253,9 @@ namespace WMBA5.Data.WMBAMigrations
                     LocationID = table.Column<int>(type: "INTEGER", nullable: false),
                     OutcomeID = table.Column<int>(type: "INTEGER", nullable: false),
                     DivisionID = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlayerAtBatID = table.Column<int>(type: "INTEGER", nullable: true)
+                    PlayerAtBatID = table.Column<int>(type: "INTEGER", nullable: true),
+                    CurrentInningID = table.Column<int>(type: "INTEGER", nullable: true),
+                    CurrentInningID1 = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -247,68 +298,14 @@ namespace WMBA5.Data.WMBAMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stats",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    GamesPlayed = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlayerAppearance = table.Column<int>(type: "INTEGER", nullable: false),
-                    Hits = table.Column<int>(type: "INTEGER", nullable: false),
-                    Outs = table.Column<int>(type: "INTEGER", nullable: false),
-                    RunsScored = table.Column<int>(type: "INTEGER", nullable: false),
-                    StrikeOuts = table.Column<int>(type: "INTEGER", nullable: false),
-                    Walks = table.Column<int>(type: "INTEGER", nullable: false),
-                    RBI = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Stats", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Stats_Players_PlayerID",
-                        column: x => x.PlayerID,
-                        principalTable: "Players",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GamePlayers",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    TeamLineup = table.Column<int>(type: "INTEGER", nullable: false),
-                    GameID = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
-                    BattingOrder = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GamePlayers", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_GamePlayers_Games_GameID",
-                        column: x => x.GameID,
-                        principalTable: "Games",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GamePlayers_Players_PlayerID",
-                        column: x => x.PlayerID,
-                        principalTable: "Players",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Innings",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     InningNo = table.Column<string>(type: "TEXT", nullable: true),
-                    GameID = table.Column<int>(type: "INTEGER", nullable: false)
+                    GameID = table.Column<int>(type: "INTEGER", nullable: false),
+                    AwayRuns = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -327,7 +324,7 @@ namespace WMBA5.Data.WMBAMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlayerID = table.Column<int>(type: "INTEGER", nullable: true),
                     GameID = table.Column<int>(type: "INTEGER", nullable: false),
                     Base = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -344,8 +341,7 @@ namespace WMBA5.Data.WMBAMigrations
                         name: "FK_Runners_Players_PlayerID",
                         column: x => x.PlayerID,
                         principalTable: "Players",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -411,6 +407,11 @@ namespace WMBA5.Data.WMBAMigrations
                 name: "IX_Games_AwayTeamID",
                 table: "Games",
                 column: "AwayTeamID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_CurrentInningID1",
+                table: "Games",
+                column: "CurrentInningID1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Games_DivisionID",
@@ -502,11 +503,34 @@ namespace WMBA5.Data.WMBAMigrations
                 name: "IX_Teams_DivisionID",
                 table: "Teams",
                 column: "DivisionID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_GamePlayers_Games_GameID",
+                table: "GamePlayers",
+                column: "GameID",
+                principalTable: "Games",
+                principalColumn: "ID",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Games_Innings_CurrentInningID1",
+                table: "Games",
+                column: "CurrentInningID1",
+                principalTable: "Innings",
+                principalColumn: "ID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Divisions_Clubs_ClubID",
+                table: "Divisions");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Innings_Games_GameID",
+                table: "Innings");
+
             migrationBuilder.DropTable(
                 name: "GamePlayers");
 
@@ -526,10 +550,13 @@ namespace WMBA5.Data.WMBAMigrations
                 name: "Stats");
 
             migrationBuilder.DropTable(
-                name: "Innings");
+                name: "Clubs");
 
             migrationBuilder.DropTable(
                 name: "Games");
+
+            migrationBuilder.DropTable(
+                name: "Innings");
 
             migrationBuilder.DropTable(
                 name: "Locations");
@@ -551,9 +578,6 @@ namespace WMBA5.Data.WMBAMigrations
 
             migrationBuilder.DropTable(
                 name: "Divisions");
-
-            migrationBuilder.DropTable(
-                name: "Clubs");
         }
     }
 }

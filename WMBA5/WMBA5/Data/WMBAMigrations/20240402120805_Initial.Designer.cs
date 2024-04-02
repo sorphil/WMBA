@@ -11,8 +11,8 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240402085908_AwayRunsField")]
-    partial class AwayRunsField
+    [Migration("20240402120805_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

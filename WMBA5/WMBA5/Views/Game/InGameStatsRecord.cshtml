@@ -30,10 +30,10 @@
     <input type="hidden" value="@ViewBag.GameID" id="gameID" />
     <div class="container-block">
         <div class="sub-container-block field-block">
-            <div class="btnOnField" data-type="0" id="base-block-bat" class="base-block"></div>
-            <div class="btnOnField" data-type="1" id="base-block-one" class="base-block"></div>
-            <div class="btnOnField" data-type="2" id="base-block-two" class="base-block"></div>
-            <div class="btnOnField" data-type="3" id="base-block-three" class="base-block"></div>
+            <div id="base-block-bat" data-type="0" class="base-block"></div>
+            <div id="base-block-one" data-type="1" class="base-block"></div>
+            <div id="base-block-two" data-type="2" class="base-block"></div>
+            <div id="base-block-three" data-type="3" class="base-block"></div>
         </div>
         <div class="sub-container-block input-block">
             <div class="onfield-block form-block">
@@ -374,6 +374,16 @@
             document.querySelector("#base-block-two").innerHTML = playerBaseTwo == undefined ? "" : playerBaseTwo.Player.JerseyNumber
             document.querySelector("#base-block-three").innerHTML = playerBaseThree == undefined ? "" : playerBaseThree.Player.JerseyNumber
 
+            document.querySelector("#base-block-bat").hidden = playerAtBat == undefined ? true : false;
+            document.querySelector("#base-block-one").hidden = playerBaseOne == undefined ? true : false;
+            document.querySelector("#base-block-two").hidden = playerBaseTwo == undefined ? true : false;
+            document.querySelector("#base-block-three").hidden = playerBaseThree == undefined ? true : false;
+
+            document.querySelector("#base-block-bat").dataset.player = playerAtBat == undefined ? "" : playerAtBat.Player.ID
+            document.querySelector("#base-block-one").dataset.player = playerBaseOne == undefined ? "" : playerBaseOne.Player.ID
+            document.querySelector("#base-block-two").dataset.player = playerBaseTwo == undefined ? "" : playerBaseTwo.Player.ID
+            document.querySelector("#base-block-three").dataset.player = playerBaseThree == undefined ? "" : playerBaseThree.Player.ID
+
             document.querySelector("#btnPlayerAtBat").innerHTML = playerAtBat == undefined ? "Empty" : playerAtBat.Player.FullName
             document.querySelector("#btnBaseOne").innerHTML = playerBaseOne == undefined ? "Empty" : playerBaseOne.Player.FullName
             document.querySelector("#btnBaseTwo").innerHTML = playerBaseTwo == undefined ? "Empty" : playerBaseTwo.Player.FullName
@@ -385,11 +395,6 @@
             document.querySelector("#btnBaseTwo").dataset.player = playerBaseTwo == undefined ? "" : playerBaseTwo.Player.ID
             document.querySelector("#btnBaseThree").dataset.player = playerBaseThree == undefined ? "" : playerBaseThree.Player.ID
 
-
-            document.querySelector("#base-block-bat").dataset.player = playerAtBat == undefined ? "" : playerAtBat.Player.ID
-            document.querySelector("#base-block-one").dataset.player = playerBaseOne == undefined ? "" : playerBaseOne.Player.ID
-            document.querySelector("#base-block-two").dataset.player = playerBaseTwo == undefined ? "" : playerBaseTwo.Player.ID
-            document.querySelector("#base-block-three").dataset.player = playerBaseThree == undefined ? "" : playerBaseThree.Player.ID``
 
             document.querySelector("#btnPlayerAtBat").hidden = playerAtBat == undefined ? true : false;
             document.querySelector("#btnBaseOne").hidden = playerBaseOne == undefined ? true : false;
@@ -621,6 +626,20 @@
         $(".btnOnField").click(function (event) {
             event.preventDefault();
             document.querySelectorAll(".btnOnField").forEach((btn) => {
+                btn.disabled = false;
+                if (btn == event.target) {
+                    btn.disabled = true;
+                }
+            })
+            selectedOnfield = { type: event.target.dataset.type, player: event.target.dataset.player }
+            setFormFields()
+            setPlayersOnField();
+            setPlayerScores();
+        })
+
+        $(".base-block").click(function (event) {
+            event.preventDefault();
+            document.querySelectorAll(".base-block").forEach((btn) => {
                 btn.disabled = false;
                 if (btn == event.target) {
                     btn.disabled = true;
