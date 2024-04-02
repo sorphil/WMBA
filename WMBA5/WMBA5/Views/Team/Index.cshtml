@@ -18,15 +18,15 @@
         <div class="collapse" id="collapseFilter">
             <div class="card card-body bg-light">
                 <div class="row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                         <label class="control-label">Select by Division:</label>
                         @Html.DropDownList("DivisionID", null, "All Divisions", htmlAttributes: new { @class = "form-control" })
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                         <label class="control-label">Search Name:</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
-                    <div class="form-group col-md-4 align-self-end">
+                    <div class="form-group col-md-5 align-self-end">
                         <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
                         <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
                     </div>
@@ -80,10 +80,12 @@
                            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             &#x270E; <small>Edit</small>
                         </a>
+                        <br>
                         <a asp-controller="TeamPlayer" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary table-buttons"
                            role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             &#x1F50E; <small>Details</small>
                         </a>
+                        <br>
                         @{
                             if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
                             {
