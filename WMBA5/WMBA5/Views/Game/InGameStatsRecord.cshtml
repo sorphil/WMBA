@@ -304,43 +304,47 @@
                 if (confirm("Warning: Moving on to the next inning will save the game state")) 
                 {
                     let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
-                    inning.awayRuns = parseInt(input);
+                    inning.AwayRuns = parseInt(input);
+                    console.log(inning, gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID));
                     $.ajax({
                         url: "@Url.Action("UpdateGameInfo", "Game")",
                         type: 'POST',
                         dataType: "json",
                         data: { 'json': JSON.stringify(gameInfoJson) },
                         success: function (data) {
-                      
-                            let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
-                            let nextInningString = `Inning ${nextInningNumber}`;
-                            let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
-                            console.log(inning, nextInning)
-                            gameInfoJson.CurrentInningID = nextInning.id;
-                            gameInfoJson.CurrentInning = nextInning;
+
+
+
+                            console.log(data)
                             boolChangedState = false;
 
                         }
-                    }).then(() => {
-                        $.ajax({
-                            url: "@Url.Action("UpdateGameInfo", "Game")",
-                            type: 'POST',
-                            dataType: "json",
-                            data: { 'json': JSON.stringify(gameInfoJson) },
-                            success: function (data) {
+                    })
+                        .then(() => {
+                            $.ajax({
+                                url: "@Url.Action("UpdateGameInfo", "Game")",
+                                type: 'POST',
+                                dataType: "json",
+                                data: { 'json': JSON.stringify(gameInfoJson) },
+                                success: function (data) {
+                                    let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
+                                    let nextInningString = `Inning ${nextInningNumber}`;
+                                    let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
 
+                                    gameInfoJson.CurrentInningID = nextInning.id;
+                                    gameInfoJson.CurrentInning = nextInning;
+                                    console.log(data)
+                                    boolChangedState = false;
+                                    gameInfoJson = fetchGameInfo().then(() => {
+                                        inningsInfoJson = fetchInningsInfo();
+                                        return inningsInfoJson
+                                    }).then((data) => {
 
-                                boolChangedState = false;
-                                gameInfoJson = fetchGameInfo().then(() => {
-                                    inningsInfoJson = fetchInningsInfo();
-                                    return inningsInfoJson
-                                }).then((data) => {
-
-                                    setInnings();
-                                });
-                            }
+                                        setInnings();
+                                    });
+                                }
+                            })
                         })
-                    });
                 }
             }
 
@@ -784,11 +788,24 @@
             return { errorMsg: "No error", hitBool: true }
         }
         let moveBaseConditions = (runners, baseValue, selectedPlayerID) => {
-            let checkNextBases = runners.filter(r => r.Base <= baseValue && r.PlayerID != selectedPlayerID)
-            for (let base of checkNextBases) {
-                if (base != null && base.PlayerID != null)
-                    return { errorMsg: `Base ${base.Base} is already occupied by player ${gameInfoJson.GamePlayers.find(gp => gp.PlayerID == base.PlayerID).Player.FullName}; Players can only occupy empty bases and has to be before the last occupied base`, hitBool: false };
+           
+            console.log(baseValue   )
+            if (baseValue != 4) {
+                let checkNextBases = runners.filter(r => r.Base <= baseValue && r.PlayerID != selectedPlayerID)
+                for (let base of checkNextBases) {
+                    if (base != null && base.PlayerID != null)
+                        return { errorMsg: `Base ${base.Base} is already occupied by player ${gameInfoJson.GamePlayers.find(gp => gp.PlayerID == base.PlayerID).Player.FullName}; Players can only occupy empty bases and has to be before the last occupied base`, hitBool: false };
+                }
             }
+            else {
+                let checkNextBases = runners.filter(r => r.Base <= baseValue && r.PlayerID != selectedPlayerID && r.Base > runners.find(r=>r.PlayerID == selectedPlayerID).Base)
+                console.log(checkNextBases, runners.find(r => r.PlayerID == selectedPlayerID).Base)
+                for (let base of checkNextBases) {
+                    if (base != null && base.PlayerID != null)
+                        return { errorMsg: `Base ${base.Base} is occupied by player ${gameInfoJson.GamePlayers.find(gp => gp.PlayerID == base.PlayerID).Player.FullName}; Players cannot go to home base unless the next bases are not occupied`, hitBool: false };
+                }
+            }
+            
             return { errorMsg: "No error", hitBool: true }
         }
 
@@ -956,33 +973,36 @@
 
                 if (input !== null) {
                     let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
-                    inning.awayRuns = parseInt(input);
-                  
+                    inning.AwayRuns = parseInt(input);
+                    console.log(inning, gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID));
                     $.ajax({
-                                url: "@Url.Action("UpdateGameInfo", "Game")",
-                                type: 'POST',
-                                dataType: "json",
-                                data: { 'json': JSON.stringify(gameInfoJson) },
-                                success: function (data) {
+                        url: "@Url.Action("UpdateGameInfo", "Game")",
+                        type: 'POST',
+                        dataType: "json",
+                        data: { 'json': JSON.stringify(gameInfoJson) },
+                        success: function (data) {
 
-                            let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
-                            let nextInningString = `Inning ${nextInningNumber}`;
-                            let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
-                            console.log(inning, nextInning)
-                            gameInfoJson.CurrentInningID = nextInning.id;
-                            gameInfoJson.CurrentInning = nextInning;
-                                    boolChangedState = false;
-                                    
-                                }
-                            }).then(()=>{
+
+
+                            console.log(data)
+                            boolChangedState = false;
+                            
+                        }
+                     })
+                    .then(()=>{
                         $.ajax({
                             url: "@Url.Action("UpdateGameInfo", "Game")",
                             type: 'POST',
                             dataType: "json",
                             data: { 'json': JSON.stringify(gameInfoJson) },
                             success: function (data) {
+                                   let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
+                        let nextInningString = `Inning ${nextInningNumber}`;
+                        let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
 
-
+                        gameInfoJson.CurrentInningID = nextInning.id;
+                        gameInfoJson.CurrentInning = nextInning;
+                                console.log(data)
                                 boolChangedState = false;
                                 gameInfoJson = fetchGameInfo().then(() => {
                                     inningsInfoJson = fetchInningsInfo();
@@ -993,11 +1013,8 @@
                                 });
                             }
                         })
-                            });
-
-                  
-
-                  
+                    })
+                
                 }
             }
             else {
