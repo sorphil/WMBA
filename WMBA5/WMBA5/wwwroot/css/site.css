@@ -1,3 +1,6 @@
+html{
+    color:black;
+}
 .hide-colum{
     display:none;
 }
@@ -5,14 +8,14 @@
     margin-right:50px;
 }
 .table-buttons{
-    width:90px;
+    width:110px;
     margin: 2px 0
 }
 .btn-order-lineup{
     padding:15px 0;
 }
 .table-buttons-player {
-    width: 60px;
+    width: 110px;
     margin: 2px 0
 }
 .background-body-new {
@@ -45,20 +48,22 @@
     position: relative;
     perspective: 1000px;
     background-color: #2e8b43;
+    color:white;
+}
+.card a {
+    color: white;
 }
 
 h3, p {
     text-align: left;
     padding-left: 10px;
     padding-right: 10px;
-    color: #fff;
 }
 
     p a {
         display: block;
         width: 100%;
         text-align: center;
-        color: #fff;
     }
 
 a:hover {
@@ -229,9 +234,12 @@ body {
     .hide-colum {
         display: table-cell;
     }
-
+    .table-buttons {
+        width: 110px;
+    }
     .table-buttons-player {
         width: 80px;
         margin: 2px 0
     }
+
 }
