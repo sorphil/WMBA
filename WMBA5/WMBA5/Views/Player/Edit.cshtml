@@ -4,7 +4,21 @@
     ViewData["Title"] = "Edit";
 }
 
-<partial name="_ViewHeading" />
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <partial name="_ViewHeading" />
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the &quot;Edit Player&quot; page, you can edit a player's details.</p>
+                       <p>2- Once finished editing the information, click on the &quot;Save&quot; button to save that player's details.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
+
 <hr />
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" id="SavedTeamID" value="@Model.TeamID" />
@@ -121,6 +135,22 @@
                         console.error("Error fetching teams:", errorThrown); // Log any errors
                     }
                 });
+            });
+        });
+
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
+
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
             });
         });
     </script>

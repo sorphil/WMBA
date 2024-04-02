@@ -32,3 +32,30 @@ footer {
     height: 30px;
     width: 100%;
 }
+
+/* Custom styles for the popover */
+.popover {
+    max-width: 450px; /* Adjust width as needed */
+    background-color: forestgreen; /* Custom background color */
+    color: #fff; /* Custom text color */
+    border: 1px solid #fff; /* Border color */
+    border-radius: 8px; /* Border radius */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow */
+}
+
+/* Popover title */
+.popover-header {
+    background-color: #007bff; /* Custom background color */
+    color: #fff; /* Custom text color */
+    border-bottom: none; /* No border bottom */
+    border-radius: 8px 8px 0 0; /* Rounded corners for top */
+    padding: 10px 15px; /* Padding */
+}
+
+/* Popover body */
+.popover-body {
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+}

@@ -1,41 +1,73 @@
 ﻿@model WMBA5.Models.Team
 
 @{
-    ViewData["Title"] = "Create";
+	ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+	<div class="d-flex align-items-center">
+		<div style="margin-right: 10px;">
+			<h2>Create Team</h2>
+		</div>
+		<button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+				data-bs-content="<p>1- In the &quot;Create Team&quot; page, you can enter all the necessary information of the team like Team name, Coach and Division.</p>
+					   <p>2- Once finished entering the necessary information, click on the &quot;Create&quot; button to add that team.</p>"
+				data-bs-html="true">
+			?
+		</button>
+	</div>
+</div>
 
-<h4>Team</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TeamName" class="control-label">Team</label>
-                <input asp-for="TeamName" class="form-control" />
-                <span asp-validation-for="TeamName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CoachID" class="control-label">Coach</label>
-                <select asp-for="CoachID" class ="form-control" asp-items="ViewBag.CoachID"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DivisionID" class="control-label">Division</label>
-                <select asp-for="DivisionID" class ="form-control" asp-items="ViewBag.DivisionID"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+	<div class="col-md-4">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="TeamName" class="control-label">Team</label>
+				<input asp-for="TeamName" class="form-control" />
+				<span asp-validation-for="TeamName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CoachID" class="control-label">Coach</label>
+				<select asp-for="CoachID" class="form-control" asp-items="ViewBag.CoachID"></select>
+			</div>
+			<div class="form-group">
+				<label asp-for="DivisionID" class="control-label">Division</label>
+				<select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID"></select>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+	<script type="text/javascript">
+		// Initialize popover with trigger set to 'hover'
+		var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+		var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+			return new bootstrap.Popover(popoverTriggerEl, {
+				trigger: 'hover' // Show popover on hover
+			});
+		});
+
+		// Initialize popover with trigger set to 'click'
+		var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+		var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+			return new bootstrap.Popover(popoverTriggerEl, {
+				trigger: 'click' // Show popover on click
+			});
+		});
+	</script>
 }

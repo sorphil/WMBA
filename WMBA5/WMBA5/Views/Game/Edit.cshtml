@@ -4,7 +4,21 @@
     ViewData["Title"] = "Edit Game";
 }
 
-<h1>Edit Game</h1>
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <h2>Edit Game</h2>
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the &quot;Edit Game&quot; page, you can edit a game's details.</p>
+                       <p>2- Once finished editing the information, click on the &quot;Save&quot; button to save that game's details.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
+
 <partial name="_addLocationModal" />
 <div class="row">
 
@@ -59,23 +73,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-
-@* @section Scripts{
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
-	<script src="~/js/refreshDDL.js"></script>
-	<script type="text/javascript">
-		$('#DivisionID').change(function () {
-			var selectedDivision = $("#DivisionID").val();
-			var URL = "/Game/GetGame/?DivisionID=" + selectedDivision;
-			refreshDDL('TeamID', URL, true, 'Select a Division with teams first', false, null, true);
-		});
-	</script>
-} *@
-
-
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -118,9 +115,7 @@
                 });
             });
         });
-    </script>
 
-    <script type="text/javascript">
         $('#submitLocationCreate').click(function (event) {
             event.preventDefault();
             ClearErrors();
@@ -199,9 +194,22 @@
                 }
             });
         });
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
 
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
+        });
     </script>
-
 }
 
 

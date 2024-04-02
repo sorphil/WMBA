@@ -4,7 +4,21 @@
     ViewData["Title"] = "Create Game";
 }
 
-<h1>Create Game</h1>
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <h2>Create Game</h2>
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the &quot;Create Game&quot; page, you can enter all the necessary information of the game like Date, Division name, Home Team, Away Team and Location.</p>
+                       <p>2- Once finished entering the necessary information, click on the &quot;Create&quot; button to add that game.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
+
 <partial name="_addLocationModal" />
 <div class="row">
 
@@ -56,22 +70,6 @@
 </div>
 
 
-@* @section Scripts{
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
-	<script src="~/js/refreshDDL.js"></script>
-	<script type="text/javascript">
-		$('#DivisionID').change(function () {
-			var selectedDivision = $("#DivisionID").val();
-			var URL = "/Game/GetGame/?DivisionID=" + selectedDivision;
-			refreshDDL('TeamID', URL, true, 'Select a Division with teams first', false, null, true);
-		});
-	</script>
-} *@
-
-
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -114,9 +112,13 @@
                 });
             }).change();
         });
-    </script>
 
-    <script type="text/javascript">
+        // Function to reload the page
+        function reloadPage() {
+            location.reload();
+        }
+
+        // Handle click event of Create button inside _addLocationModal
         $('#submitLocationCreate').click(function (event) {
             event.preventDefault();
             ClearErrors();
@@ -128,6 +130,7 @@
                     data: form.serialize(),
                     success: function () {
                         $('#addLocationModal').modal('hide');
+                        reloadPage(); // Reload the page after successful submission
                     },
                     error: function (xhr) { //Note: xhr is the XMLHttpRequest
                         var errorMessages = [];
@@ -194,8 +197,22 @@
                 }
             });
         });
-    </script>
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
 
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
+        });
+    </script>
 }
 
 

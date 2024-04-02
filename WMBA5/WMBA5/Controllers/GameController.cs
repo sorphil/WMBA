@@ -492,7 +492,6 @@ namespace WMBA5.Controllers
             return View(gameStats);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> InGameStatsRecord(int? id, int? PlayerID, int? InningID, int? GameID, string? IncrementField, int? IncrementValue)
         {
@@ -755,7 +754,6 @@ namespace WMBA5.Controllers
             return View(game);
         }
 
-
         private void PopulateAssignedLineupData(Game game, TeamLineup lineup)
         {
             //For this to work, you must have Included the child collection in the parent object
@@ -764,7 +762,7 @@ namespace WMBA5.Controllers
             //Now we can get all of the other players
             var allOptions = _context.Players
                 .Include(p => p.Team)
-                .Where(p => !playersInGame.Contains(p.ID) && p.DivisionID == game.DivisionID)
+                .Where(p => !playersInGame.Contains(p.ID) && p.TeamID == game.HomeTeamID)
                 .OrderBy(p => p.LastName).ThenBy(p => p.FirstName);
 
             //Current players on the lineup
@@ -801,8 +799,7 @@ namespace WMBA5.Controllers
 
     }
 
-
-    [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> NewInning(int? id)
         {
             int? gameID = ViewBag.GameID;
@@ -831,13 +828,6 @@ namespace WMBA5.Controllers
 
 
         }
-
-
-
-
-
-
-
 
         private SelectList LocationSelectionList(int? selectedId)
         {
@@ -893,10 +883,6 @@ namespace WMBA5.Controllers
         }
         private bool GameExists(int id) => _context.Games.Any(e => e.ID == id);
 
-
-
-
-
         [HttpPost]
         public async Task<IActionResult> NewScoreObject(int? GameID, int? PlayerID, int? InningID)
         {
@@ -932,13 +918,6 @@ namespace WMBA5.Controllers
             return Json(scoreJson);
 
         }
-
-
-
-       
-
-
-
 
         [HttpGet]
         //Creating the action to record the in-game Stats for futher creation of the view

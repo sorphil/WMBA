@@ -3,9 +3,27 @@
 @{
     ViewData["Title"] = "Record Game";
 }
+
+<link rel="stylesheet" href="css/Layout.css">
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <div style="margin-right: 10px;">
+            <h2>@Html.DisplayFor(model => model.HomeTeam.TeamName) vs @Html.DisplayFor(model => model.AwayTeam.TeamName)</h2>
+        </div>
+        <button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+                data-bs-content="<p>1- In the &quot;Score Game&quot; page , you can count the score of the game in real-time.</p>
+                       <p>2- You can count hits, runs, home runs, outs, strikes, balls, and fouls in this page.</p>
+                       <p>3- If you make a mistake in scoring, you can undo it by clicking the &quot;-&quot; button.</p>
+                       <p>4- You can also save the game once it's over by clicking the &quot;Save&quot; button or incase if the game is cancelled , you can click on the &quot;Reset&quot; button.</p>"
+                data-bs-html="true">
+            ?
+        </button>
+    </div>
+</div>
+
 <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
 @* <partial name="_ViewHeading" /> *@
-<h2>@Html.DisplayFor(model => model.HomeTeam.TeamName) vs @Html.DisplayFor(model => model.AwayTeam.TeamName)</h2>
+
 <hr />
 <form asp-action="InGam eStatsRecord" >
     <input type="hidden" value="@ViewBag.GameID" id="gameID" />
@@ -988,6 +1006,22 @@
             else {
                 return null
             }
+        });
+
+        // Initialize popover with trigger set to 'hover'
+        var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover' // Show popover on hover
+            });
+        });
+
+        // Initialize popover with trigger set to 'click'
+        var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click' // Show popover on click
+            });
         });
     </script>
 

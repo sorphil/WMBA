@@ -1,31 +1,66 @@
 ﻿@{
-    ViewData["Title"] = "Import";
+	ViewData["Title"] = "Import";
 }
+
 <form asp-action="InsertFromExcel" asp-controller="ImportReports" method="post" enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-md-7">
-            <label class="fw-bold h4">Import Team and Players:</label>
-            <p class="text-black">
-                Please upload an Excel or CSV file in this format:<br />
-                ID | First Name | Last Name | Member ID | Season | Division | Club | Team <br />
-            </p>
-            <p class="text-black">OR</p>
-            <div class="form-group">
-                <p class="text-black">You can download the template below and update the records. Do not delete the heading(first row) as import will not work without it.</p>
-                <a href="~/Files/template.csv" download="template.csv" class="btn btn-secondary">Download Template</a>
-                <hr />
-                <br />
-            </div>
-            <div class="form-group col-md-7">
-                <label class="control-label custome-file-label">Upload File:</label>
-                <div class="input-group mb-3">
-                    <input type="file" class="form-control" name="TheExcel" id="TheExcel" />
-                </div>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Upload Data" class="btn btn-primary" />
-            </div>
-            <p class="alert-danger">@TempData["FeedBack"]</p>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-md-7">
+			<link rel="stylesheet" href="css/Layout.css">
+			<div class="d-flex justify-content-between align-items-center">
+				<div class="d-flex align-items-center">
+					<div style="margin-right: 10px;">
+						<label class="fw-bold h4">Import Team and Players:</label>
+					</div>
+					<button type="button" class="btn btn-info help-btn" id="helpBtn" data-bs-toggle="popover" data-bs-placement="right"
+							data-bs-content="<p>1- In the Import Page, you can see Download template, Upload file and Upload data.</p>
+					   <p>2- You can click on &quot;Download template&quot; and an excel file will be downloaded according to the template used in Import teams and players.</p>
+					   <p>3- By clicking on &quot;Upload file&quot;, you can upload an excel file for importing the teams and players.</p>"
+						data-bs-html="true">
+						?
+					</button>
+				</div>
+			</div>
+			<p class="text-black">
+				Please upload an Excel or CSV file in this format:<br />
+				ID | First Name | Last Name | Member ID | Season | Division | Club | Team <br />
+			</p>
+			<p class="text-black">OR</p>
+			<div class="form-group">
+				<p class="text-black">You can download the template below and update the records. Do not delete the heading(first row) as import will not work without it.</p>
+				<a href="~/Files/template.csv" download="template.csv" class="btn btn-secondary">Download Template</a>
+				<hr />
+				<br />
+			</div>
+			<div class="form-group col-md-7">
+				<label class="control-label custome-file-label">Upload File:</label>
+				<div class="input-group mb-3">
+					<input type="file" class="form-control" name="TheExcel" id="TheExcel" />
+				</div>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Upload Data" class="btn btn-primary" />
+			</div>
+			<p class="alert-danger">@TempData["FeedBack"]</p>
+		</div>
+	</div>
 </form>
+
+@section Scripts {
+	<script type="text/javascript">
+		// Initialize popover with trigger set to 'hover'
+		var popoverTriggerListHover = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+		var popoverListHover = popoverTriggerListHover.map(function (popoverTriggerEl) {
+			return new bootstrap.Popover(popoverTriggerEl, {
+				trigger: 'hover' // Show popover on hover
+			});
+		});
+
+		// Initialize popover with trigger set to 'click'
+		var popoverTriggerListClick = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+		var popoverListClick = popoverTriggerListClick.map(function (popoverTriggerEl) {
+			return new bootstrap.Popover(popoverTriggerEl, {
+				trigger: 'click' // Show popover on click
+			});
+		});
+	</script>
+}
