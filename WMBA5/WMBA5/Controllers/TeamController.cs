@@ -263,7 +263,7 @@ namespace WMBA5.Controllers
         {
             var teamToUpdate = await _context.Teams
                 .Include(t => t.Coach)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(f => f.ID == id);
             try
             {
                 if (id != teamToUpdate.ID)
@@ -272,12 +272,14 @@ namespace WMBA5.Controllers
                 }
                 UpdateTeamPlayerListboxes(selectedOptions, teamToUpdate);
 
-                if (ModelState.IsValid)
+                if (await TryUpdateModelAsync<Team>(teamToUpdate, "",
+                p => p.TeamName, p => p.CoachID, p => p.DivisionID))
                 {
                     try
                     {
                         _context.Update(teamToUpdate);
                         await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -290,7 +292,7 @@ namespace WMBA5.Controllers
                             throw;
                         }
                     }
-                    return RedirectToAction(nameof(Index));
+                    
                 }
 
                 ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "CoachName", teamToUpdate.CoachID);
