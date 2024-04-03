@@ -534,30 +534,7 @@ namespace WMBA5.Controllers
 
             return View(gameStats);
         }
-        [HttpGet]
-        public async Task<IActionResult> ChangeTeam(int? id, string LineupStr)
-        {
-            var gameStats = await _context.Games
-                   .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
-                   .Include(g => g.HomeTeam)
-                   .Include(g=>g.AwayTeam)
-                      .FirstOrDefaultAsync(m => m.ID == id);
-            var players = await _context.GamePlayers.Include(gp => gp.Player).Where(gp => gp.TeamLineup == TeamLineup.Away && gp.GameID == id).OrderBy(gp => gp.BattingOrder).AsNoTracking().ToListAsync();
-            if (LineupStr=="Home")
-            {
-
-                players = await _context.GamePlayers.Include(gp => gp.Player)
-                    .Where(gp => gp.TeamLineup == TeamLineup.Home && gp.GameID == id).OrderBy(gp=>gp.BattingOrder).AsNoTracking().ToListAsync();
-
-                return Json(players);
-
-            }
-
-            return Json(players);
-
-
-
-        }
+      
       
         // GET: Game/Delete/5
         [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
@@ -850,38 +827,6 @@ namespace WMBA5.Controllers
             return Json(scoreJson);
 
         }
-        [HttpPost]
-        public async Task<IActionResult> NewRunnerObject(int? GameID, int BaseValue)
-        {
-            var runner = await _context.Runners.FirstOrDefaultAsync(r =>r.Base == (Base)BaseValue&& r.GameID == GameID);
-            if (runner == null)
-            {
-                // Create a new score object if it doesn't exist
-                runner = new Runner
-                {
-    
-                    GameID = (int)GameID,
-                    Base = (Base)BaseValue
-                };
-                _context.Runners.Add(runner);
-                await _context.SaveChangesAsync();
-            }
-            var scoreJson = JsonConvert.SerializeObject(
-                new
-                {
-                    runner.ID,
-                    runner.PlayerID,
-                    runner.GameID,
-                    runner.Base
-                }
-                );
-            return Json(scoreJson);
-        }
-
-
-
-       
-
 
 
 
@@ -890,11 +835,14 @@ namespace WMBA5.Controllers
         public async Task<IActionResult> GetGameInfo(int? id)
         {
             var gameStats = await _context.Games
-         .Include(g => g.GamePlayers).ThenInclude(gp => gp.Player).ThenInclude(p => p.Scores)
-         .Include(g=>g.CurrentInning)
-         .Include(g => g.Runners)
-     
-         .FirstOrDefaultAsync(m => m.ID == id);
+        .Include(g => g.GamePlayers)
+            .ThenInclude(gp => gp.Player)
+                .ThenInclude(p => p.Scores)
+        .Include(g => g.CurrentInning)
+        .Include(g => g.Innings)
+        .Include(g => g.Runners)
+        .AsNoTracking()
+        .FirstOrDefaultAsync(m => m.ID == id && m.GamePlayers.Any(gp => gp.TeamLineup == 0));
             var settings = new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -918,21 +866,62 @@ namespace WMBA5.Controllers
             var existingGame = await _context.Games.FirstOrDefaultAsync(g => g.ID == gameStats.ID);
             if (existingGame != null)
             {
+                if (existingGame.CurrentInning != null)
+                {
+                    _context.Entry(existingGame.CurrentInning).State = EntityState.Detached;
+                    if (existingGame.CurrentInning.Scores.Any())
+                    {
+                        foreach (var score in existingGame.CurrentInning.Scores)
+                        {
+                            _context.Entry(score).State = EntityState.Detached;
+                        }
+                    }
+                }
+                if (existingGame.Runners.Any())
+                {
+                    foreach (var runner in existingGame.Runners)
+                    {
+                        _context.Entry(runner).State = EntityState.Detached;
+                    }
+                }
                 foreach (var gamePlayer in existingGame.GamePlayers)
                 {
                     _context.Entry(gamePlayer).State = EntityState.Detached;
+                    if (gamePlayer.Player != null)
+                    {
+                        _context.Entry(gamePlayer.Player).State = EntityState.Detached;
+                        if (gamePlayer.Player.GamePlayers.Any())
+                        {
+                            foreach (var playerGamePlayer in gamePlayer.Player.GamePlayers)
+                            {
+                                _context.Entry(playerGamePlayer).State = EntityState.Detached;
+                            }
+                        }
+                    }
                 }
-                // Detach the existing Game entity from the context
-                _context.Entry(existingGame).State = EntityState.Detached;
-               
+                foreach (var inning in existingGame.Innings)
+                {
+                    _context.Entry(inning).State = EntityState.Detached;
+                    if(inning.Scores.Any())
+                    {
+                        foreach (var inningScore in inning.Scores)
+                        {
+                            _context.Entry(inningScore).State = EntityState.Detached;
+                        }
+                    }
+                }
+
+                    // Detach the existing Game entity from the context
+                    _context.Entry(existingGame).State = EntityState.Detached;
+
                 // Update properties of existingGame with values from gameStats
                 existingGame.GamePlayers = gameStats.GamePlayers;
-             
+
                 existingGame.Runners = gameStats.Runners;
                 existingGame.PlayerAtBatID = gameStats.PlayerAtBatID;
-                existingGame.CurrentInningID= gameStats.CurrentInningID;
-                existingGame.CurrentInning = gameStats.CurrentInning;
-                existingGame.CurrentInning.AwayRuns = gameStats.CurrentInning.AwayRuns;
+                existingGame.CurrentInningID = gameStats.CurrentInningID;
+                //existingGame.CurrentInning = gameStats.CurrentInning;
+                existingGame.Innings = gameStats.Innings;
                 // Repeat for other properties as needed
                 _context.Update(existingGame);
                 _context.SaveChanges();
@@ -940,13 +929,22 @@ namespace WMBA5.Controllers
 
             return Json(new { success = true, data = gameStats });
         }
-      
+        [HttpGet]
         public async Task<IActionResult> GetGameInnings(int id)
         {
             var innings = await _context.Innings.Include(i => i.Scores) 
                 .Where(i => i.GameID == id)
                 .ToListAsync();
             
+            return Json(innings);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateGameInnings(int id)
+        {
+            var innings = await _context.Innings.Include(i => i.Scores)
+                .Where(i => i.GameID == id)
+                .ToListAsync();
+
             return Json(innings);
         }
     }

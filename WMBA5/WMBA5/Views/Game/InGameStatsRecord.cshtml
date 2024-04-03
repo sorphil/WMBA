@@ -983,7 +983,12 @@
                         success: function (data) {
 
 
-
+                            let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
+                            let nextInningString = `Inning ${nextInningNumber}`;
+                            let nextInning = gameInfoJson.Innings.find(i => i.InningNo == nextInningString);
+                            console.log(nextInning, nextInning.id)
+                            gameInfoJson.CurrentInningID = nextInning.ID;
+                            gameInfoJson.CurrentInning = nextInning;
                             console.log(data)
                             boolChangedState = false;
                             
@@ -996,14 +1001,10 @@
                             dataType: "json",
                             data: { 'json': JSON.stringify(gameInfoJson) },
                             success: function (data) {
-                                   let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
-                        let nextInningString = `Inning ${nextInningNumber}`;
-                        let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
-
-                        gameInfoJson.CurrentInningID = nextInning.id;
-                        gameInfoJson.CurrentInning = nextInning;
+                                  
                                 console.log(data)
                                 boolChangedState = false;
+
                                 gameInfoJson = fetchGameInfo().then(() => {
                                     inningsInfoJson = fetchInningsInfo();
                                     return inningsInfoJson

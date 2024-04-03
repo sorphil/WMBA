@@ -353,6 +353,16 @@
     }
 }
 
+@media screen and (min-width: 1025px) {
+    body, html {
+        font-size: 9px;
+    }
+}
+@media screen and (min-width: 1201px) {
+    body, html {
+        font-size: 10px;
+    }
+}
 
 
 
