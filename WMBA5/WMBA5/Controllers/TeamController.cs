@@ -169,7 +169,11 @@ namespace WMBA5.Controllers
         [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public IActionResult Create()
         {
-            if (User.IsInRole("Rookie Convenor"))
+			if (User.IsInRole("Admin"))
+			{
+				ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivisionName");
+			}
+			if (User.IsInRole("Rookie Convenor"))
             {
                 ViewData["DivisionID"] = new SelectList(_context.Divisions.Where(d => d.DivisionName == "9U"), "ID", "DivisionName");
             }
