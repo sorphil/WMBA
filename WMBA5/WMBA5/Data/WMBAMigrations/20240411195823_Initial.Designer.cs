@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240402120805_Initial")]
+    [Migration("20240411195823_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -231,6 +231,9 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Property<string>("Nickname")
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("StatusID")
                         .HasColumnType("INTEGER");

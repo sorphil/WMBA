@@ -229,6 +229,9 @@ namespace WMBA5.Data.WMBAMigrations
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("Rating")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("StatusID")
                         .HasColumnType("INTEGER");
 
