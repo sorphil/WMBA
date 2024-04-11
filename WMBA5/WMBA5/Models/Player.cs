@@ -58,6 +58,9 @@ namespace WMBA5.Models
         [Display(Name = "Jersey Number")]
         public int? JerseyNumber { get; set; } = null;
 
+        [Display(Name ="Player Rating")]
+        public int? Rating { get; set; }
+
         //Status: Active or Inactive
         [Display(Name = "Status")]
         [DefaultValue("")]
