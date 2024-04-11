@@ -1052,79 +1052,79 @@ namespace WMBA5.Data
                         context.SaveChanges();
                     }
                 }//end seed data for games
+				int[] playerIDs = context.Players.Select(d => d.ID).ToArray();
+				int playerIDCount = playerIDs.Length;
+				//Adding Stats
+				if (!context.Stats.Any())
+                {
+                    Random rnd = new Random();
 
-                //Adding Stats
-                //if (!context.Stats.Any())
-                //{
-                //    Random rnd = new Random();
 
+                    context.Stats.Add(new Stat
+                    {
+                        GamesPlayed = rnd.Next(20, 60),
+                        PlayerAppearance = rnd.Next(20, 50),
+                        Hits = rnd.Next(10, 30),
+                        RunsScored = rnd.Next(5, 20),
+                        StrikeOuts = rnd.Next(5, 25),
+                        Walks = rnd.Next(2, 15),
+                        RBI = rnd.Next(5, 15),
+                        PlayerID = 1,
+                    });
 
-                //    context.Stats.Add(new Stat
-                //    {
-                //        GamesPlayed = rnd.Next(20, 60),
-                //        PlayerAppearance = rnd.Next(20, 50),
-                //        Hits = rnd.Next(10, 30),
-                //        RunsScored = rnd.Next(5, 20),
-                //        StrikeOuts = rnd.Next(5, 25),
-                //        Walks = rnd.Next(2, 15),
-                //        RBI = rnd.Next(5, 15),
-                //        PlayerID = 1,
-                //    });
+                    context.Stats.Add(new Stat
+                    {
+                        GamesPlayed = rnd.Next(20, 60),
+                        PlayerAppearance = rnd.Next(20, 50),
+                        Hits = rnd.Next(10, 30),
+                        RunsScored = rnd.Next(5, 20),
+                        StrikeOuts = rnd.Next(5, 25),
+                        Walks = rnd.Next(2, 15),
+                        RBI = rnd.Next(5, 15),
+                        PlayerID = 2,
+                    });
 
-                //    context.Stats.Add(new Stat
-                //    {
-                //        GamesPlayed = rnd.Next(20, 60),
-                //        PlayerAppearance = rnd.Next(20, 50),
-                //        Hits = rnd.Next(10, 30),
-                //        RunsScored = rnd.Next(5, 20),
-                //        StrikeOuts = rnd.Next(5, 25),
-                //        Walks = rnd.Next(2, 15),
-                //        RBI = rnd.Next(5, 15),
-                //        PlayerID = 2,
-                //    });
+                    context.SaveChanges();
+                }
+                if (!context.Stats.Any())
+                {
+                    Random rnd = new Random();
 
-                //    context.SaveChanges();
-                //}
-                //if (!context.Scores.Any())
-                //{
-                //    Random rnd = new Random();
+                    // Seed scores for PlayerID = 1
+                    for (int i = 1; i <= 7; i++)
+                    {
+                        context.Stats.Add(new Stat
+                        {
+                            GamesPlayed = rnd.Next(20, 60),
+                            PlayerAppearance = rnd.Next(20, 50),
+                            Hits = rnd.Next(10, 30),
+                            RunsScored = rnd.Next(5, 20),
+                            StrikeOuts = rnd.Next(5, 25),
+                            Walks = rnd.Next(2, 15),
+                            RBI = rnd.Next(5, 15),
+                            PlayerID = playerIDs[rnd.Next(playerIDCount)],
+                        });
+                    }
 
-                //    // Seed scores for PlayerID = 1
-                //    for (int i = 1; i <= 7; i++)
-                //    {
-                //        context.Scores.Add(new Score
-                //        {
-                //            Balls = rnd.Next(0, 4), // Balls range from 0 to 3
-                //            FoulBalls = rnd.Next(0, 3), // Foul balls range from 0 to 2
-                //            Strikes = rnd.Next(0, 3), // Strikes range from 0 to 2
-                //            Out = rnd.Next(0, 3), // Outs range from 0 to 2
-                //            Runs = rnd.Next(0, 5), // Runs range from 0 to 4
-                //            Hits = rnd.Next(0, 5), // Hits range from 0 to 4
-                //            PlayerID = 1,
-                //            InningID = i,
-                //            GameID = 1
-                //        });
-                //    }
+                    // Seed scores for PlayerID = 2
+                    //for (int i = 8; i <= 14; i++)
+                    //{
+                    //    context.Scores.Add(new Score
+                    //    {
+                    //        Balls = rnd.Next(0, 4),
+                    //        FoulBalls = rnd.Next(0, 3),
+                    //        Strikes = rnd.Next(0, 3),
+                    //        Out = rnd.Next(0, 3),
+                    //        Runs = rnd.Next(0, 5),
+                    //        Hits = rnd.Next(0, 5),
+                    //        PlayerID = 2,
+                    //        InningID = i,
+                    //        GameID = 1
+                    //    });
+                    //}
 
-                //    // Seed scores for PlayerID = 2
-                //    //for (int i = 8; i <= 14; i++)
-                //    //{
-                //    //    context.Scores.Add(new Score
-                //    //    {
-                //    //        Balls = rnd.Next(0, 4),
-                //    //        FoulBalls = rnd.Next(0, 3),
-                //    //        Strikes = rnd.Next(0, 3),
-                //    //        Out = rnd.Next(0, 3),
-                //    //        Runs = rnd.Next(0, 5),
-                //    //        Hits = rnd.Next(0, 5),
-                //    //        PlayerID = 2,
-                //    //        InningID = i,
-                //    //        GameID = 1
-                //    //    });
-                //    //}
-
-                //    context.SaveChanges();
-                //}
+                    context.SaveChanges();
+                }
             }
             catch (Exception ex) 
             {
