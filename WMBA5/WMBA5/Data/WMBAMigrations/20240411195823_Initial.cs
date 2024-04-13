@@ -165,6 +165,7 @@ namespace WMBA5.Data.WMBAMigrations
                     Nickname = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     JerseyNumber = table.Column<int>(type: "INTEGER", nullable: true),
+                    Rating = table.Column<int>(type: "INTEGER", nullable: true),
                     StatusID = table.Column<int>(type: "INTEGER", nullable: true),
                     DivisionID = table.Column<int>(type: "INTEGER", nullable: true),
                     TeamID = table.Column<int>(type: "INTEGER", nullable: true),

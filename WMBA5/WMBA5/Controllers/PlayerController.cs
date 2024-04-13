@@ -225,7 +225,7 @@ namespace WMBA5.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
-        public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,StatusID,DivisionID,TeamID")] Player player)
+        public async Task<IActionResult> Create([Bind("ID,MemberID,FirstName,Nickname,LastName,JerseyNumber,Rating,StatusID,DivisionID,TeamID")] Player player)
          {
             try
             {
@@ -307,7 +307,7 @@ namespace WMBA5.Controllers
 
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
 				p => p.MemberID, p => p.FirstName, p => p.LastName, p => p.Nickname,
-				p => p.JerseyNumber, p => p.StatusID, p => p.DivisionID, p => p.TeamID))
+				p => p.JerseyNumber,p =>p.Rating, p => p.StatusID, p => p.DivisionID, p => p.TeamID))
             {
                 try
                 {

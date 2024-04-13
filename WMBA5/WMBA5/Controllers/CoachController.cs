@@ -38,14 +38,13 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
 
-            var coach = await _context.Coaches
+            var coach = await _context.Coaches.Include(c => c.Teams)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (coach == null)
             {
                 return NotFound();
             }
-
             return View(coach);
         }
 
@@ -202,6 +201,15 @@ namespace WMBA5.Controllers
             return View(coach);
         }
 
+        private SelectList TeamSelectionList(int? selectedCoach)
+        {
+            var teams = _context.Teams
+                .OrderBy(d => d.TeamName)
+                .Where(d => d.CoachID == selectedCoach)
+                .ToList();
+
+            return new SelectList(teams, "ID", "TeamName", selectedCoach);
+        }
         private bool CoachExists(int id)
         {
           return _context.Coaches.Any(e => e.ID == id);
