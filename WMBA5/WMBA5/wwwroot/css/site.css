@@ -38,7 +38,15 @@ html{
     border-radius: 15px;
     background-color: #2e8b43;
 }
-
+.filter-card {
+    border: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    perspective: 1000px;
+    background-color: #2e8b43;
+    color: white;
+}
 .card {
     border: none;
     width: 100%;
@@ -48,7 +56,7 @@ html{
     position: relative;
     perspective: 1000px;
     background-color: #2e8b43;
-    color:white;
+    color: white;
 }
 .card a {
     color: white;
@@ -230,7 +238,9 @@ body {
         border-radius: 30px;
         margin-top:60px;
     }
-
+    .filter{
+        width:100%;
+    }
     .hide-colum {
         display: table-cell;
     }
