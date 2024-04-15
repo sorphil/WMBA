@@ -31,7 +31,10 @@
                 <input asp-for="UserName" class="form-control" readonly="readonly"/>
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="form-group">
                 <label asp-for="UserRoles" class="control-label"></label>
                 <table>
@@ -39,6 +42,7 @@
                         @{
                             int cnt = 0;
                             List<WMBA5.ViewModels.RoleVM> roles = ViewBag.Roles;
+                            List<WMBA5.Models.Team> teams = ViewBag.Teams;
                             foreach (var role in roles)
                             {
                                 if (cnt++ % 3 == 0)
@@ -53,24 +57,63 @@
                                     @role.RoleName @:&nbsp;&nbsp;
                                 @:</td>
                             }
-                        @:</tr>
+                            
+                    @:</tr>
                         }
-                    </table>
-                </div>
+                </table>
+                <table id="teamsCoachTable" style="display:none;">
+                <tr>
+                    @{
+                        foreach (var team in teams)
+                        {
+                            if (cnt++ % 3 == 0)
+                            {
+                            @:</tr><tr>
+                            }
+                            @:<td>
+                                <input type="checkbox"
+                                     name="selectedRoles"
+                                       value="@team.TeamName" />
+                                @team.TeamName @:&nbsp- Coach&nbsp;
+                            @:</td>
+                        }
+                    }
+                </tr>
+            </table>
+            <table id="teamsScorekeeperTable" style="display:none;">
+                <tr>
+                    @{
+                        foreach (var team in teams)
+                        {
+                            if (cnt++ % 3 == 0)
+                            {
+                            @:</tr><tr>
+                            }
+                            @:<td>
+                                <input type="checkbox"
+                                name="selectedRoles"
+                                       value="@team.TeamName" />
+                                @team.TeamName @:&nbsp- ScoreKeeper&nbsp;
+                            @:</td>
+                        }
+                    }
+                </tr>
+            </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <div>
-        <partial name="_BackToList" />
     </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <partial name="_BackToList" />
+</div>
 
 @section Scripts {
     <script type="text/javascript">
@@ -91,4 +134,43 @@
             });
         });
     </script>
+    <script>
+    // Function to show/hide teams table based on coach selection
+    function handleCoachSelection() {
+        var coachCheckbox = document.querySelector('input[name="selectedRoles"][value="Coach"]');
+        var teamsCoachTable = document.getElementById('teamsCoachTable');
+
+        if (coachCheckbox.checked) {
+            teamsCoachTable.style.display = 'table';
+        } else {
+            teamsCoachTable.style.display = 'none';
+        }
+    }
+
+    // Add event listener to coach checkbox
+    var coachCheckbox = document.querySelector('input[name="selectedRoles"][value="Coach"]');
+    coachCheckbox.addEventListener('change', handleCoachSelection);
+
+    // Initial check on page load
+    handleCoachSelection();
+
+    // Function to show/hide teams table based on Scorekeeper selection
+    function handleScorekeeperSelection() {
+        var scorekeeperCheckbox = document.querySelector('input[name="selectedRoles"][value="Scorekeeper"]');
+        var teamsScorekeeperTable = document.getElementById('teamsScorekeeperTable');
+
+        if (scorekeeperCheckbox.checked) {
+            teamsScorekeeperTable.style.display = 'table';
+        } else {
+            teamsScorekeeperTable.style.display = 'none';
+        }
+    }
+
+    // Add event listener to coach checkbox
+    var scorekeeperCheckbox = document.querySelector('input[name="selectedRoles"][value="Scorekeeper"]');
+    scorekeeperCheckbox.addEventListener('change', handleScorekeeperSelection);
+
+    // Initial check on page load
+    handleScorekeeperSelection();
+</script>
 }

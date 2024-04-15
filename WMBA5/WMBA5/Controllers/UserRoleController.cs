@@ -13,11 +13,13 @@ namespace WMBA5.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly WMBAContext _wmbaContext;
 
-        public UserRoleController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UserRoleController(ApplicationDbContext context, UserManager<IdentityUser> userManager, WMBAContext wmbaContext)
         {
             _context = context;
             _userManager = userManager;
+            _wmbaContext = wmbaContext;
         }
         // GET: User
         public async Task<IActionResult> Index()
@@ -56,6 +58,9 @@ namespace WMBA5.Controllers
                 UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
             };
             PopulateAssignedRoleData(user);
+
+            var teams = await _wmbaContext.Teams.ToListAsync();
+            ViewBag.Teams = teams;
             return View(user);
         }
 
