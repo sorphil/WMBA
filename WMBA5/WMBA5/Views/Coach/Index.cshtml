@@ -43,7 +43,7 @@
                        role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                         &#x270E; <small>Edit</small>
                     </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                    <a asp-controller="CoachTeam" asp-action="Index" asp-route-CoachID="@item.ID" class="btn btn-sm btn-outline-primary table-buttons"
                        role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                         &#x1F50E; <small>Details</small>
                     </a>
