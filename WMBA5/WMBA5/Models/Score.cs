@@ -26,6 +26,7 @@ namespace WMBA5.Models
         public int FoulBalls { get; set; }
         public int Strikes { get; set; }
         public int Runs { get; set; }
+        public int Walks { get; set; }
         public int Singles { get; set; }
         public int Doubles { get; set; }
         public int Triples { get; set; }
