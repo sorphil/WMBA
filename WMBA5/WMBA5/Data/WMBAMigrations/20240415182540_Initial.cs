@@ -82,6 +82,51 @@ namespace WMBA5.Data.WMBAMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PlayerInningScoreSummary",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    InningID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GameID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalBalls = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalFoulBalls = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalStrikes = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalRuns = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerInningScoreSummary", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlayerScoreStatsSummary",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GameID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlayerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalGamesPlayed = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalPlayerAppearances = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalHits = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalRunsScored = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalStrikeOuts = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalWalks = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalRBI = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalBalls = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalFoulBalls = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalStrikes = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalOut = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalRuns = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerScoreStatsSummary", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Positions",
                 columns: table => new
                 {
@@ -105,6 +150,21 @@ namespace WMBA5.Data.WMBAMigrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Statuses", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeamScoreSummary",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GameID = table.Column<int>(type: "INTEGER", nullable: false),
+                    TeamID = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalRuns = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamScoreSummary", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -539,6 +599,12 @@ namespace WMBA5.Data.WMBAMigrations
                 name: "ImportReport");
 
             migrationBuilder.DropTable(
+                name: "PlayerInningScoreSummary");
+
+            migrationBuilder.DropTable(
+                name: "PlayerScoreStatsSummary");
+
+            migrationBuilder.DropTable(
                 name: "Positions");
 
             migrationBuilder.DropTable(
@@ -549,6 +615,9 @@ namespace WMBA5.Data.WMBAMigrations
 
             migrationBuilder.DropTable(
                 name: "Stats");
+
+            migrationBuilder.DropTable(
+                name: "TeamScoreSummary");
 
             migrationBuilder.DropTable(
                 name: "Clubs");

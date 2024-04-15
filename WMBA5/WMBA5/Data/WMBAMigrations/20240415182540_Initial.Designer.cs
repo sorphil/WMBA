@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240411195823_Initial")]
+    [Migration("20240415182540_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -459,6 +459,111 @@ namespace WMBA5.Data.WMBAMigrations
                     b.HasKey("ID");
 
                     b.ToTable("ImportReport");
+                });
+
+            modelBuilder.Entity("WMBA5.ViewModels.PlayerInningScoreVM", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InningID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalBalls")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalFoulBalls")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalRuns")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalStrikes")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("PlayerInningScoreSummary");
+                });
+
+            modelBuilder.Entity("WMBA5.ViewModels.PlayerScoresStatsVM", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalBalls")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalFoulBalls")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalGamesPlayed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalHits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalOut")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalPlayerAppearances")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalRBI")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalRuns")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalRunsScored")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalStrikeOuts")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalStrikes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalWalks")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("PlayerScoreStatsSummary");
+                });
+
+            modelBuilder.Entity("WMBA5.ViewModels.TeamScoreVM", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TeamID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalRuns")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("TeamScoreSummary");
                 });
 
             modelBuilder.Entity("WMBA5.Models.Division", b =>
