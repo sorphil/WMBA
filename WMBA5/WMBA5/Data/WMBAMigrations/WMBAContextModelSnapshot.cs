@@ -479,6 +479,12 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Property<int>("TotalFoulBalls")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("TotalHits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalOuts")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("TotalRuns")
                         .HasColumnType("INTEGER");
 

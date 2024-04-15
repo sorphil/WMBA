@@ -93,6 +93,8 @@ namespace WMBA5.Data.WMBAMigrations
                     TotalBalls = table.Column<int>(type: "INTEGER", nullable: false),
                     TotalFoulBalls = table.Column<int>(type: "INTEGER", nullable: false),
                     TotalStrikes = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalOuts = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalHits = table.Column<int>(type: "INTEGER", nullable: false),
                     TotalRuns = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

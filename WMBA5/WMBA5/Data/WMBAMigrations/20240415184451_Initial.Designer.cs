@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240415182540_Initial")]
+    [Migration("20240415184451_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -480,6 +480,12 @@ namespace WMBA5.Data.WMBAMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TotalFoulBalls")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalHits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalOuts")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TotalRuns")
