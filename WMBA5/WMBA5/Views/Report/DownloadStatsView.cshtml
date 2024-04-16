@@ -1,0 +1,72 @@
+﻿@model IEnumerable<WMBA5.Models.Stat>
+
+@{
+    ViewData["Title"] = "Download Report";
+}
+
+<h2>Function Report</h2>
+<a asp-action="DownloadStats" class="btn btn-info float-end">Download Report</a>
+<form asp-controller="Report" asp-action="DownloadStatsView" method="get">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                   PLayer
+                </th>
+                <th>
+                   Games PLayed
+                </th>
+                <th>
+                    Plate Apprearance
+                </th>
+                <th>
+                    Runs
+                </th>
+                <th>
+                    Hits
+                </th>
+                <th>
+                    RBI
+                </th>
+                <th>
+                    Outs
+                </th>
+                <th>
+                    Batting AVG
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Player)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GamesPlayed)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PlayerAppearance)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RunsScored)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Hits)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RBI)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Outs)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BattAVG)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
