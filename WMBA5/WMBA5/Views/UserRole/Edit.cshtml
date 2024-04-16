@@ -53,7 +53,8 @@
                                     <input type="checkbox"
                                            name="selectedRoles"
                                            value="@role.RoleName"
-                                           @(Html.Raw(role.Assigned ? "checked=\"checked\"" : "")) />
+                                           @(Html.Raw(role.Assigned ? "checked=\"checked\"" : "")) 
+                                           @(role.RoleName=="Admin"? "disabled =\"disabled\"":"")/>
                                     @role.RoleName @:&nbsp;&nbsp;
                                 @:</td>
                             }

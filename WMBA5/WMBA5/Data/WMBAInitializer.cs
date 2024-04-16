@@ -1059,40 +1059,9 @@ namespace WMBA5.Data
                 {
                     Random rnd = new Random();
 
-
-                    context.Stats.Add(new Stat
+                    for(int i = 0; i < playerIDCount; i++)
                     {
-                        GamesPlayed = rnd.Next(20, 60),
-                        PlayerAppearance = rnd.Next(20, 50),
-                        Hits = rnd.Next(10, 30),
-                        RunsScored = rnd.Next(5, 20),
-                        StrikeOuts = rnd.Next(5, 25),
-                        Walks = rnd.Next(2, 15),
-                        RBI = rnd.Next(5, 15),
-                        PlayerID = 1,
-                    });
-
-                    context.Stats.Add(new Stat
-                    {
-                        GamesPlayed = rnd.Next(20, 60),
-                        PlayerAppearance = rnd.Next(20, 50),
-                        Hits = rnd.Next(10, 30),
-                        RunsScored = rnd.Next(5, 20),
-                        StrikeOuts = rnd.Next(5, 25),
-                        Walks = rnd.Next(2, 15),
-                        RBI = rnd.Next(5, 15),
-                        PlayerID = 2,
-                    });
-
-                    context.SaveChanges();
-                }
-                if (!context.Stats.Any())
-                {
-                    Random rnd = new Random();
-
-                    // Seed scores for PlayerID = 1
-                    for (int i = 1; i <= 7; i++)
-                    {
+                        int playerId = playerIDs[i];
                         context.Stats.Add(new Stat
                         {
                             GamesPlayed = rnd.Next(20, 60),
@@ -1102,9 +1071,41 @@ namespace WMBA5.Data
                             StrikeOuts = rnd.Next(5, 25),
                             Walks = rnd.Next(2, 15),
                             RBI = rnd.Next(5, 15),
-                            PlayerID = playerIDs[rnd.Next(playerIDCount)],
+                            PlayerID = playerId,
                         });
                     }
+
+                    context.SaveChanges();
+                }
+
+                int[] gameIDs = context.Games.Select(d => d.ID).ToArray();
+                int gameIDCount = gameIDs.Length;
+                if (!context.Scores.Any())
+                {
+                    Random rnd = new Random();
+
+                    for (int i = 1; i <= gameIDCount; i++)
+                    {
+                        int gameId = gameIDs[i];
+                        context.Scores.Add(new Score
+                        {
+                            Balls = rnd.Next(20, 60),
+                            FoulBalls = rnd.Next(20, 50),
+                            Strikes = rnd.Next(10, 30),
+                            Runs = rnd.Next(5, 20),
+                            Walks = rnd.Next(2, 15),
+                            Singles = rnd.Next(2,10),
+                            Doubles = rnd.Next(2,10),
+                            Triples = rnd.Next(2,10),
+                            StrikeOuts = rnd.Next(2, 10),
+                            GroundOuts = rnd.Next(2,5),
+                            FlyOuts = rnd.Next(1,5),
+                            GameID = gameId,
+                            InningID = rnd.Next(1,9),
+                            PlayerID = playerIDs[rnd.Next(playerIDCount)]
+                        });
+                    }
+
 
                     // Seed scores for PlayerID = 2
                     //for (int i = 8; i <= 14; i++)
