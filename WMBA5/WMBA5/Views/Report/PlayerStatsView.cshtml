@@ -5,11 +5,8 @@
 }
 
 <h1>Download Report</h1>
-<a asp-controller="Report" asp-action="PlayerStatDownload" class="btn btn-sm btn-outline-success"
-   role="button" data-bs-toggle="tooltip">
-    <strong><small>Download</small></strong>
-</a>
-<form asp-action="PlayerStatsView">
+<a asp-action="PlayerStatDownload" class="btn btn-info float-end">Download Report</a>
+<form asp-controller="Report" asp-action="PlayerStatsView">
 <div class="form-horizontal">
     <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
     </button><br />
