@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using System.Diagnostics;
 
 namespace WMBA5.Data
@@ -10,18 +11,38 @@ namespace WMBA5.Data
         {
             ApplicationDbContext context = applicationBuilder.ApplicationServices.CreateScope()
                 .ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            WMBAContext wmbaContext = applicationBuilder.ApplicationServices.CreateScope()
+                .ServiceProvider.GetRequiredService<WMBAContext>();
+
             try
             {
-
+                
                 //Create the database if it does not exist and apply the Migration
                 //context.Database.EnsureDeleted();
                 //context.Database.EnsureCreated();
                 context.Database.Migrate();
 
-                //Create Roles
+                // Create Roles
                 var RoleManager = applicationBuilder.ApplicationServices.CreateScope()
                     .ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                string[] roleNames = { "Admin", "Rookie Convenor", "Intermediate Convenor", "Senior Convenor", "Trash Pandas 15U Coach","Trash Pandas 15U Scorekeeper", "Scorekeeper", "Coach" };
+
+                List<string> roleNames = new List<string> { "Admin", "Rookie Convenor", "Intermediate Convenor", "Senior Convenor", "Scorekeeper", "Coach" };
+
+                // Team Coach and Scorekeeper roles
+                var teams = await wmbaContext.Teams.ToListAsync();
+                foreach (var team in teams)
+                {
+                    // Coach role
+                    string coachRoleName = team.TeamName + " - Coach";
+                    // Scorekeeper role
+                    string scorekeeperRoleName = team.TeamName + " - Scorekeeper";
+
+                    // Append coach and scorekeeper role names to roleNames list
+                    roleNames.Add(coachRoleName);
+                    roleNames.Add(scorekeeperRoleName);
+                }
+
                 IdentityResult roleResult;
                 foreach (var roleName in roleNames)
                 {
@@ -40,7 +61,7 @@ namespace WMBA5.Data
                 {
                     IdentityUser user = new IdentityUser
                     {
-                        UserName = "admin@outlook.com",
+                        UserName = "admin@outlook.com", 
                         Email = "admin@outlook.com",
                         EmailConfirmed = true
                     };
@@ -120,40 +141,40 @@ namespace WMBA5.Data
                         userManager.AddToRoleAsync(user, "Coach").Wait();
                     }
                 }
-                //Create coach Trash Pandas u15 user
-                if (userManager.FindByEmailAsync("coachtp15@outlook.com").Result == null)
-                {
-                    IdentityUser user = new IdentityUser
-                    {
-                        UserName = "coachtp15@outlook.com",
-                        Email = "coachtp15@outlook.com",
-                        EmailConfirmed = true
-                    };
+                ////Create coach Trash Pandas u15 user
+                //if (userManager.FindByEmailAsync("coachtp15@outlook.com").Result == null)
+                //{
+                //    IdentityUser user = new IdentityUser
+                //    {
+                //        UserName = "coachtp15@outlook.com",
+                //        Email = "coachtp15@outlook.com",
+                //        EmailConfirmed = true
+                //    };
 
-                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+                //    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
 
-                    if (result.Succeeded)
-                    {
-                        userManager.AddToRoleAsync(user, "Trash Pandas 15U Coach").Wait();
-                    }
-                }
-                //Create Trash Pandas 15U scorekeeper user
-                if (userManager.FindByEmailAsync("scorekeepertp15@outlook.com").Result == null)
-                {
-                    IdentityUser user = new IdentityUser
-                    {
-                        UserName = "scorekeepertp15@outlook.com",
-                        Email = "scorekeepertp15@outlook.com",
-                        EmailConfirmed = true
-                    };
+                //    if (result.Succeeded)
+                //    {
+                //        userManager.AddToRoleAsync(user, "Trash Pandas 15U Coach").Wait();
+                //    }
+                //}
+                ////Create Trash Pandas 15U scorekeeper user
+                //if (userManager.FindByEmailAsync("scorekeepertp15@outlook.com").Result == null)
+                //{
+                //    IdentityUser user = new IdentityUser
+                //    {
+                //        UserName = "scorekeepertp15@outlook.com",
+                //        Email = "scorekeepertp15@outlook.com",
+                //        EmailConfirmed = true
+                //    };
 
-                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+                //    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
 
-                    if (result.Succeeded)
-                    {
-                        userManager.AddToRoleAsync(user, "Trash Pandas 15U Scorekeeper").Wait();
-                    }
-                }
+                //    if (result.Succeeded)
+                //    {
+                //        userManager.AddToRoleAsync(user, "Trash Pandas 15U Scorekeeper").Wait();
+                //    }
+                //}
                 //Create scorekeeper user
                 if (userManager.FindByEmailAsync("scorekeeper@outlook.com").Result == null)
                 {

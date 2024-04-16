@@ -31,7 +31,10 @@
                 <input asp-for="UserName" class="form-control" readonly="readonly"/>
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="form-group">
                 <label asp-for="UserRoles" class="control-label"></label>
                 <table>
@@ -39,6 +42,7 @@
                         @{
                             int cnt = 0;
                             List<WMBA5.ViewModels.RoleVM> roles = ViewBag.Roles;
+                            List<WMBA5.Models.Team> teams = ViewBag.Teams;
                             foreach (var role in roles)
                             {
                                 if (cnt++ % 3 == 0)
@@ -53,24 +57,25 @@
                                     @role.RoleName @:&nbsp;&nbsp;
                                 @:</td>
                             }
-                        @:</tr>
+                            
+                    @:</tr>
                         }
-                    </table>
-                </div>
+                </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <div>
-        <partial name="_BackToList" />
     </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <partial name="_BackToList" />
+</div>
 
 @section Scripts {
     <script type="text/javascript">
@@ -91,4 +96,5 @@
             });
         });
     </script>
+
 }

@@ -13,11 +13,13 @@ namespace WMBA5.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly WMBAContext _wmbaContext;
 
-        public UserRoleController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UserRoleController(ApplicationDbContext context, UserManager<IdentityUser> userManager, WMBAContext wmbaContext)
         {
             _context = context;
             _userManager = userManager;
+            _wmbaContext = wmbaContext;
         }
         // GET: User
         public async Task<IActionResult> Index()
@@ -56,6 +58,25 @@ namespace WMBA5.Controllers
                 UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
             };
             PopulateAssignedRoleData(user);
+
+            var teams = await _wmbaContext.Teams.ToListAsync();
+
+            // Generate team-specific roles for the current user
+            foreach (var team in teams)
+            {
+                var teamCoachRole = team.TeamName + " - Coach";
+                var teamScorekeeperRole = team.TeamName + " - Scorekeeper";
+                if (!user.UserRoles.Contains(teamCoachRole))
+                {
+                    user.UserRoles.Add(teamCoachRole);
+                }
+                if (!user.UserRoles.Contains(teamScorekeeperRole))
+                {
+                    user.UserRoles.Add(teamScorekeeperRole);
+                }
+            }
+
+            ViewBag.Teams = teams;
             return View(user);
         }
 
@@ -64,25 +85,42 @@ namespace WMBA5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string Id, string[] selectedRoles)
         {
-            var _user = await _userManager.FindByIdAsync(Id);//IdentityRole
-            UserVM user = new UserVM
+            var _user = await _userManager.FindByIdAsync(Id);
+            if (_user == null)
             {
-                ID = _user.Id,
-                UserName = _user.UserName,
-                UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
-            };
+                return NotFound();
+            }
+
             try
             {
-                await UpdateUserRoles(selectedRoles, user);
+                // Get the current roles of the user
+                var userRoles = await _userManager.GetRolesAsync(_user);
+
+                // Remove all existing roles from the user
+                var result = await _userManager.RemoveFromRolesAsync(_user, userRoles);
+
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Failed to update user roles.");
+                    return View();
+                }
+
+                // Add the selected roles to the user
+                result = await _userManager.AddToRolesAsync(_user, selectedRoles);
+
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Failed to update user roles.");
+                    return View();
+                }
+
                 return RedirectToAction("Index");
             }
             catch (Exception)
             {
-                ModelState.AddModelError(string.Empty,
-                                "Unable to save changes.");
+                ModelState.AddModelError(string.Empty, "Unable to save changes.");
+                return View();
             }
-            PopulateAssignedRoleData(user);
-            return View(user);
         }
 
         private void PopulateAssignedRoleData(UserVM user)
@@ -142,6 +180,41 @@ namespace WMBA5.Controllers
                             await _userManager.RemoveFromRoleAsync(_user, r.Name);
                         }
                     }
+                }
+            }
+        }
+
+        private async Task UpdateTeamRoles(string[] selectedRoles, UserVM userToUpdate, string roleName)
+        {
+            var user = await _userManager.FindByIdAsync(userToUpdate.ID);
+
+            if (selectedRoles == null || !selectedRoles.Any())
+            {
+                // Remove all team roles of the specified type
+                var teamRolesToRemove = await _userManager.GetRolesAsync(user);
+                teamRolesToRemove = teamRolesToRemove.Where(r => r.StartsWith(roleName)).ToList();
+                foreach (var roleToRemove in teamRolesToRemove)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, roleToRemove);
+                }
+            }
+            else
+            {
+                // Add or remove team roles based on selection
+                foreach (var selectedRole in selectedRoles)
+                {
+                    var roleExist = await _userManager.IsInRoleAsync(user, selectedRole);
+                    if (!roleExist)
+                    {
+                        await _userManager.AddToRoleAsync(user, selectedRole);
+                    }
+                }
+
+                var rolesToRemove = (await _userManager.GetRolesAsync(user))
+                    .Where(r => r.StartsWith(roleName) && !selectedRoles.Contains(r));
+                foreach (var roleToRemove in rolesToRemove)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, roleToRemove);
                 }
             }
         }
