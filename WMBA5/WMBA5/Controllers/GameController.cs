@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.ContentModel;
@@ -173,10 +173,10 @@ namespace WMBA5.Controllers
                 .Include(g => g.AwayTeam)
                 .Include(g => g.HomeTeam)
                 .Include(g => g.Division)
-                .Include(g=>g.Outcome)
-                .Include(g=>g.Location)
+                .Include(g => g.Outcome)
+                .Include(g => g.Location)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id); 
+                .FirstOrDefaultAsync(m => m.ID == id);
 
 
             if (game == null)
@@ -209,7 +209,7 @@ namespace WMBA5.Controllers
             // Proceeding with your Create action logic...
             return View();
         }
-        
+
 
 
         // POST: Game/Create
@@ -271,7 +271,7 @@ namespace WMBA5.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult>GetTeamsByDivision(int divisionId)
+        public async Task<JsonResult> GetTeamsByDivision(int divisionId)
         {
             // Retrieve teams for the selected division
             var teams = await _context.Teams
@@ -427,9 +427,10 @@ namespace WMBA5.Controllers
 
             var gameStats = await _context.Games
                 .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
-                .Include(g=>g.PlayerAtBat)
-                .Include(g=>g.Runners)
-                .Include(g=>g.CurrentInning)
+                .Include(g => g.PlayerAtBat)
+                .Include(g => g.Runners)
+                .Include(g => g.Outcome)
+                .Include(g => g.CurrentInning)
                 .Include(g => g.AwayTeam)
                 .Include(g => g.HomeTeam)
                 .Include(g => g.Division)
@@ -439,21 +440,28 @@ namespace WMBA5.Controllers
 
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-        
             if (gameStats == null)
             {
                 return NotFound();
             }
 
             ViewBag.GameID = id;
-          
+
 
             var lineupIsEmpty = gameStats.GamePlayers.Any(gp => gp.BattingOrder == 0 && gp.TeamLineup == TeamLineup.Home);
             var playerCount = gameStats.GamePlayers.Count(gp => gp.BattingOrder != 0 && gp.TeamLineup == TeamLineup.Home);
 
+            var outcomeWinAway = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "Win-Away");
+            var outcomeWinHome = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "Win-Home");
+            var outcomeTie = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "Tie");
+            var gameOutcome = gameStats.OutcomeID;
+            if (gameOutcome == outcomeWinAway.ID || gameOutcome == outcomeWinHome.ID)
+            {
+                return RedirectToAction(nameof(InGameStats), new { id = id });
+            }
             if (lineupIsEmpty)
             {
-                return RedirectToAction(nameof(EditLineup), new { id = id});
+                return RedirectToAction(nameof(EditLineup), new { id = id });
             }
 
             if (playerCount < 8)
@@ -462,20 +470,20 @@ namespace WMBA5.Controllers
                 return RedirectToAction(nameof(Index), new { id = id });
             }
             ViewBag.AtBat = gameStats.PlayerAtBat;
-           
+
             if (gameStats.PlayerAtBatID == null)
             {
-                var GamePlayer = await _context.GamePlayers.Include(gp=>gp.Player)
+                var GamePlayer = await _context.GamePlayers.Include(gp => gp.Player)
                                     .FirstOrDefaultAsync(gp => gp.BattingOrder == 1 && gp.GameID == id && gp.TeamLineup == 0);
                 ViewBag.AtBat = GamePlayer.Player;
                 gameStats.PlayerAtBatID = GamePlayer?.PlayerID;
-            
+
             }
 
-           
+
             if (!gameStats.Innings.Any())
             {
-                for (var i = 0; i<9; i++)
+                for (var i = 0; gameStats.Division.DivisionName == "9U" ? i < 7 : i < 9; i++)
                 {
                     var inning = new Inning
                     {
@@ -486,7 +494,7 @@ namespace WMBA5.Controllers
                     gameStats.Innings.Add(inning);
                 }
                 await _context.SaveChangesAsync();
-               
+
                 ViewBag.Innings = gameStats.Innings;
             }
             else
@@ -530,12 +538,56 @@ namespace WMBA5.Controllers
 
             ViewBag.TotalRuns = teamScores?.TotalRuns ?? 0;
             ViewBag.TeamLineup = "Home";
-           
+
 
             return View(gameStats);
         }
-      
-      
+        [HttpGet]
+        //Creating the action to record the in-game Stats for futher creation of the view
+        public async Task<IActionResult> InGameStats(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var gameStats = await _context.Games
+                .Include(g => g.GamePlayers).ThenInclude(p => p.Player)
+                .Include(g => g.PlayerAtBat)
+                .Include(g => g.Runners)
+                .Include(g => g.Outcome)
+                .Include(g => g.CurrentInning)
+                .Include(g => g.AwayTeam)
+                .Include(g => g.HomeTeam)
+                .Include(g => g.Division)
+                .Include(g => g.Outcome)
+                .Include(g => g.Location)
+                .Include(g => g.Innings).ThenInclude(g => g.Scores)
+
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (gameStats == null)
+            {
+                return NotFound();
+            }
+
+            if (gameStats.Outcome.OutcomeString == "Win-Away")
+            {
+                ViewBag.Winner = gameStats.AwayTeam.TeamName;
+            }
+            else if (gameStats.Outcome.OutcomeString == "Win-Home")
+            {
+                ViewBag.Winner = gameStats.HomeTeam.TeamName;
+            }
+
+            ViewBag.GameID = id;
+            ViewBag.Innings = gameStats.Innings;
+            ViewBag.Players = gameStats.GamePlayers.Where(gp => gp.TeamLineup == 0).OrderBy(gp => gp.BattingOrder).ToList();
+
+
+            return View(gameStats);
+        }
+
         // GET: Game/Delete/5
         [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor")]
         public async Task<IActionResult> Delete(int? id)
@@ -549,8 +601,8 @@ namespace WMBA5.Controllers
                 .Include(g => g.Division)
                 .Include(g => g.AwayTeam)
                 .Include(g => g.HomeTeam)
-                .Include(g=>g.Outcome)
-                .Include(g=>g.Location)
+                .Include(g => g.Outcome)
+                .Include(g => g.Location)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -702,7 +754,7 @@ namespace WMBA5.Controllers
             ViewData["selOpts"] = new MultiSelectList(selected, "ID", "DisplayText");
             ViewData["availOpts"] = new MultiSelectList(available, "ID", "DisplayText");
 
-    }
+        }
 
         [HttpPost]
         public async Task<IActionResult> NewInning(int? id)
@@ -806,22 +858,25 @@ namespace WMBA5.Controllers
             }
             var scoreJson = JsonConvert.SerializeObject(
                 new
-                    {
-                        score.ID,
-                        score.Balls,
-                        score.FoulBalls,
-                        score.Strikes,
-                        score.Outs,
-                        score.Runs,
-                        score.Singles,
-                        score.Doubles,
-                        score.Triples,
-                        score.InningID,
-                        score.GameID,
-                        score.PlayerID,
-                        score.Hits,
-  
-                    }
+                {
+                    score.ID,
+                    score.Balls,
+                    score.FoulBalls,
+                    score.Strikes,
+                    score.Outs,
+                    score.Runs,
+                    score.Singles,
+                    score.Doubles,
+                    score.Triples,
+                    score.InningID,
+                    score.GameID,
+                    score.PlayerID,
+                    score.Hits,
+                    score.Walks,
+                    score.StrikeOuts,
+                    score.FlyOuts,
+                    score.GroundOuts
+                }
                 );
 
             return Json(scoreJson);
@@ -829,7 +884,34 @@ namespace WMBA5.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> NewInningObject(int? GameID, int InningNo)
+        {
 
+
+            var inning = new Inning
+            {
+                GameID = GameID.GetValueOrDefault(),
+                AwayRuns = null,
+                InningNo = $"Inning {InningNo}"
+            };
+            _context.Innings.Add(inning);
+            await _context.SaveChangesAsync();
+            var inningJson = JsonConvert.SerializeObject(
+               new
+               {
+                   inning.ID,
+                   inning.GameID,
+                   inning.AwayRuns,
+                   inning.InningNo
+               });
+            var gameStats = await _context.Games.FirstOrDefaultAsync(m => m.ID == GameID && m.GamePlayers.Any(gp => gp.TeamLineup == 0));
+            var outcomeTie = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "Tie");
+            gameStats.OutcomeID = outcomeTie.ID;
+            await _context.SaveChangesAsync();
+            return Json(inningJson);
+
+        }
         [HttpGet]
         //Creating the action to record the in-game Stats for further creation of the view
         public async Task<IActionResult> GetGameInfo(int? id)
@@ -845,7 +927,8 @@ namespace WMBA5.Controllers
         .FirstOrDefaultAsync(m => m.ID == id && m.GamePlayers.Any(gp => gp.TeamLineup == 0));
             var settings = new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                MaxDepth = 20 // Set your desired maximum depth value
             };
             var gameStatsJson = JsonConvert.SerializeObject(gameStats, settings);
             // Serialize gameStats to JSON
@@ -857,7 +940,7 @@ namespace WMBA5.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateGameInfo(string json)
         {
-            Console.WriteLine(json);
+
             JObject jObject = JObject.Parse(json);
             var gameStats = JsonConvert.DeserializeObject<Game>(json.ToString());
             //_context.Games.Update(gameStats);
@@ -866,62 +949,13 @@ namespace WMBA5.Controllers
             var existingGame = await _context.Games.FirstOrDefaultAsync(g => g.ID == gameStats.ID);
             if (existingGame != null)
             {
-                if (existingGame.CurrentInning != null)
-                {
-                    _context.Entry(existingGame.CurrentInning).State = EntityState.Detached;
-                    if (existingGame.CurrentInning.Scores.Any())
-                    {
-                        foreach (var score in existingGame.CurrentInning.Scores)
-                        {
-                            _context.Entry(score).State = EntityState.Detached;
-                        }
-                    }
-                }
-                if (existingGame.Runners.Any())
-                {
-                    foreach (var runner in existingGame.Runners)
-                    {
-                        _context.Entry(runner).State = EntityState.Detached;
-                    }
-                }
-                foreach (var gamePlayer in existingGame.GamePlayers)
-                {
-                    _context.Entry(gamePlayer).State = EntityState.Detached;
-                    if (gamePlayer.Player != null)
-                    {
-                        _context.Entry(gamePlayer.Player).State = EntityState.Detached;
-                        if (gamePlayer.Player.GamePlayers.Any())
-                        {
-                            foreach (var playerGamePlayer in gamePlayer.Player.GamePlayers)
-                            {
-                                _context.Entry(playerGamePlayer).State = EntityState.Detached;
-                            }
-                        }
-                    }
-                }
-                foreach (var inning in existingGame.Innings)
-                {
-                    _context.Entry(inning).State = EntityState.Detached;
-                    if(inning.Scores.Any())
-                    {
-                        foreach (var inningScore in inning.Scores)
-                        {
-                            _context.Entry(inningScore).State = EntityState.Detached;
-                        }
-                    }
-                }
 
-                    // Detach the existing Game entity from the context
-                    _context.Entry(existingGame).State = EntityState.Detached;
+                // Detach the existing Game entity from the context
+                _context.Entry(existingGame).State = EntityState.Detached;
 
-                // Update properties of existingGame with values from gameStats
-                existingGame.GamePlayers = gameStats.GamePlayers;
-
-                existingGame.Runners = gameStats.Runners;
                 existingGame.PlayerAtBatID = gameStats.PlayerAtBatID;
                 existingGame.CurrentInningID = gameStats.CurrentInningID;
-                //existingGame.CurrentInning = gameStats.CurrentInning;
-                existingGame.Innings = gameStats.Innings;
+
                 // Repeat for other properties as needed
                 _context.Update(existingGame);
                 _context.SaveChanges();
@@ -929,17 +963,149 @@ namespace WMBA5.Controllers
 
             return Json(new { success = true, data = gameStats });
         }
-        [HttpGet]
-        public async Task<IActionResult> GetGameInnings(int id)
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateGameRunners(string json)
         {
-            var innings = await _context.Innings.Include(i => i.Scores) 
-                .Where(i => i.GameID == id)
-                .ToListAsync();
-            
-            return Json(innings);
+
+            try
+            {
+
+                // Parse the JSON string into a JArray
+                JArray jArray = JArray.Parse(json);
+                ;
+              
+                foreach (var runnerJson in jArray)
+                {
+                    Debug.WriteLine(runnerJson);
+                    var runner = JsonConvert.DeserializeObject<Runner>(runnerJson.ToString());
+                    // Assuming you have access to your DbContext instance (_context)
+                    _context.Runners.Update(runner);
+                }
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                // Return appropriate response
+                return Ok("Runners added successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateGameInnings(string json)
+        {
+            try
+            {
+
+                // Parse the JSON string into a JArray
+                JArray jArray = JArray.Parse(json);
+
+                foreach (var inningJson in jArray)
+                {
+
+                    var inning = JsonConvert.DeserializeObject<Inning>(inningJson.ToString());
+                    // Assuming you have access to your DbContext instance (_context)
+                    _context.Innings.Update(inning);
+                }
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                // Return appropriate response
+                return Ok("Innings added successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateGamePlayers(string json)
+        {
+            try
+            {
+
+                // Parse the JSON string into a JArray
+                JArray jArray = JArray.Parse(json);
+
+                foreach (var playersJson in jArray)
+                {
+                    var player = JsonConvert.DeserializeObject<GamePlayer>(playersJson.ToString());
+                    _context.Entry(player).State = EntityState.Detached;
+                    if (player.Player != null)
+                    {
+                        _context.Entry(player.Player).State = EntityState.Detached;
+                        if (player.Player.GamePlayers.Any())
+                        {
+                            foreach (var playerGamePlayer in player.Player.GamePlayers)
+                            {
+                                _context.Entry(playerGamePlayer).State = EntityState.Detached;
+                            }
+                        }
+                        if(player.Player.Scores.Any())
+                        {
+                            foreach (var score in player.Player.Scores)
+                            {
+                                _context.Entry(score).State = EntityState.Detached;
+                            }    
+                        }
+                    }
+                    Debug.WriteLine("ASDASDASDASDASDA");
+                    Debug.WriteLine(player);
+                    // Assuming you have access to your DbContext instance (_context)
+                    _context.GamePlayers.Update(player);
+                }
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                // Return appropriate response
+                return Ok("Players added successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateGameInnings(int id)
+        public async Task<IActionResult> EndGame(int? id, string winner)
+        {
+            var gameStats = await _context.Games.FirstOrDefaultAsync(m => m.ID == id && m.GamePlayers.Any(gp => gp.TeamLineup == 0));
+            var outcomeTBD = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "TBD");
+            var outcomeWinAway = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "Win-Away");
+            var outcomeWinHome = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "Win-Home");
+            var outcomeTie = await _context.Outcomes.FirstOrDefaultAsync(o => o.OutcomeString == "Tie");
+            //var gameOutcome = gameStats.OutcomeID;
+
+            if (winner == "Home")
+            {
+                gameStats.OutcomeID = outcomeWinHome.ID;
+            }
+            else if (winner == "Away")
+            {
+                gameStats.OutcomeID = outcomeWinAway.ID;
+            }
+            await _context.SaveChangesAsync();
+            // Assuming you have the redirect URL stored in a variable named redirectUrl
+            var redirectUrl = Url.Action(nameof(InGameStats), new { id = id });
+
+            // Return JSON response containing the redirect URL
+            return Json(new { redirectUrl });
+
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetGameInnings(int id)
         {
             var innings = await _context.Innings.Include(i => i.Scores)
                 .Where(i => i.GameID == id)

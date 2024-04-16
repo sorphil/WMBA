@@ -11,7 +11,7 @@ using WMBA5.Data;
 namespace WMBA5.Data.WMBAMigrations
 {
     [DbContext(typeof(WMBAContext))]
-    [Migration("20240411195823_Initial")]
+    [Migration("20240414213824_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -338,6 +338,9 @@ namespace WMBA5.Data.WMBAMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Triples")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Walks")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");

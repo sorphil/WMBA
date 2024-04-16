@@ -337,6 +337,9 @@ namespace WMBA5.Data.WMBAMigrations
                     b.Property<int>("Triples")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Walks")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("ID");
 
                     b.HasIndex("GameID");

@@ -78,11 +78,14 @@
                     <div class="score-group">
                         <div class="score-field">Strikes: <span id="playerStrikes">0</span></div>
                         <div class="score-field">Outs: <span id="playerOuts">0</span></div>
+
                     </div>
                     <div class="score-group">
                         <div class="score-field">Runs: <span id="playerRuns">0</span></div>
+                        <div class="score-field">Walks: <span id="playerWalks">0</span></div>
                         <div class="score-field">Foul Balls: <span id="playerFoulBalls">0</span></div>
                     </div>
+
 
                 </div>
 
@@ -100,7 +103,7 @@
         <div class="sub-container-block innings-block">
             <div class="innings-sub-block">
                 <table class="table-score">
-                    <tr>
+                    <tr class="table-score-inning">
                         <th>&nbsp</th>
                         <th>1</th>
                         <th>2</th>
@@ -112,7 +115,7 @@
                         <th>8</th>
                         <th>9</th>
                     </tr>
-                    <tr>
+                    <tr class="table-score-home">
                         <td>HOME</td>
                         <td id="home1">0</td>
                         <td id="home2">0</td>
@@ -124,13 +127,13 @@
                         <td id="home8">0</td>
                         <td id="home9">0</td>
                     </tr>
-                    <tr>
+                    <tr class="table-score-away">
                         <td>AWAY</td>
                         <td id="away1">0</td>
                         <td id="away2">0</td>
                         <td id="away3">0</td>
                         <td id="away4">0</td>
-                        <td id ="away5">0</td>
+                        <td id="away5">0</td>
                         <td id="away6">0</td>
                         <td id="away7">0</td>
                         <td id="away8">0</td>
@@ -150,7 +153,6 @@
 
 
     </div>
-    </div>
 
 
 </form>
@@ -169,32 +171,118 @@
         }
         let selectedOnfield = {}
 
+        let updateGameState = async () => {
+            $.ajax({
+                url: "@Url.Action("UpdateGameInfo", "Game")",
+                type: 'POST',
+                dataType: "json",
+                data: { 'json': JSON.stringify(gameInfoJson) },
+                success: function (data) {
+
+                    console.log(data)
+                    boolChangedState = false;
+
+                }
+            }).then(() => {
+                $.ajax({
+                    url: "@Url.Action("UpdateGameRunners", "Game")",
+                    type: 'POST',
+                    dataType: "json",
+                    data: { 'json': JSON.stringify(gameInfoJson.Runners) },
+                    success: function (data) {
+
+                        console.log(data)
+                        boolChangedState = false;
+
+                    }
+                })
+            }).then(() => {
+                $.ajax({
+                    url: "@Url.Action("UpdateGameInnings", "Game")",
+                    type: 'POST',
+                    dataType: "json",
+                    data: { 'json': JSON.stringify(gameInfoJson.Innings) },
+                    success: function (data) {
+                        boolChangedState = false;
+
+                    }
+                })
+            }).then(() => {
+                $.ajax({
+                    url: "@Url.Action("UpdateGamePlayers", "Game")",
+                    type: 'POST',
+                    dataType: "json",
+                    data: { 'json': JSON.stringify(gameInfoJson.GamePlayers) },
+                    success: function (data) {
+                        boolChangedState = false;
+
+                    }
+                })
+            })
+
+
+        }
         let boolChangedState = false;
-        let checkGameState = () => {
+        let checkInningState = () => {
             let team = gameInfoJson.GamePlayers.filter(gp => gp.TeamLineup === 0);
             let totalOuts = 0;
 
             team.forEach(gamePlayer => {
-
-                if (gamePlayer.Player.Scores.length != 0) {
-                    playerOuts = gamePlayer.Player.Scores.reduce((total, score) => {
-                        if (score?.InningID == gameInfoJson.CurrentInningID) {
-                            total = total + score.StrikeOuts + score.GroundOuts + score.FlyOuts
-                        }
-
-                        return total;
-                    }, 0);
-
-
+                let playerOuts = 0;
+                let score = gamePlayer.Player.Scores.find(s => s.InningID == gameInfoJson.CurrentInningID)
+                if (score != null) {
+                    playerOuts = score.FlyOuts + score.GroundOuts + score.StrikeOuts
+                    //console.log(score)
+                    //console.log(gamePlayer.Player.FullName, playerOuts)
                 }
 
                 totalOuts += playerOuts;
 
             })
+
             if (totalOuts >= 3) {
                 nextInning();
             }
 
+        }
+        let checkGameState = () => {
+            let lastInning = gameInfoJson.Innings[gameInfoJson.Innings.length - 1]
+            if (gameInfoJson.CurrentInningID == lastInning.ID) {
+                return true
+            }
+            return false
+
+        }
+        let checkScores = () => {
+            let totalAwayRuns = 0;
+            gameInfoJson.Innings.forEach((inning) => {
+                totalAwayRuns += inning.AwayRuns
+            })
+            let team = gameInfoJson.GamePlayers.filter(gp => gp.TeamLineup === 0);
+            let totalHomeRuns = 0;
+            team.forEach(gamePlayer => {
+                let playerScore = 0;
+                if (gamePlayer.Player.Scores.length != 0) {
+                    playerScore = gamePlayer.Player.Scores.reduce((total, score) => {
+                        // Add the total runs to each score object
+
+                        total = total + score.Runs
+                        return total;
+                    }, 0);
+
+                }
+
+                totalHomeRuns += playerScore;
+            });
+            if (totalAwayRuns > totalHomeRuns) {
+                return "Away"
+            }
+            else if (totalHomeRuns > totalAwayRuns) {
+                return "Home"
+            }
+            else if (totalHomeRuns == totalAwayRuns) {
+                return "Tie"
+            }
         }
         async function fetchGameInfo() {
             try {
@@ -206,7 +294,9 @@
                             url: "@Url.Action("GetGameInfo", "Game")",
                             data: data,
                             success: function (data) {
+
                                 resolve(data);
+
                             },
                             error: function (xhr) {
                                 var errorMessages = [];
@@ -234,7 +324,8 @@
                 if (gameInfoJson.CurrentInningID == null) gameInfoJson.CurrentInningID = @ViewBag.CurrentInning
                     setPlayersOnField();
                 setPlayerScores();
-              
+                return jsonData;
+
             } catch (error) {
                 console.error(error); // Handle errors if any
             }
@@ -249,7 +340,7 @@
                             url: "@Url.Action("GetGameInnings", "Game")",
                             data: data,
                             success: function (data) {
-                                console.log(data)
+
                                 resolve(data);
                             },
                             error: function (xhr) {
@@ -268,7 +359,7 @@
                             }
                         });
                     });
-            
+                    console.log(JSON.parse(data))
                 })()
 
                 inningsInfoJson = data.$values; // Assign the resolved data to the variable
@@ -289,91 +380,177 @@
             gameInfoJson.PlayerAtBatID = gameInfoJson.GamePlayers.find(gp => gp.BattingOrder == nxtBattingOrder).PlayerID;
         }
         let nextInning = () => {
+            let input;
+            let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
 
-            event.preventDefault(); let input;
+            let gameOver = checkGameState();
             do {
-                input = prompt("Please enter the number of runs for the away team");
+                input = prompt("Proceeding to next Inning. Please enter the number of runs for the away team \nWarning: Moving on to the next inning will save the game state");
                 if (isNaN(Number(input))) {
                     alert("Please enter a valid number");
                 }
-            } while (isNaN(Number(input)));
+            } while (isNaN(Number(input)) || input == null);
+            inning.AwayRuns = parseInt(input);
+            console.log(gameInfoJson.Innings, inning)
+            if (gameOver) {
+                updateGameState()
+                    .then(() => {
+                        let winner = checkScores()
+                        if (winner == "Tie") {
+                            let currentInning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID)
+                            let nextInningNumber = parseInt(currentInning.InningNo.substring(7)) + 1;
+                            let data = { GameID: @ViewBag.GameID, InningNo: nextInningNumber };
+                            updateGameState()
+                                .then(() => {
+                                    $.ajax({
+                                        url: "@Url.Action("NewInningObject", "Game")",
+                                        type: 'POST',
+                                        data: data,
+                                        success: function (data) {
+                                            let jsonData = JSON.parse(data)
+                                            gameInfoJson.Innings.push(jsonData)
+                                            gameInfoJson.CurrentInningID = jsonData.ID;
 
-            if (input !== null) {
+                                        }
+                                    })
+                                }).then(() => {
+                                    // Wait for 3 seconds
+                                    return new Promise(resolve => {
+                                        setTimeout(resolve, 500);
+                                    });
+                                })
+                                .then(() => {
 
-                let data = { GameID: @ViewBag.GameID, InningID: gameInfoJson.CurrentInningID, score: parseInt(input) };
-                if (confirm("Warning: Moving on to the next inning will save the game state")) 
-                {
-                    let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
-                    inning.AwayRuns = parseInt(input);
-                    console.log(inning, gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID));
-                    $.ajax({
-                        url: "@Url.Action("UpdateGameInfo", "Game")",
-                        type: 'POST',
-                        dataType: "json",
-                        data: { 'json': JSON.stringify(gameInfoJson) },
-                        success: function (data) {
-
-
-
-                            console.log(data)
-                            boolChangedState = false;
-
-                        }
-                    })
-                        .then(() => {
-                            $.ajax({
-                                url: "@Url.Action("UpdateGameInfo", "Game")",
-                                type: 'POST',
-                                dataType: "json",
-                                data: { 'json': JSON.stringify(gameInfoJson) },
-                                success: function (data) {
                                     let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
                                     let nextInningString = `Inning ${nextInningNumber}`;
-                                    let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
+                                    let nextInning = gameInfoJson.Innings.find(i => i.InningNo === nextInningString);
+                                    gameInfoJson.CurrentInningID = nextInning.ID;
 
-                                    gameInfoJson.CurrentInningID = nextInning.id;
-                                    gameInfoJson.CurrentInning = nextInning;
-                                    console.log(data)
                                     boolChangedState = false;
-                                    gameInfoJson = fetchGameInfo().then(() => {
-                                        inningsInfoJson = fetchInningsInfo();
-                                        return inningsInfoJson
-                                    }).then((data) => {
-
-                                        setInnings();
+                                })
+                                .then(() => {
+                                    updateGameState();
+                                })
+                                .then(() => {
+                                    // Wait for 3 seconds
+                                    return new Promise(resolve => {
+                                        setTimeout(resolve, 500);
                                     });
-                                }
-                            })
+                                })
+                                .then(() => {
+                                    return fetchGameInfo();
+                                })
+                                .then(() => {
+                                    return fetchInningsInfo();
+                                })
+                                .catch(error => {
+                                    // Handle errors if any
+                                    console.error('An error occurred:', error);
+                                });
+                        }
+                        else {
+                            updateGameState()
+                                .then(() => {
+                                    // Wait for 3 seconds
+                                    return new Promise(resolve => {
+                                        setTimeout(resolve, 500);
+                                    });
+                                })
+                                .then(() => {
+                                    let data = { id: @ViewBag.GameID, winner: winner };
+
+                                    $.ajax({
+                                        url: "@Url.Action("EndGame", "Game")",
+                                        type: 'POST',
+                                        data: data,
+                                        success: function (data) {
+
+                                            window.location.href = data.redirectUrl;
+
+                                        }
+                                    })
+                                })
+                                .then(() => {
+                                    return fetchInningsInfo();
+                                })
+                                .catch(error => {
+                                    // Handle errors if any
+                                    console.error('An error occurred:', error);
+                                });
+                        }
+                    })
+            }
+            else {
+                updateGameState()
+                    .then(() => {
+                        let currentInning = gameInfoJson;
+                        let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
+                        let nextInningString = `Inning ${nextInningNumber}`;
+                        let nextInning = gameInfoJson.Innings.find(i => i.InningNo === nextInningString);
+                        gameInfoJson.CurrentInningID = nextInning.ID;
+
+                        boolChangedState = false;
+                    })
+                    .then(() => updateGameState()).then(() => {
+                        // Wait for 3 seconds
+                        return new Promise(resolve => {
+                            setTimeout(resolve, 1000);
                         })
-                }
+                    })
+                    .then(() => {
+                        return fetchGameInfo();
+                    }).then(() => {
+                        return fetchInningsInfo();
+                    })
+                    .catch(error => {
+                        // Handle errors if any
+                        console.error('An error occurred:', error);
+                    });
+
+
+
+
             }
 
             return false;
 
         }
         let setInnings = () => {
-   
+            console.log("ASDASDASDAS")
+
             let innings = inningsInfoJson;
-          // /*   console.log(innings, inningsInfoJson.find(i => i.id == gameInfoJson.CurrentInningID) */.inningNo);
+            // /*   //console.log(innings, inningsInfoJson.find(i => i.id == gameInfoJson.CurrentInningID) */.inningNo);
             document.querySelector("#currentInning").innerHTML = inningsInfoJson.find(i => i.id == gameInfoJson.CurrentInningID).inningNo;
             let i = 1;
+            document.querySelector(".table-score-inning").innerHTML = "";
+            document.querySelector(".table-score-home").innerHTML = "";
+            document.querySelector(".table-score-away").innerHTML = "";
             inningsInfoJson.forEach((inning) => {
-              
-                document.querySelector(`#away${i}`).innerHTML = inning?.awayRuns == null ? 0 : inning.awayRuns;
+                let thInning = document.createElement("th")
+                thInning.innerHTML = inning.inningNo;
+                document.querySelector(".table-score-inning").appendChild(thInning);
+
+                let tdAway = document.createElement("td")
+                tdAway.innerHTML = inning?.awayRuns == null ? 0 : inning.awayRuns;
+                tdAway.ID = `#away${i}`
+                document.querySelector(".table-score-away").appendChild(tdAway)
                 let inningScore = inning?.scores?.$values.reduce((total, score) => {
                     // Add the total runs to each score object
 
                     total = total + score?.runs
                     return total;
                 }, 0);
-                // console.log(inning)
-                document.querySelector(`#home${i}`).innerHTML = inningScore? inningScore : 0;
+                // //console.log(inning)
+
+                let tdHome = document.createElement("td")
+                tdHome.innerHTML = inningScore ? inningScore : 0;
+                tdHome.ID = `#home${i}`
+                document.querySelector(".table-score-home").appendChild(tdHome)
                 i++;
-                // console.log(inningScore)
             })
- 
+
         }
-      
+
         let setPlayersOnField = () => {
             let currentInning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID)?.InningNo
             let playerAtBat = gameInfoJson.GamePlayers.find(gp => gp.PlayerID == gameInfoJson.PlayerAtBatID)
@@ -437,6 +614,7 @@
             document.querySelector("#playerStrikes").innerHTML = 0
             document.querySelector("#playerFoulBalls").innerHTML = 0
             document.querySelector("#playerOuts").innerHTML = 0
+            document.querySelector("#playerWalks").innerHTML = 0
             if (selectedPlayerID != null) {
                 let player = gameInfoJson.GamePlayers.find(gp => gp.PlayerID == selectedPlayerID).Player
                 let score = player.Scores.find(p => p.InningID == selectedInningID && p.GameID == @ViewBag.GameID)
@@ -454,6 +632,7 @@
                     document.querySelector("#playerStrikes").innerHTML = 0
                     document.querySelector("#playerFoulBalls").innerHTML = 0
                     document.querySelector("#playerOuts").innerHTML = 0
+                    document.querySelector("#playerWalks").innerHTML = 0
                 }
                 else {
                     document.querySelector("#playerHits").innerHTML = score["Singles"] + score["Doubles"] + score["Triples"];
@@ -461,6 +640,7 @@
                     document.querySelector("#playerRuns").innerHTML = score["Runs"]
                     document.querySelector("#playerStrikes").innerHTML = score["Strikes"]
                     document.querySelector("#playerFoulBalls").innerHTML = score["FoulBalls"]
+                    document.querySelector("#playerWalks").innerHTML = score["Walks"]
                     document.querySelector("#playerOuts").innerHTML = score["StrikeOuts"] + score["FlyOuts"] + score["GroundOuts"]
                 }
 
@@ -476,7 +656,7 @@
             let totalRuns = 0;
             team.forEach(gamePlayer => {
                 let playerScore = 0;
-                if (gamePlayer.Player.Scores.filter(s=>s.InningID == gameInfoJson.CurrentInningID).length != 0) {
+                if (gamePlayer.Player.Scores.filter(s => s.InningID == gameInfoJson.CurrentInningID).length != 0) {
                     playerScore = gamePlayer.Player.Scores.reduce((total, score) => {
                         // Add the total runs to each score object
 
@@ -636,7 +816,7 @@
         let inningsInfoJson;
 
         setFormFields();
- 
+
         $(".btnOnField").click(function (event) {
             event.preventDefault();
             document.querySelectorAll(".btnOnField").forEach((btn) => {
@@ -682,11 +862,10 @@
                     data: dataScore,
                     success: function (data) {
                         let jsonData = JSON.parse(data)
+                        //console.log(jsonData)
                         if (play == "single" || play == "double" || play == "triple") {
 
                             makeHit(jsonData, (play == "single" ? 1 : (play == "double" ? 2 : 3)), selectedPlayerID);
-
-                            ;
                         }
                         else if (play == "foul") {
                             makeFoul(jsonData);
@@ -777,7 +956,7 @@
 
         let hitConditions = (runners, hitValue, selectedPlayerID) => {
             let playerOnField = runners.find(r => r.PlayerID == selectedPlayerID && r.Base == hitValue) ? true : false;
-            console.log(runners.find(r => r.PlayerID == selectedPlayerID && r.Base == hitValue))
+            //console.log(runners.find(r => r.PlayerID == selectedPlayerID && r.Base == hitValue))
             if (playerOnField) return { errorMsg: "Player is already on the field", hitBool: false };
 
             let checkPrevBases = runners.filter(r => r.Base <= hitValue)
@@ -788,8 +967,8 @@
             return { errorMsg: "No error", hitBool: true }
         }
         let moveBaseConditions = (runners, baseValue, selectedPlayerID) => {
-           
-            console.log(baseValue   )
+
+            //console.log(baseValue)
             if (baseValue != 4) {
                 let checkNextBases = runners.filter(r => r.Base <= baseValue && r.PlayerID != selectedPlayerID)
                 for (let base of checkNextBases) {
@@ -798,14 +977,14 @@
                 }
             }
             else {
-                let checkNextBases = runners.filter(r => r.Base <= baseValue && r.PlayerID != selectedPlayerID && r.Base > runners.find(r=>r.PlayerID == selectedPlayerID).Base)
-                console.log(checkNextBases, runners.find(r => r.PlayerID == selectedPlayerID).Base)
+                let checkNextBases = runners.filter(r => r.Base <= baseValue && r.PlayerID != selectedPlayerID && r.Base > runners.find(r => r.PlayerID == selectedPlayerID).Base)
+                //console.log(checkNextBases, runners.find(r => r.PlayerID == selectedPlayerID).Base)
                 for (let base of checkNextBases) {
                     if (base != null && base.PlayerID != null)
                         return { errorMsg: `Base ${base.Base} is occupied by player ${gameInfoJson.GamePlayers.find(gp => gp.PlayerID == base.PlayerID).Player.FullName}; Players cannot go to home base unless the next bases are not occupied`, hitBool: false };
                 }
             }
-            
+
             return { errorMsg: "No error", hitBool: true }
         }
 
@@ -838,6 +1017,7 @@
         let makeHomeRun = (score, selectedPlayerID) => {
             let runners = gameInfoJson.Runners.filter(r => r.PlayerID != null);
             let runs = runners.length + 1;
+            score.Hits++;
             score.Runs += runs;
             runners.forEach((runner) => {
                 runner.PlayerID = null;
@@ -867,14 +1047,16 @@
 
 
 
-
+                let player = gameInfoJson.GamePlayers.find(gp => gp.PlayerID == gameInfoJson.PlayerAtBatID).Player
+                let score = player.Scores.find(s => s.InningID == gameInfoJson.CurrentInningID)
+                score.Walks++;
                 baseOne.PlayerID = gameInfoJson.PlayerAtBatID
                 nextPlayer();
             }
         }
         let makeStrike = (score) => {
             score.Strikes++;
-            checkGameState()
+            checkInningState()
             if (score.Strikes % 3 == 0) {
                 score.StrikeOuts++;
                 nextPlayer();
@@ -892,7 +1074,7 @@
                 runners.find(r => r.Base == baseValue).PlayerID = selectedPlayerID
             }
             else if (baseValue == 4) {
-                console.log(baseValue, runners.find(r => r.PlayerID == selectedPlayerID))
+                //console.log(baseValue, runners.find(r => r.PlayerID == selectedPlayerID))
                 score.Runs++;
                 runners.find(r => r.PlayerID == selectedPlayerID).PlayerID = null;
             }
@@ -900,14 +1082,14 @@
         let makeOut = (score, type, selectedPlayerID) => {
             let runners = gameInfoJson.Runners;
             runners.find(r => r.PlayerID == selectedPlayerID).PlayerID = null;
+
             if (type == "flyout") {
                 score.FlyOuts++;
             }
-            else (type == "groundout")
-            {
+            else if (type == "groundout") {
                 score.GroundOuts++;
             }
-            checkGameState();
+            checkInningState();
         }
 
 
@@ -927,16 +1109,7 @@
         $("#btnSave").click(function (event) {
             event.preventDefault();
             if (confirm("Would you like to save the current game?")) {
-                $.ajax({
-                    url: "@Url.Action("UpdateGameInfo", "Game")",
-                    type: 'POST',
-                    dataType: "json",
-                    data: { 'json': JSON.stringify(gameInfoJson) },
-                    success: function (data) {
-                        console.log(data)
-                        boolChangedState = false;
-                    }
-                });
+                updateGameState();
             }
 
             return false;
@@ -962,103 +1135,147 @@
         });
         $("#btnNext").click(function (event) {
             event.preventDefault();
-            if (gameInfoJson.CurrentInning.awayRuns == null) {
-                let input;
-                do {
-                    input = prompt("Please enter the number of runs for the away team");
-                    if (input !== null && isNaN(Number(input))) {
-                        alert("Please enter a valid number");
-                    }
-                } while (input !== null && isNaN(Number(input)));
 
-                if (input !== null) {
-                    let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
-                    inning.AwayRuns = parseInt(input);
-                    console.log(inning, gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID));
-                    $.ajax({
-                        url: "@Url.Action("UpdateGameInfo", "Game")",
-                        type: 'POST',
-                        dataType: "json",
-                        data: { 'json': JSON.stringify(gameInfoJson) },
-                        success: function (data) {
+            let input;
+            let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
 
+            let gameOver = checkGameState();
+            do {
+                input = prompt("Proceeding to next Inning. Please enter the number of runs for the away team \nWarning: Moving on to the next inning will save the game state");
+                if (isNaN(Number(input))) {
+                    alert("Please enter a valid number");
+                }
+            } while (isNaN(Number(input)));
 
-                            let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
-                            let nextInningString = `Inning ${nextInningNumber}`;
-                            let nextInning = gameInfoJson.Innings.find(i => i.InningNo == nextInningString);
-                            console.log(nextInning, nextInning.id)
-                            gameInfoJson.CurrentInningID = nextInning.ID;
-                            gameInfoJson.CurrentInning = nextInning;
-                            console.log(data)
-                            boolChangedState = false;
-                            
-                        }
-                     })
-                    .then(()=>{
-                        $.ajax({
-                            url: "@Url.Action("UpdateGameInfo", "Game")",
-                            type: 'POST',
-                            dataType: "json",
-                            data: { 'json': JSON.stringify(gameInfoJson) },
-                            success: function (data) {
-                                  
-                                console.log(data)
-                                boolChangedState = false;
+            if (input != null) {
+                inning.AwayRuns = parseInt(input);
+                console.log(gameInfoJson.Innings, inning)
+                if (gameOver) {
+                    updateGameState()
+                        .then(() => {
+                            let winner = checkScores()
+                            if (winner == "Tie") {
+                                let currentInning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID)
+                                let nextInningNumber = parseInt(currentInning.InningNo.substring(7)) + 1;
+                                let data = { GameID: @ViewBag.GameID, InningNo: nextInningNumber };
+                                updateGameState()
+                                    .then(() => {
+                                        $.ajax({
+                                            url: "@Url.Action("NewInningObject", "Game")",
+                                            type: 'POST',
+                                            data: data,
+                                            success: function (data) {
+                                                let jsonData = JSON.parse(data)
+                                                gameInfoJson.Innings.push(jsonData)
+                                                gameInfoJson.CurrentInningID = jsonData.ID;
+                                                
+                                            }
+                                        })
+                                    }).then(() => {
+                                        // Wait for 3 seconds
+                                        return new Promise(resolve => {
+                                            setTimeout(resolve, 500);
+                                        });
+                                    })
+                                    .then(() => {
 
-                                gameInfoJson = fetchGameInfo().then(() => {
-                                    inningsInfoJson = fetchInningsInfo();
-                                    return inningsInfoJson
-                                }).then((data) => {
+                                        let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
+                                        let nextInningString = `Inning ${nextInningNumber}`;
+                                        let nextInning = gameInfoJson.Innings.find(i => i.InningNo === nextInningString);
+                                        gameInfoJson.CurrentInningID = nextInning.ID;
 
-                                    setInnings();
-                                });
+                                        boolChangedState = false;
+                                    })
+                                    .then(() => {
+                                        updateGameState();
+                                    })
+                                    .then(() => {
+                                        // Wait for 3 seconds
+                                        return new Promise(resolve => {
+                                            setTimeout(resolve, 500);
+                                        });
+                                    })
+                                    .then(() => {
+                                        return fetchGameInfo();
+                                    })
+                                    .then(() => {
+                                        return fetchInningsInfo();
+                                    })
+                                    .catch(error => {
+                                        // Handle errors if any
+                                        console.error('An error occurred:', error);
+                                    });
+                            }
+                            else {
+                                updateGameState()
+                                    .then(() => {
+                                        // Wait for 3 seconds
+                                        return new Promise(resolve => {
+                                            setTimeout(resolve, 500);
+                                        });
+                                    })
+                                    .then(() => {
+                                        let data = { id: @ViewBag.GameID, winner: winner };
+
+                                        $.ajax({
+                                            url: "@Url.Action("EndGame", "Game")",
+                                            type: 'POST',
+                                            data: data,
+                                            success: function (data) {
+
+                                                window.location.href = data.redirectUrl;
+
+                                            }
+                                        })
+                                    })
+                                    .then(() => {
+                                        return fetchInningsInfo();
+                                    })
+                                    .catch(error => {
+                                        // Handle errors if any
+                                        console.error('An error occurred:', error);
+                                    });
                             }
                         })
-                    })
-                
+                }
+                else {
+                    updateGameState()
+                        .then(() => {
+                            let currentInning = gameInfoJson;
+                            let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
+                            let nextInningString = `Inning ${nextInningNumber}`;
+                            let nextInning = gameInfoJson.Innings.find(i => i.InningNo === nextInningString);
+                            gameInfoJson.CurrentInningID = nextInning.ID;
+
+                            boolChangedState = false;
+                        })
+                        .then(() => updateGameState()).then(() => {
+                            // Wait for 3 seconds
+                            return new Promise(resolve => {
+                                setTimeout(resolve, 1000);
+                            })
+                        })
+                        .then(() => {
+                            return fetchGameInfo();
+                        }).then(() => {
+                            return fetchInningsInfo();
+                        })
+                        .catch(error => {
+                            // Handle errors if any
+                            console.error('An error occurred:', error);
+                        });
+
+
+
+
                 }
             }
-            else {
-                let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
-                inning.awayRuns = parseInt(input);
-                let nextInningNumber = parseInt(inning.InningNo.substring(7)) + 1;
-                let nextInningString = `Inning ${nextInningNumber}`;
-                let nextInning = inningsInfoJson.find(i => i.inningNo == nextInningString);
-                gameInfoJson.CurrentInningID = nextInning.id;
-                console.log(nextInning, nextInningString)
-                gameInfoJson.CurrentInning = nextInning;
-                let data = { GameID: @ViewBag.GameID, InningID: gameInfoJson.CurrentInningID }
-                $.ajax({
-                    url: "@Url.Action("UpdateGameInfo", "Game")",
-                    type: 'POST',
-                    dataType: "json",
-                    data: { 'json': JSON.stringify(gameInfoJson) },
-                    success: function (data) {
-                        console.log(data)
-                        boolChangedState = false;
-                        gameInfoJson = fetchGameInfo().then(() => {
-                            inningsInfoJson = fetchInningsInfo();
-                            return inningsInfoJson
-                        }).then((data) => {
 
-                            setInnings();
-                        });
-                    }
-                });
-            }
+
+
             return false;
-        });
-        window.addEventListener("beforeunload", function (event) {
-            if (boolChangedState) {
-                event.preventDefault();
-                event.returnValue = ''; // This line is for older browsers
-                alert("You have unsaved changes. Are you sure you want to leave?");
-                return true
-            }
-            else {
-                return null
-            }
-        });
+        })
+
 
 
         // Initialize popover with trigger set to 'hover'

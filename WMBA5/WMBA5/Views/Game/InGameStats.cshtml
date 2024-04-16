@@ -1,0 +1,147 @@
+﻿@model WMBA5.Models.Game
+
+@{
+    ViewData["Title"] = "Game Stats";
+}
+<link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/GameStatsView.css" asp-append-version="true" />
+<form asp-action="InGameStats">
+    <input type="hidden" value="@ViewBag.GameID" id="gameID" />
+    <div class="container-block">
+        <h1 class="container-header">Post-Game Stats</h1>
+        <h2 class="container-subheader">(Winner: @ViewBag.Winner)</h2>
+        <br />
+        <div class="sub-container-block input-block">
+            <div class="play-block form-block">
+                <h3 class="input-header">Select a Player</h3>
+                <select id="select-players" Name="player" Size="7" class="input-select">
+                    @foreach (var gamePlayer in ViewBag.Players)
+                    {
+                        <option value="@gamePlayer.PlayerID">@gamePlayer.Player.FullName</option>
+                    }
+                </select>
+
+            </div>
+            <div class="play-block form-block">
+                <h3 class="input-header">Select an Inning</h3>
+                <select id="select-innings" Name="player" Size="7" class="input-select">
+                    @foreach (var inning in ViewBag.Innings)
+                    {
+                        <option value="@inning.ID">@inning.InningNo</option>
+                    }
+                </select>
+
+            </div>
+
+        </div>
+        <div class="sub-container-block score-btn-block">
+            <div class="score-block">
+                <h3 class="score-header" id="lblTotal">Total Score:</h3>
+                <div class="score-sub-block">
+                    <div class="score-sub-header"></div>
+                    <div class="score-group">
+                        <div class="score-field">Hits: <span id="playerHits">0</span></div>
+                        <div class="score-field">Balls: <span id="playerBalls">0</span></div>
+                    </div>
+                    <div class="score-group">
+                        <div class="score-field">Strikes: <span id="playerStrikes">0</span></div>
+                        <div class="score-field">Outs: <span id="playerOuts">0</span></div>
+
+                    </div>
+                    <div class="score-group">
+                        <div class="score-field">Runs: <span id="playerRuns">0</span></div>
+                        <div class="score-field">Walks: <span id="playerWalks">0</span></div>
+                        <div class="score-field">Foul Balls: <span id="playerFoulBalls">0</span></div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+    </div>
+
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+
+        let playerSelect = document.querySelector("#select-players")
+        let inningSelect = document.querySelector("#select-innings")
+        checkSelects = async () => {
+           
+            if (playerSelect.selectedIndex < 0 || inningSelect.selectedIndex < 0) {
+                document.querySelector(".score-sub-block").style.display = "none";
+                document.querySelector(".score-header").innerHTML = "Select a Player and Inning"
+            }
+            else {
+                let player = gameInfoJson.GamePlayers.find(gp => gp.PlayerID == playerSelect.value)
+
+                document.querySelector(".score-sub-block").style.display = "block";
+                document.querySelector(".score-header").innerHTML = `${inningSelect.options[inningSelect.selectedIndex].text}- ${player.Player.FullName}`;
+
+
+            }
+        }
+
+        playerSelect.addEventListener("change", () => {
+          
+            checkSelects();
+        })
+        inningSelect.addEventListener("change", () => {
+
+            checkSelects();
+        })
+        async function fetchGameInfo() {
+            try {
+                var data = await (async () => {
+                    return new Promise((resolve, reject) => {
+                        let data = { id: @ViewBag.GameID};
+                        $.ajax({
+                            type: "GET",
+                            url: "@Url.Action("GetGameInfo", "Game")",
+                            data: data,
+                            success: function (data) {
+
+                                resolve(data);
+
+                            },
+                            error: function (xhr) {
+                                var errorMessages = [];
+                                switch (xhr.status) {
+                                    case 401:
+                                        errorMessages.push("You must be logged in first.");
+                                        break;
+                                    case 403:
+                                        errorMessages.push("You are not authorized for this action.");
+                                        break;
+                                    default:
+                                        errorMessages = xhr.responseText.split("|").slice(0, -1);
+                                }
+                                reject(errorMessages);
+                            }
+                        });
+                    });
+                })()
+
+                var jsonData = JSON.parse(data);
+
+                gameInfoJson = jsonData; // Assign the resolved data to the variable
+                console.log(gameInfoJson)
+
+            } catch (error) {
+                console.error(error); // Handle errors if any
+            }
+        }
+        let gameInfoJson = fetchGameInfo().then(() => {
+            checkSelects()
+        })
+    </script>
+
+}

@@ -355,6 +355,7 @@ namespace WMBA5.Data.WMBAMigrations
                     FoulBalls = table.Column<int>(type: "INTEGER", nullable: false),
                     Strikes = table.Column<int>(type: "INTEGER", nullable: false),
                     Runs = table.Column<int>(type: "INTEGER", nullable: false),
+                    Walks = table.Column<int>(type: "INTEGER", nullable: false),
                     Singles = table.Column<int>(type: "INTEGER", nullable: false),
                     Doubles = table.Column<int>(type: "INTEGER", nullable: false),
                     Triples = table.Column<int>(type: "INTEGER", nullable: false),
