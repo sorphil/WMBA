@@ -25,7 +25,7 @@ using Org.BouncyCastle.Utilities.Collections;
 
 namespace WMBA5.Controllers
 {
-    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Trash Pandas 15U Scorekeeper, Scorekeeper, Coach")]
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor,Scorekeeper, Coach")]
     public class GameController : ElephantController
     {
         private readonly WMBAContext _context;
@@ -63,11 +63,86 @@ namespace WMBA5.Controllers
 
 
             // Filtering
-            //Filter for  Trash Pandas 15U Coach or Scorekeeper
-            if (User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Trash Pandas 15U Scorekeeper"))
+            #region Filter for Coaches and Scorekeepers
+            //Filter for Trash Pandas 15U Coach
+            if (User.IsInRole("Trash Pandas - 15U - Coach") || User.IsInRole("Trash Pandas - 15U - Scorekeeper"))
             {
                 gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Trash Pandas" || t.AwayTeam.TeamName == "Trash Pandas" && t.Division.DivisionName == "15U");
             }
+            //Filter for Bananas - 13U - Coach
+            if (User.IsInRole("Bananas - 13U - Coach")|| User.IsInRole("Bananas - 13U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Bananas" || t.AwayTeam.TeamName == "Bananas" && t.Division.DivisionName == "13U");
+            }
+            //Filter for Iron Birds - 13U - Coach
+            if (User.IsInRole("Iron Birds - 13U - Coach") || User.IsInRole("Iron Birds - 13U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Iron Birds" || t.AwayTeam.TeamName == "Iron Birds" && t.Division.DivisionName == "13U");
+            }
+            //Filter for Whitecaps - 13U - Coach
+            if (User.IsInRole("Whitecaps - 13U - Coach") || User.IsInRole("Whitecaps - 13U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Whitecaps" || t.AwayTeam.TeamName == "Whitecaps" && t.Division.DivisionName == "13U");
+            }
+            //Filter for Bisons - 15U - Coach  
+            if (User.IsInRole("Bisons - 15U - Coach") || User.IsInRole("Bisons - 15U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Bisons" || t.AwayTeam.TeamName == "Bisons" && t.Division.DivisionName == "15U");
+            }
+            //Filter for Dragons - 15U - Coach
+            if (User.IsInRole("Dragons - 15U - Coach") || User.IsInRole("Dragons - 15U - Scorekeeper"))
+            {
+                //1 is the ID for U9
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Dragons" || t.AwayTeam.TeamName == "Dragons" && t.Division.DivisionName == "15U");
+            }
+            //Filter for Raimon - 9U - Coach   
+            if (User.IsInRole("Raimon - 9U - Coach") || User.IsInRole("Raimon - 9U - Scorekeeper"))
+            {
+                //1 is the ID for U9
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Raimon" || t.AwayTeam.TeamName == "Raimon" && t.Division.DivisionName == "9U");
+            }
+            //Orfeo - 9U - Coach
+            if (User.IsInRole("Orfeo - 9U - Coach") || User.IsInRole("Orfeo - 9U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Orfeo" || t.AwayTeam.TeamName == "Orfeo" && t.Division.DivisionName == "9U");
+            }
+            //Filter for Trash Pandas 15U Coach
+            if (User.IsInRole("Kings - 9U - Coach") || User.IsInRole("Kings - 9U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Kings" || t.AwayTeam.TeamName == "Kings" && t.Division.DivisionName == "9U");
+            }
+            //Filter for Trash Pandas - 11U - Coach  
+            if (User.IsInRole("Trash Pandas - 11U - Coach") || User.IsInRole("Trash Pandas - 11U - Scorekeeper"))
+            {
+                //1 is the ID for U9
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Trash Pandas" || t.AwayTeam.TeamName == "Trash Pandas" && t.Division.DivisionName == "11U");
+            }
+            //Angry Birds - 11U - Coach 
+            if (User.IsInRole("Angry Birds - 11U - Coach") || User.IsInRole("Angry Birds - 11U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Angry Birds" || t.AwayTeam.TeamName == "Angry Birds" && t.Division.DivisionName == "11U");
+            }
+            //Filter for G2 - 11U - Coach  
+            if (User.IsInRole("G2 - 11U - Coach") || User.IsInRole("G2 - 11U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "G2" || t.AwayTeam.TeamName == "G2" && t.Division.DivisionName == "11U");
+            }
+            //Raimon - 18U - Coach   
+            if (User.IsInRole("Raimon - 18U - Coach") || User.IsInRole("Raimon - 18U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Raimon" || t.AwayTeam.TeamName == "Raimon" && t.Division.DivisionName == "18U");
+            }
+            //Leviathan - 18U - Coach 
+            if (User.IsInRole("Leviathan - 18U - Coach") || User.IsInRole("Leviathan - 18U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Leviathan" || t.AwayTeam.TeamName == "Leviathan" && t.Division.DivisionName == "18U");
+            }
+            //Orfeo - 9U - Coach
+            if (User.IsInRole("Wellanders - 18U - Coach") || User.IsInRole("Wellanders - 18U - Scorekeeper"))
+            {
+                gamesQuery = gamesQuery.Where(t => t.HomeTeam.TeamName == "Wellanders" || t.AwayTeam.TeamName == "Wellanders" && t.Division.DivisionName == "18U");
+            }
+            #endregion
             //Filter for Rookie Convenor
             if (User.IsInRole("Rookie Convenor"))
             {

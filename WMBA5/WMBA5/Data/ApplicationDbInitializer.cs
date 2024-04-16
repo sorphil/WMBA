@@ -30,13 +30,13 @@ namespace WMBA5.Data
                 List<string> roleNames = new List<string> { "Admin", "Rookie Convenor", "Intermediate Convenor", "Senior Convenor", "Scorekeeper", "Coach" };
 
                 // Team Coach and Scorekeeper roles
-                var teams = await wmbaContext.Teams.ToListAsync();
+                var teams = await wmbaContext.Teams.Include(d => d.Division).ToListAsync();
                 foreach (var team in teams)
                 {
                     // Coach role
-                    string coachRoleName = team.TeamName + " - Coach";
+                    string coachRoleName = team.TeamName + " - " + team.Division.DivisionName +" - Coach";
                     // Scorekeeper role
-                    string scorekeeperRoleName = team.TeamName + " - Scorekeeper";
+                    string scorekeeperRoleName = team.TeamName + $" - {team.Division.DivisionName}"+" - Scorekeeper";
 
                     // Append coach and scorekeeper role names to roleNames list
                     roleNames.Add(coachRoleName);
@@ -124,7 +124,7 @@ namespace WMBA5.Data
                         userManager.AddToRoleAsync(user, "Senior Convenor").Wait();
                     }
                 }
-                //Create coach Trash Pandas u15 user
+                //Create coach u15 user
                 if (userManager.FindByEmailAsync("coach@outlook.com").Result == null)
                 {
                     IdentityUser user = new IdentityUser
@@ -141,40 +141,6 @@ namespace WMBA5.Data
                         userManager.AddToRoleAsync(user, "Coach").Wait();
                     }
                 }
-                ////Create coach Trash Pandas u15 user
-                //if (userManager.FindByEmailAsync("coachtp15@outlook.com").Result == null)
-                //{
-                //    IdentityUser user = new IdentityUser
-                //    {
-                //        UserName = "coachtp15@outlook.com",
-                //        Email = "coachtp15@outlook.com",
-                //        EmailConfirmed = true
-                //    };
-
-                //    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
-
-                //    if (result.Succeeded)
-                //    {
-                //        userManager.AddToRoleAsync(user, "Trash Pandas 15U Coach").Wait();
-                //    }
-                //}
-                ////Create Trash Pandas 15U scorekeeper user
-                //if (userManager.FindByEmailAsync("scorekeepertp15@outlook.com").Result == null)
-                //{
-                //    IdentityUser user = new IdentityUser
-                //    {
-                //        UserName = "scorekeepertp15@outlook.com",
-                //        Email = "scorekeepertp15@outlook.com",
-                //        EmailConfirmed = true
-                //    };
-
-                //    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
-
-                //    if (result.Succeeded)
-                //    {
-                //        userManager.AddToRoleAsync(user, "Trash Pandas 15U Scorekeeper").Wait();
-                //    }
-                //}
                 //Create scorekeeper user
                 if (userManager.FindByEmailAsync("scorekeeper@outlook.com").Result == null)
                 {
@@ -199,6 +165,19 @@ namespace WMBA5.Data
                     {
                         UserName = "user@outlook.com",
                         Email = "user@outlook.com",
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+                    //Not in any role
+                }
+                /*Create user user@outlook.com with password "Pa55w@rd”, not in any role.*/
+                if (userManager.FindByEmailAsync("user2@outlook.com").Result == null)
+                {
+                    IdentityUser user = new IdentityUser
+                    {
+                        UserName = "user2@outlook.com",
+                        Email = "user2@outlook.com",
                         EmailConfirmed = true
                     };
 
