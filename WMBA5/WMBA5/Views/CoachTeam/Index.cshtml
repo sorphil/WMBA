@@ -1,0 +1,49 @@
+﻿@model IEnumerable<WMBA5.Models.Team>
+
+@{
+    WMBA5.Models.Coach coach = (WMBA5.Models.Coach)ViewBag.Coach;
+    <partial name="_CoachTeam" model="coach" />
+    ViewData["Title"] = ViewData["ControllerFriendlyName"];
+}
+<hr />
+<form asp-action="Index" method="get">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class ="hide-colum">
+                    <input type="submit" name="actionButton" value="Team" class="btn btn-toolbar" />
+                </th>
+                <th class="hide-colum">
+                    <input type="submit" name="actionButton" value="Division" class="btn btn-toolbar" />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TeamName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Division.DivisionName)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+    <div>
+        <div>
+            <a href='@ViewData["ReturnURL"]'>Back to Coach list</a>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

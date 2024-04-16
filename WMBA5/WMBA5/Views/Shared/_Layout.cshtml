@@ -19,9 +19,14 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item item-nav">
-                            <a class="nav-link" style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+                        @{
+                            if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor") || User.IsInRole("Trash Pandas 15U Coach") || User.IsInRole("Coach"))
+                            {
+                                <li class="nav-item item-nav">
+                                    <a class="nav-link" style="color:#E7E7E7; padding:10px;" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                            }
+                        }
                         @{
                             if (User.IsInRole("Admin") || User.IsInRole("Rookie Convenor") || User.IsInRole("Intermediate Convenor") || User.IsInRole("Senior Convenor"))
                             {

@@ -37,7 +37,9 @@ namespace WMBA5.Data
         public DbSet<Team> Teams { get; set; }
 
         public DbSet<Runner> Runners { get; set; }
-
+        public DbSet<PlayerInningScoreVM> PlayerInningScoreSummary { get; set; }
+        public DbSet<PlayerScoresStatsVM> PlayerScoreStatsSummary { get; set; }
+        public DbSet<TeamScoreVM> TeamScoreSummary { get; set; }
 
 
         //public DbSet<TeamLineup> TeamLineups { get; set; } // this is a enum not a class Dbset is not required for this.

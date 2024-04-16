@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WMBA5.Models.Score>
+﻿@model IEnumerable<WMBA5.ViewModels.PlayerInningScoreVM>
 
 @{
     ViewData["Title"] = "Download Report";
@@ -25,29 +25,29 @@
         </div>
     </div>
 </div>
-@* <table class="table">
+<table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Player)
+                @Html.DisplayNameFor(model => model.PlayerID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Balls)
+                @Html.DisplayNameFor(model => model.TotalBalls)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FoulBalls)
+                @Html.DisplayNameFor(model => model.TotalFoulBalls)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Strikes)
+                @Html.DisplayNameFor(model => model.TotalStrikes)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Outs)
+                @Html.DisplayNameFor(model => model.TotalOuts)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Runs)
+                @Html.DisplayNameFor(model => model.TotalRuns)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Hits)
+                @Html.DisplayNameFor(model => model.TotalHits)
             </th>
             <th></th>
         </tr>
@@ -56,34 +56,34 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Player.FullName)
+                @Html.DisplayFor(modelItem => item.PlayerID)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Balls)
+                        @Html.DisplayFor(modelItem => item.TotalBalls)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FoulBalls)
+                        @Html.DisplayFor(modelItem => item.TotalFoulBalls)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Strikes)
+                        @Html.DisplayFor(modelItem => item.TotalStrikes)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Outs)
+                        @Html.DisplayFor(modelItem => item.TotalOuts)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Runs)
+                        @Html.DisplayFor(modelItem => item.TotalRuns)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Hits)
+                        @Html.DisplayFor(modelItem => item.TotalHits)
             </td>
         </tr>
         }
     </tbody>
-</table> *@
-@*     <form asp-action="PlayerStatsView">
+</table> 
+    <form asp-action="PlayerStatsView">
         <a asp-action="PlayerStatDowload" class="btn btn-sm btn-outline-success"
            role="button" data-bs-toggle="tooltip">
             <strong><small>Download</small></strong>
         </a>
-    </form> *@
+    </form> 
 </form>

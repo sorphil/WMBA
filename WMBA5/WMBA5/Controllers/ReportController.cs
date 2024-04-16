@@ -15,6 +15,7 @@ using WMBA5.CustomControllers;
 using WMBA5.Data;
 using WMBA5.Models;
 using WMBA5.Utilities;
+using WMBA5.ViewModels;
 
 
 namespace WMBA5.Controllers
@@ -95,104 +96,44 @@ namespace WMBA5.Controllers
             return NotFound("No Data");
         }
 
-        public async Task<IActionResult> PlayerStatsView(int? GameID)
+        public async Task<IActionResult> PlayerStatsView(int? GameID,int? page, int? pageSizeID)
         {
-            PopulateDropDownLists();
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            string feedBack = "";
-            var stats2 = from a in _context.Scores
-                        .Include(a => a.Game)
-                        .Include(a => a.Player)
-                        .OrderBy(a => a.Player.LastName)
-                        .Where(a => a.GameID == GameID)
-                         select new
-                         {
-                             Game = a.Game.HomeTeam.TeamName + " VS " + a.Game.AwayTeam.TeamName,
-                             Name = a.Player.FullName,
-                             Result = a.Game.Outcome.OutcomeString,
-                             a.Runs,
-                             a.Balls,
-                             a.FoulBalls,
-                             a.Strikes,
-                             //a.Out,
-                             a.Hits
-                         };
+            var sumQ = _context.PlayerInningScoreSummary
+              .AsNoTracking();
 
-            int numRows = stats2.Count();
-
-            if (numRows > 0)
-            {
-                using (ExcelPackage excel = new ExcelPackage())
-                {
-                    DateTime localDate = DateTime.Now;
-                    var workSheet = excel.Workbook.Worksheets.Add("PlayerStatsReport");
-
-                    workSheet.Cells[3, 2].LoadFromCollection(stats2, true);
-                    workSheet.Cells[2, 11].Value = "Created: " + localDate.ToShortTimeString() + " on " + localDate.ToShortDateString();
-                    using (ExcelRange headings = workSheet.Cells[3, 2, 3, 10])
-                    {
-                        headings.Style.Font.Bold = true;
-                    }
-                    workSheet.Cells.AutoFitColumns();
-
-                    workSheet.Cells[1, 2].Value = "Player Stats Report";
-                    using (ExcelRange Rng = workSheet.Cells[1, 2, 1, 10])
-                    {
-                        Rng.Merge = true;
-                        Rng.Style.Font.Bold = true;
-                        Rng.Style.Font.Size = 19;
-                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    }
-
-                    try
-                    {
-                        Byte[] theData = excel.GetAsByteArray();
-                        string filename = "PlayerStatsReport.xlsx";
-                        string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.Sheet";
-                        return File(theData, mimeType, filename);
-                    }
-                    catch
-                    {
-                        return BadRequest("Could not build and download the file.");
-                    }
-                }
-            }
-            else
-            {
-                feedBack = "No data to download, Please select a game already played";
-                TempData["Feedback"] = feedBack;
-            }
-            var stats = _context.Scores
-                        .Include(a => a.Game)
-                        .Include(a => a.Player)
-                        .OrderBy(a => a.Player.LastName)
-                        .Where(a => a.GameID == GameID);
-
-
-            return View(stats);
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "FunctionRevenue");//Remember for this View
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<PlayerInningScoreVM>.CreateAsync(sumQ.AsNoTracking(), page ?? 1, pageSize);
+            PopulateDropDownLists(GameID);
+            return View(pagedData);
         }
-        public async Task<IActionResult> PlayerStatDowload(int ? GameID)
+        //Playern Inning score summary Download
+        public IActionResult PlayerStatDownload(int ? GameID)
         {
+           
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             string feedBack = "";
-            var stats2 = from a in _context.Scores
-                        .Include(a => a.Game)
-                        .Include(a => a.Player)
-                        .ThenInclude(a => a.Stats)
-                        .OrderBy(a => a.Player.LastName)
+
+            string homeTeam = _context.Games.FirstOrDefault(g => g.ID == GameID).HomeTeam.TeamName;
+            string awayTeam = _context.Games.FirstOrDefault(g => g.ID == GameID).AwayTeam.TeamName;
+            string gameResult = _context.Games.FirstOrDefault(g => g.ID == GameID).Outcome.OutcomeString;
+
+            var stats2 = _context.PlayerInningScoreSummary
+                        .OrderBy(a => a.PlayerID)
                         .Where(a => a.GameID == GameID)
-                        select new
+                        .Select(a => new
                         {
-                            Game = a.Game.HomeTeam.TeamName + " VS " + a.Game.AwayTeam.TeamName,
-                            Name = a.Player.FullName,
-                            Result = a.Game.Outcome.OutcomeString,
-                            a.Runs,
-                            a.Balls,
-                            a.FoulBalls,
-                            a.Strikes,
-                            a.Outs,
-                            a.Hits
-                        };
+                            Game = homeTeam + " VS " + awayTeam,
+                            Name = _context.Players.FirstOrDefault(p => p.ID == a.PlayerID).FullName,
+                            Result = gameResult,
+                            a.TotalRuns,
+                            a.TotalBalls,
+                            a.TotalFoulBalls,
+                            a.TotalStrikes,
+                            a.TotalOuts,
+                            a.TotalHits
+                        })
+                        .AsNoTracking();
 
             int numRows = stats2.Count();
 
@@ -234,19 +175,8 @@ namespace WMBA5.Controllers
                     }
                 }
             }
-            else
-            {
-                feedBack = "No data to download, Please select a game already played";
-                TempData["Feedback"] = feedBack;
-            }
-            var stats = _context.Scores
-                        .Include(a => a.Game)
-                        .Include(a => a.Player)
-                        .OrderBy(a => a.Player.LastName)
-                        .Where(a => a.GameID == GameID);
 
-
-            return View(stats);
+            return NotFound("No data.");
         }
 
         //public IActionResult PlayerStatReport()
@@ -384,7 +314,7 @@ namespace WMBA5.Controllers
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             string feedBack = "";
-            PopulateDropDownLists();
+            //PopulateDropDownLists();
             var stats = _context.Stats
                         .Include(a => a.Player)
                         .OrderBy(a => a.Player.LastName);
@@ -809,12 +739,12 @@ namespace WMBA5.Controllers
                 .Include(p => p.Stats)
                 .OrderBy(p => p.LastName), "ID", "FullName", selectedId);
         }
-        private void PopulateDropDownLists(Score score = null, Stat stat = null)
+        private void PopulateDropDownLists(int? ID)
         {
-            ViewData["DivisionID"] = DivisionSelectionList(stat?.Player?.Division?.ID);
-            ViewData["GameID"] = GameSelectionList(score?.ID);
-            ViewData["PlayerID1"] = PlayerSelectionList(stat?.ID);
-            ViewData["PlayerID2"] = PlayerSelectionList(stat?.ID);
+            //ViewData["DivisionID"] = DivisionSelectionList(stat?.Player?.Division?.ID);
+            ViewData["GameID"] = GameSelectionList(ID);
+            //ViewData["PlayerID1"] = PlayerSelectionList(stat?.ID);
+            //ViewData["PlayerID2"] = PlayerSelectionList(stat?.ID);
         }
     }
 
