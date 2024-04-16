@@ -38,8 +38,7 @@ namespace WMBA5.Controllers
                 return NotFound();
             }
 
-            var coach = await _context.Coaches.Include(c => c.Teams)
-                .AsNoTracking()
+            var coach = await _context.Coaches
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (coach == null)
             {

@@ -2,6 +2,7 @@
 {
     public class PlayerInningScoreVM
     {
+        public int ID { get; set; }
         public int InningID { get; set; }
         public int GameID { get; set; }
         public int PlayerID { get; set; }

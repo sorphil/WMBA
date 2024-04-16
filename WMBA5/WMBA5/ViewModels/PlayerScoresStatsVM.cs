@@ -2,6 +2,7 @@
 {
     public class PlayerScoresStatsVM
     {
+        public int ID { get; set; }
         public int GameID { get; set; }
         public int PlayerID { get; set; }
         public int TotalGamesPlayed { get; set; }
