@@ -61,44 +61,6 @@
                     @:</tr>
                         }
                 </table>
-                <table id="teamsCoachTable" style="display:none;">
-                <tr>
-                    @{
-                        foreach (var team in teams)
-                        {
-                            if (cnt++ % 3 == 0)
-                            {
-                            @:</tr><tr>
-                            }
-                            @:<td>
-                                <input type="checkbox"
-                                     name="selectedRoles"
-                                       value="@team.TeamName" />
-                                @team.TeamName @:&nbsp- Coach&nbsp;
-                            @:</td>
-                        }
-                    }
-                </tr>
-            </table>
-            <table id="teamsScorekeeperTable" style="display:none;">
-                <tr>
-                    @{
-                        foreach (var team in teams)
-                        {
-                            if (cnt++ % 3 == 0)
-                            {
-                            @:</tr><tr>
-                            }
-                            @:<td>
-                                <input type="checkbox"
-                                name="selectedRoles"
-                                       value="@team.TeamName" />
-                                @team.TeamName @:&nbsp- ScoreKeeper&nbsp;
-                            @:</td>
-                        }
-                    }
-                </tr>
-            </table>
             </div>
         </div>
     </div>
@@ -134,43 +96,5 @@
             });
         });
     </script>
-    <script>
-    // Function to show/hide teams table based on coach selection
-    function handleCoachSelection() {
-        var coachCheckbox = document.querySelector('input[name="selectedRoles"][value="Coach"]');
-        var teamsCoachTable = document.getElementById('teamsCoachTable');
 
-        if (coachCheckbox.checked) {
-            teamsCoachTable.style.display = 'table';
-        } else {
-            teamsCoachTable.style.display = 'none';
-        }
-    }
-
-    // Add event listener to coach checkbox
-    var coachCheckbox = document.querySelector('input[name="selectedRoles"][value="Coach"]');
-    coachCheckbox.addEventListener('change', handleCoachSelection);
-
-    // Initial check on page load
-    handleCoachSelection();
-
-    // Function to show/hide teams table based on Scorekeeper selection
-    function handleScorekeeperSelection() {
-        var scorekeeperCheckbox = document.querySelector('input[name="selectedRoles"][value="Scorekeeper"]');
-        var teamsScorekeeperTable = document.getElementById('teamsScorekeeperTable');
-
-        if (scorekeeperCheckbox.checked) {
-            teamsScorekeeperTable.style.display = 'table';
-        } else {
-            teamsScorekeeperTable.style.display = 'none';
-        }
-    }
-
-    // Add event listener to coach checkbox
-    var scorekeeperCheckbox = document.querySelector('input[name="selectedRoles"][value="Scorekeeper"]');
-    scorekeeperCheckbox.addEventListener('change', handleScorekeeperSelection);
-
-    // Initial check on page load
-    handleScorekeeperSelection();
-</script>
 }
