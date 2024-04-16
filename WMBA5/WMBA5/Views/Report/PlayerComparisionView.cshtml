@@ -1,11 +1,13 @@
-﻿@model IEnumerable<WMBA5.Models.Stat>
+﻿@model IEnumerable<WMBA5.ViewModels.PlayerScoresStatsVM>
 
 @{
     ViewData["Title"] = "Download Report";
 }
 
 <h1>Player Comparision</h1>
-
+<div class="form-group col-md-2 align-self-start">
+    <input type="submit" asp-action="PlayerComparisionDownload" value="View" class="btn btn-outline-primary" />
+</div>
 <form asp-action="PlayerComparisionView">
     <div class="form-horizontal">
         <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">

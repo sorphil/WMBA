@@ -9,6 +9,8 @@
         public int TotalBalls { get; set; }
         public int TotalFoulBalls { get; set; }
         public int TotalStrikes { get; set; }
+        public int TotalHits { get; set; }
+        public int TotalOuts { get; set; }
 
         public int TotalRuns { get; set; }
     }
