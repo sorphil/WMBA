@@ -381,6 +381,10 @@
             gameInfoJson.PlayerAtBatID = gameInfoJson.GamePlayers.find(gp => gp.BattingOrder == nxtBattingOrder).PlayerID;
         }
         let nextInning = () => {
+            let runners = gameInfoJson.Runners.forEach((runner) => {
+                runner.PlayerID = null
+            })
+      
             let input;
             let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
 
@@ -1136,7 +1140,9 @@
         });
         $("#btnNext").click(function (event) {
             event.preventDefault();
-
+            let runners = gameInfoJson.Runners.forEach((runner) => {
+                runner.PlayerID = null
+            })
             let input;
             let inning = gameInfoJson.Innings.find(i => i.ID == gameInfoJson.CurrentInningID);
 
