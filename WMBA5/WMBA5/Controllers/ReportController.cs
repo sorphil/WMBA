@@ -101,10 +101,11 @@ namespace WMBA5.Controllers
             var sumQ = _context.PlayerInningScoreSummary
               .AsNoTracking();
 
-            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "FunctionRevenue");//Remember for this View
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "DownloadReport");//Remember for this View
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
             var pagedData = await PaginatedList<PlayerInningScoreVM>.CreateAsync(sumQ.AsNoTracking(), page ?? 1, pageSize);
-            PopulateDropDownLists(GameID);
+            PopulateDropDownLists(GameID, null, null);
             return View(pagedData);
         }
         //Playern Inning score summary Download
@@ -114,9 +115,9 @@ namespace WMBA5.Controllers
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             string feedBack = "";
 
-            string homeTeam = _context.Games.FirstOrDefault(g => g.ID == GameID).HomeTeam.TeamName;
-            string awayTeam = _context.Games.FirstOrDefault(g => g.ID == GameID).AwayTeam.TeamName;
-            string gameResult = _context.Games.FirstOrDefault(g => g.ID == GameID).Outcome.OutcomeString;
+            string homeTeam = _context.Games.FirstOrDefault(g => g.ID == GameID)?.HomeTeam.TeamName;
+            string awayTeam = _context.Games.FirstOrDefault(g => g.ID == GameID)?.AwayTeam.TeamName;
+            string gameResult = _context.Games.FirstOrDefault(g => g.ID == GameID)?.Outcome.OutcomeString;
 
             var stats2 = _context.PlayerInningScoreSummary
                         .OrderBy(a => a.PlayerID)
@@ -310,46 +311,66 @@ namespace WMBA5.Controllers
         //    TempData["Feedback"] = feedBack;
         //    return View(stats);
         //}
-        public async Task<IActionResult> PlayerComparisionView(int? PlayerID1, int? PlayerID2, string? MemberID)
+        public async Task<IActionResult> PlayerComparisionView(int? playerID1, int? playerID2, int? page, int? pageSizeID)
+        {
+            var sumQ = _context.PlayerScoreStatsSummary
+              .AsNoTracking();
+
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "DownloadReport");//Remember for this View
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<PlayerScoresStatsVM>.CreateAsync(sumQ.AsNoTracking(), page ?? 1, pageSize);
+            PopulateDropDownLists(null, playerID1, playerID2);
+            return View(pagedData);
+        }
+        public async Task<IActionResult> PlayerComparisionDownload(int? PlayerID1, int? PlayerID2, string? MemberID)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             string feedBack = "";
-            //PopulateDropDownLists();
-            var stats = _context.Stats
-                        .Include(a => a.Player)
-                        .OrderBy(a => a.Player.LastName);
+            PopulateDropDownLists(null, PlayerID1, PlayerID2);
 
-            var statsp1 = from a in _context.Stats
-                        .Include(a => a.Player)
-                        .OrderBy(a => a.Player.LastName)
+            string playerName = _context.Players.FirstOrDefault(p => p.ID == PlayerID1)?.FullName;
+
+            var statsp1 = _context.PlayerScoreStatsSummary
+                        .OrderBy(a => a.PlayerID)
                         .Where(a => a.PlayerID == PlayerID1)
-                        select new
+                        .Select(a => new
                         {
-                            Name = a.Player.FullName,
-                            At_Batts = a.PlayerAppearance,
-                            a.RunsScored,
-                            a.StrikeOuts,
-                            a.Walks,
-                            a.Hits,
-                            a.RBI,
-                            a.BattAVG
-                        };
+                            Name = playerName,
+                            At_Batts = a.TotalGamesPlayed,
+                            a.TotalHits,
+                            a.TotalRunsScored,
+                            a.TotalStrikeOuts,
+                            a.TotalWalks,
+                            a.TotalRBI,
+                            a.TotalBalls,
+                            a.TotalFoulBalls,
+                            a.TotalStrikes,
+                            a.TotalOut,
+                            a.TotalRuns
+                        });
 
-            var statsp2 = from a in _context.Stats
-            .Include(a => a.Player)
-            .OrderBy(a => a.Player.LastName)
-            .Where(a => a.PlayerID == PlayerID2)
-                         select new
-                         {
-                             Name = a.Player.FullName,
-                             At_Batts = a.PlayerAppearance,
-                             a.RunsScored,
-                             a.StrikeOuts,
-                             a.Walks,
-                             a.Hits,
-                             a.RBI,
-                             a.BattAVG
-                         };
+
+            string playerName2 = _context.Players.FirstOrDefault(p => p.ID == PlayerID1)?.FullName;
+
+            var statsp2 = _context.PlayerScoreStatsSummary
+                        .OrderBy(a => a.PlayerID)
+                        .Where(a => a.PlayerID == PlayerID2)
+                        .Select(a => new
+                        {
+                            Name = playerName2,
+                            At_Batts = a.TotalGamesPlayed,
+                            a.TotalHits,
+                            a.TotalRunsScored,
+                            a.TotalStrikeOuts,
+                            a.TotalWalks,
+                            a.TotalRBI,
+                            a.TotalBalls,
+                            a.TotalFoulBalls,
+                            a.TotalStrikes,
+                            a.TotalOut,
+                            a.TotalRuns
+                        });
 
             int numRows = statsp2.Count();
 
@@ -401,7 +422,7 @@ namespace WMBA5.Controllers
                 feedBack = "No data to download, Please select a game already played";
             }
             TempData["Feedback"] = feedBack;
-            return View(stats);
+            return NotFound("No data.");
         }
         //public IActionResult PlayerComparisionReport()
         //{
@@ -739,12 +760,12 @@ namespace WMBA5.Controllers
                 .Include(p => p.Stats)
                 .OrderBy(p => p.LastName), "ID", "FullName", selectedId);
         }
-        private void PopulateDropDownLists(int? ID)
+        private void PopulateDropDownLists(int? ID, int? playerID1, int? playerID2)
         {
             //ViewData["DivisionID"] = DivisionSelectionList(stat?.Player?.Division?.ID);
             ViewData["GameID"] = GameSelectionList(ID);
-            //ViewData["PlayerID1"] = PlayerSelectionList(stat?.ID);
-            //ViewData["PlayerID2"] = PlayerSelectionList(stat?.ID);
+            ViewData["PlayerID1"] = PlayerSelectionList(playerID1);
+            ViewData["PlayerID2"] = PlayerSelectionList(playerID2);
         }
     }
 
