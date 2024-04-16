@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WMBA5.Controllers
 {
-    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor, Trash Pandas 15U Coach, Coach")]
+    [Authorize(Roles = "Admin, Rookie Convenor, Intermediate Convenor, Senior Convenor,Coach")]
     public class PlayerController : ElephantController
     {
         private readonly WMBAContext _context;
@@ -52,19 +52,88 @@ namespace WMBA5.Controllers
                 .Include(p => p.Stats)
                 .Include(p=>p.Division)
                 .AsNoTracking();
-
+            
+            #region Filter for Coaches
             //Filter for Trash Pandas 15U Coach
-            if (User.IsInRole("Trash Pandas 15U Coach"))
+            if (User.IsInRole("Trash Pandas - 15U - Coach"))
             {
-                //1 is the ID for U9
                 players = players.Where(t => t.Team.TeamName == "Trash Pandas" && t.Division.DivisionName == "15U");
             }
-            //Filter for Trash Pandas 15U Scorekeeper
-            if (User.IsInRole("Trash Pandas 15U Scorekeeper"))
+            //Filter for Bananas - 13U - Coach
+            if (User.IsInRole("Bananas - 13U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Bananas" && t.Division.DivisionName == "13U");
+            }
+            //Filter for Iron Birds - 13U - Coach
+            if (User.IsInRole("Iron Birds - 13U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Iron Birds" && t.Division.DivisionName == "13U");
+            }
+            //Filter for Whitecaps - 13U - Coach
+            if (User.IsInRole("Whitecaps - 13U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Whitecaps" && t.Division.DivisionName == "13U");
+            }
+            //Filter for Bisons - 15U - Coach  
+            if (User.IsInRole("Bisons - 15U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Bisons" && t.Division.DivisionName == "15U");
+            }
+            //Filter for Dragons - 15U - Coach
+            if (User.IsInRole("Dragons - 15U - Coach"))
             {
                 //1 is the ID for U9
-                players = players.Where(t => t.Team.TeamName == "Trash Pandas" && t.Division.DivisionName == "15U");
+                players = players.Where(t => t.Team.TeamName == "Dragons" && t.Division.DivisionName == "15U");
             }
+            //Filter for Raimon - 9U - Coach   
+            if (User.IsInRole("Raimon - 9U - Coach"))
+            {
+                //1 is the ID for U9
+                players = players.Where(t => t.Team.TeamName == "Raimon" && t.Division.DivisionName == "9U");
+            }
+            //Orfeo - 9U - Coach
+            if (User.IsInRole("Orfeo - 9U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Orfeo" && t.Division.DivisionName == "9U");
+            }
+            //Filter for Trash Pandas 15U Coach
+            if (User.IsInRole("Kings - 9U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Kings" && t.Division.DivisionName == "9U");
+            }
+            //Filter for Trash Pandas - 11U - Coach  
+            if (User.IsInRole("Trash Pandas - 11U - Coach"))
+            {
+                //1 is the ID for U9
+                players = players.Where(t => t.Team.TeamName == "Trash Pandas" && t.Division.DivisionName == "11U");
+            }
+            //Angry Birds - 11U - Coach 
+            if (User.IsInRole("Angry Birds - 11U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Angry Birds" && t.Division.DivisionName == "11U");
+            }
+            //Filter for G2 - 11U - Coach  
+            if (User.IsInRole("G2 - 11U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "G2" && t.Division.DivisionName == "11U");
+            }
+            //Raimon - 18U - Coach   
+            if (User.IsInRole("Raimon - 18U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Raimon" && t.Division.DivisionName == "18U");
+            }
+            //Leviathan - 18U - Coach 
+            if (User.IsInRole("Leviathan - 18U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Leviathan" && t.Division.DivisionName == "18U");
+            }
+            //Orfeo - 9U - Coach
+            if (User.IsInRole("Wellanders - 18U - Coach"))
+            {
+                players = players.Where(t => t.Team.TeamName == "Wellanders" && t.Division.DivisionName == "18U");
+            }
+            #endregion
+
             //Filter for Rookie Convenor
             if (User.IsInRole("Rookie Convenor"))
             {
